@@ -55,7 +55,7 @@ class Esi
     /**
      * Retrieves public contracts for a given region.
      *
-     * @param  int  $region_id  The ID of the region.
+     * @param int $region_id The ID of the region.
      * @return EsiResult<PublicContract[]> Returns an instance of EsiResult that contains the retrieved public contracts.
      *
      * @throws ConnectionException
@@ -71,7 +71,7 @@ class Esi
     /**
      * Retrieves public contract items for a given contract.
      *
-     * @param  int  $contract_id  The ID of the contract.
+     * @param int $contract_id The ID of the contract.
      * @return EsiResult<PublicContractItem[]> Returns an instance of EsiResult that contains the retrieved public contract items.
      *
      * @throws ConnectionException
@@ -87,7 +87,7 @@ class Esi
     /**
      * Retrieves public contract bids for a given contract.
      *
-     * @param  int  $contract_id  The ID of the contract.
+     * @param int $contract_id The ID of the contract.
      * @return EsiResult<PublicContractBid[]> Returns an instance of EsiResult that contains the retrieved public contract bids.
      *
      * @throws ConnectionException
@@ -103,7 +103,7 @@ class Esi
     /**
      * Retrieves character affiliations for a given list of IDs.
      *
-     * @param  array<int>  $ids  The list of IDs.
+     * @param array<int> $ids The list of IDs.
      * @return EsiResult<CharacterAffiliation[]> Returns an instance of EsiResult that contains the retrieved character affiliations.
      *
      * @throws ConnectionException
@@ -119,8 +119,8 @@ class Esi
     /**
      * Retrieves dogma item attributes for a given type and item ID.
      *
-     * @param  int  $type_id  The type ID.
-     * @param  int  $item_id  The item ID.
+     * @param int $type_id The type ID.
+     * @param int $item_id The item ID.
      * @return EsiResult<DogmaItem> Returns an instance of EsiResult that contains the retrieved dogma item attributes.
      *
      * @throws ConnectionException
@@ -136,8 +136,8 @@ class Esi
     /**
      * Retrieves market history for a given region and type ID.
      *
-     * @param  int  $region_id  The ID of the region.
-     * @param  int  $type_id  The type ID.
+     * @param int $region_id The ID of the region.
+     * @param int $type_id The type ID.
      * @return EsiResult<MarketHistory[]> Returns an instance of EsiResult that contains the retrieved market history.
      *
      * @throws ConnectionException
@@ -153,7 +153,7 @@ class Esi
     /**
      * Retrieves names for a given list of IDs.
      *
-     * @param  array<int>  $ids  The list of IDs.
+     * @param array<int> $ids The list of IDs.
      * @return EsiResult<Name[]> Returns an instance of EsiResult that contains the retrieved names.
      *
      * @throws ConnectionException
@@ -184,7 +184,7 @@ class Esi
     /**
      * Retrieves structure information for a given structure ID.
      *
-     * @param  int  $structure_id  The structure ID.
+     * @param int $structure_id The structure ID.
      * @return EsiResult<Structure> Returns an instance of EsiResult that contains the retrieved structure information.
      *
      * @throws ConnectionException
@@ -270,20 +270,21 @@ class Esi
     /**
      * Retrieves the asset names for a given character.
      *
-     * @param  array<int>  $ids
+     * @param array<int> $ids
      * @return EsiResult<AssetName[]>
      *
      * @throws ConnectionException
      */
     public function getAssetNames(Character $character, array $ids): EsiResult
     {
-        if (empty($ids)) {
-            return new EsiResult(data: collect());
+        /** @var AssetName[] $names */
+        $names = [];
+
+        if ($ids === []) {
+            return new EsiResult(data: $names);
         }
 
         $chunks = array_chunk($ids, 1000);
-
-        $results = collect();
 
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAssets);
 
@@ -295,10 +296,11 @@ class Esi
                 return $result;
             }
 
-            $results = $results->merge($result->data);
+            /** @var AssetName[] $names */
+            $names = [...$names, $result->data];
         }
 
-        return new EsiResult(data: $results);
+        return new EsiResult(data: $names);
     }
 
     /**
@@ -319,15 +321,19 @@ class Esi
     /**
      * Retrieves the corporation asset names for a given character.
      *
-     * @param  array<int>  $ids
+     * @param array<int> $ids
      * @return EsiResult<AssetName[]>
      *
      * @throws ConnectionException
      */
     public function getCorporationAssetNames(Character $character, array $ids): EsiResult
     {
-        if (count($ids) === 0) {
-            return new EsiResult(data: collect());
+
+        /** @var AssetName[] $names */
+        $names = [];
+
+        if ($ids === []) {
+            return new EsiResult(data: $names);
         }
 
         if (count($ids) > 1000) {
@@ -335,9 +341,11 @@ class Esi
                 return $this->getCorporationAssetNames($character, $chunk);
             });
 
-            $data = $results->map(fn (EsiResult $result) => $result->data)->flatten();
 
-            return new EsiResult(data: $data);
+            /** @var AssetName[] $names */
+            $names = $results->map(fn(EsiResult $result) => $result->data)->flatten()->all();
+
+            return new EsiResult(data: $names);
         }
 
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationAssets);
@@ -346,18 +354,22 @@ class Esi
 
         if (str_contains($response->error?->body ?? '', 'Invalid IDs in the request')) {
             if (count($ids) === 1) {
-                return new EsiResult(data: collect());
+                return new EsiResult(data: $names);
             }
 
             // Split in two and try again
-            $half = (int) ceil(count($ids) / 2);
+            $half = (int)ceil(count($ids) / 2);
             $first = array_slice($ids, 0, $half);
             $second = array_slice($ids, $half);
 
             $first_result = $this->getCorporationAssetNames($character, $first);
             $second_result = $this->getCorporationAssetNames($character, $second);
 
-            return new EsiResult(data: collect($first_result->data)->merge($second_result->data));
+
+            /** @var AssetName[] $names */
+            $names = [...$first_result->data, ...$second_result->data];
+
+            return new EsiResult(data: $names);
         }
 
         return $response;
@@ -483,7 +495,7 @@ class Esi
     /**
      * Updates an EVE mail
      *
-     * @param  array<int>|null  $labels
+     * @param array<int>|null $labels
      *
      * @throws ConnectionException
      */
