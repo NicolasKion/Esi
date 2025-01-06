@@ -16,8 +16,7 @@ class GetCorporationAssetsRequest extends Request implements WithPagination
 
     public function __construct(
         public int $corporation_id,
-    )
-    {
+    ) {
         //
     }
 

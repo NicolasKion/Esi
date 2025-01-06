@@ -20,10 +20,13 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 class Connector
 {
     const ERROR_LIMIT_REMAIN_HEADER = 'X-Esi-Error-Limit-Remain';
+
     const ERROR_LIMIT_RESET_HEADER = 'X-Esi-Error-Limit-Reset';
+
     const EXPIRES_HEADER = 'Expires';
 
     public ?EsiError $error = null;
+
     private ?EsiToken $token = null;
 
     /**
@@ -58,7 +61,7 @@ class Connector
         ])
             ->asForm()
             ->withBasicAuth(config('esi.client_id'), config('esi.client_secret'))
-            ->retry(5, 1000, fn(Exception $response) => $response->response?->status() >= 500, throw: false)
+            ->retry(5, 1000, fn (Exception $response) => $response->response?->status() >= 500, throw: false)
             ->post('https://login.eveonline.com/v2/oauth/token', [
                 'grant_type' => 'refresh_token',
                 'refresh_token' => $this->token->getRefreshToken(),
@@ -70,6 +73,7 @@ class Connector
                 code: $response->status(),
                 body: $response->body(),
             );
+
             return;
         }
 
@@ -92,13 +96,13 @@ class Connector
         }
 
         $pending_request = Http::withHeaders([
-            'User-Agent' => config('esi.user_agent')
+            'User-Agent' => config('esi.user_agent'),
         ])
             ->baseUrl('https://esi.evetech.net/latest')
-            ->when(count($request->getQuery()), fn(PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
-            ->when(count($request->getHeaders()), fn(PendingRequest $r) => $r->withHeaders($request->getHeaders()))
-            ->when($this->token, fn(PendingRequest $r) => $r->withToken($this->token->getAccessToken())
-                ->retry(5, 1000, fn(Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
+            ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
+            ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
+            ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken())
+                ->retry(5, 1000, fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
 
         $response = match ($request->getMethod()) {
             RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
@@ -110,6 +114,7 @@ class Connector
 
         if ($response->failed()) {
             ray($response->json());
+
             return new EsiResult(
                 stats: $this->getStatsFromResponse($response),
                 error: new EsiError(
@@ -143,14 +148,14 @@ class Connector
     {
         $remain = $response->header(self::ERROR_LIMIT_REMAIN_HEADER) ?: 0;
 
-        return (int)$remain;
+        return (int) $remain;
     }
 
     private function getErrorLimitResetFromResponse(Response $response): int
     {
         $reset = $response->header(self::ERROR_LIMIT_RESET_HEADER) ?: 100;
 
-        return (int)$reset;
+        return (int) $reset;
     }
 
     /**
@@ -164,15 +169,15 @@ class Connector
 
         do {
             $pending_request = Http::withHeaders([
-                'User-Agent' => config('esi.user_agent')
+                'User-Agent' => config('esi.user_agent'),
             ])
                 ->baseUrl('https://esi.evetech.net/latest')
-                ->when(count($request->getQuery()), fn(PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
+                ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
                 ->withQueryParameters(['page' => $page])
-                ->when(count($request->getHeaders()), fn(PendingRequest $r) => $r->withHeaders($request->getHeaders()))
-                ->when($request instanceof WithBody, fn(PendingRequest $r) => $request instanceof WithBody ? $r->withBody($request->getBody()) : null)
-                ->when($this->token, fn(PendingRequest $r) => $r->withToken($this->token->getAccessToken())
-                    ->retry(5, 1000, fn(Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
+                ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
+                ->when($request instanceof WithBody, fn (PendingRequest $r) => $request instanceof WithBody ? $r->withBody($request->getBody()) : null)
+                ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken())
+                    ->retry(5, 1000, fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
 
             $response = match ($request->getMethod()) {
                 RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),

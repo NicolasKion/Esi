@@ -19,8 +19,7 @@ class GetWalletJournalRequest extends Request implements WithPagination
      */
     public function __construct(
         public int $character_id
-    )
-    {
+    ) {
         //
     }
 
@@ -28,7 +27,6 @@ class GetWalletJournalRequest extends Request implements WithPagination
     {
         return sprintf('/characters/%d/wallet/journal/', $this->character_id);
     }
-
 
     public function createDtoFromResponse(Response $response): array
     {

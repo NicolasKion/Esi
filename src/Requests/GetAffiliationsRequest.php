@@ -13,11 +13,9 @@ use NicolasKion\Esi\Request;
 class GetAffiliationsRequest extends Request implements WithBody
 {
     /**
-     * @param array<int> $ids
+     * @param  array<int>  $ids
      */
-    function __construct(public array $ids)
-    {
-    }
+    public function __construct(public array $ids) {}
 
     public function resolveEndpoint(): string
     {

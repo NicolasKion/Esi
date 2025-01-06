@@ -9,13 +9,11 @@ use NicolasKion\Esi\Interfaces\FromArray;
 readonly class Structure implements FromArray
 {
     public function __construct(
-        public string   $name,
-        public int      $owner_id,
+        public string $name,
+        public int $owner_id,
         public Position $position,
-        public int      $solar_system_id,
-        public int      $type_id)
-    {
-    }
+        public int $solar_system_id,
+        public int $type_id) {}
 
     public static function fromArray(array $data): self
     {

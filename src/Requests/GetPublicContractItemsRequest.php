@@ -16,8 +16,7 @@ class GetPublicContractItemsRequest extends Request implements WithPagination
 
     public function __construct(
         public int $contract_id
-    )
-    {
+    ) {
         //
     }
 

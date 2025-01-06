@@ -20,11 +20,12 @@ enum EsiScope: string
     public static function fromRequest(string $scopes): array
     {
         $scopes = explode(',', $scopes);
-        return array_map(fn($scope) => self::from($scope)->value, $scopes);
+
+        return array_map(fn ($scope) => self::from($scope)->value, $scopes);
     }
 
     public static function all(): array
     {
-        return collect(self::cases())->map(fn($scope) => $scope->value)->toArray();
+        return collect(self::cases())->map(fn ($scope) => $scope->value)->toArray();
     }
 }

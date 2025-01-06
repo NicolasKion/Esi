@@ -11,17 +11,7 @@ use NicolasKion\Esi\Request;
 
 class UpdateEveMailRequest extends Request implements WithBody
 {
-
-    /**
-     * @param int $character_id
-     * @param int $mail_id
-     * @param bool $read
-     * @param array|null $labels
-     */
-    public function __construct(public int $character_id, public int $mail_id, public bool $read = true, public ?array $labels = null)
-    {
-    }
-
+    public function __construct(public int $character_id, public int $mail_id, public bool $read = true, public ?array $labels = null) {}
 
     public function getBody(): mixed
     {

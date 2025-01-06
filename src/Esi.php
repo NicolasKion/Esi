@@ -55,100 +55,114 @@ class Esi
     /**
      * Retrieves public contracts for a given region.
      *
-     * @param int $region_id The ID of the region.
+     * @param  int  $region_id  The ID of the region.
      * @return EsiResult<PublicContract[]> Returns an instance of EsiResult that contains the retrieved public contracts.
+     *
      * @throws ConnectionException
      */
     public function getPublicContracts(int $region_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetPublicContractsRequest($region_id);
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves public contract items for a given contract.
      *
-     * @param int $contract_id The ID of the contract.
+     * @param  int  $contract_id  The ID of the contract.
      * @return EsiResult<PublicContractItem[]> Returns an instance of EsiResult that contains the retrieved public contract items.
+     *
      * @throws ConnectionException
      */
     public function getPublicContractItems(int $contract_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetPublicContractItemsRequest($contract_id);
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves public contract bids for a given contract.
      *
-     * @param int $contract_id The ID of the contract.
+     * @param  int  $contract_id  The ID of the contract.
      * @return EsiResult<PublicContractBid[]> Returns an instance of EsiResult that contains the retrieved public contract bids.
+     *
      * @throws ConnectionException
      */
     public function getPublicContractBids(int $contract_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetPublicContractBidsRequest($contract_id);
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves character affiliations for a given list of IDs.
      *
-     * @param array<int> $ids The list of IDs.
+     * @param  array<int>  $ids  The list of IDs.
      * @return EsiResult<CharacterAffiliation[]> Returns an instance of EsiResult that contains the retrieved character affiliations.
+     *
      * @throws ConnectionException
      */
     public function getAffiliations(array $ids): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetAffiliationsRequest($ids);
+
         return $connector->send($request);
     }
 
     /**
      * Retrieves dogma item attributes for a given type and item ID.
      *
-     * @param int $type_id The type ID.
-     * @param int $item_id The item ID.
+     * @param  int  $type_id  The type ID.
+     * @param  int  $item_id  The item ID.
      * @return EsiResult<DogmaItem> Returns an instance of EsiResult that contains the retrieved dogma item attributes.
+     *
      * @throws ConnectionException
      */
     public function getDogmaItem(int $type_id, int $item_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetDogmaItemAttributesRequest($type_id, $item_id);
+
         return $connector->send($request);
     }
 
     /**
      * Retrieves market history for a given region and type ID.
      *
-     * @param int $region_id The ID of the region.
-     * @param int $type_id The type ID.
+     * @param  int  $region_id  The ID of the region.
+     * @param  int  $type_id  The type ID.
      * @return EsiResult<MarketHistory[]> Returns an instance of EsiResult that contains the retrieved market history.
+     *
      * @throws ConnectionException
      */
     public function getMarketHistory(int $region_id, int $type_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetMarketHistoryRequest($region_id, $type_id);
+
         return $connector->send($request);
     }
 
     /**
      * Retrieves names for a given list of IDs.
      *
-     * @param array<int> $ids The list of IDs.
+     * @param  array<int>  $ids  The list of IDs.
      * @return EsiResult<Name[]> Returns an instance of EsiResult that contains the retrieved names.
+     *
      * @throws ConnectionException
      */
     public function getNames(array $ids): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetNamesRequest($ids);
+
         return $connector->send($request);
     }
 
@@ -156,34 +170,34 @@ class Esi
      * Retrieves public structures.
      *
      * @return EsiResult<int[]> Returns an instance of EsiResult that contains the retrieved public structures.
+     *
      * @throws ConnectionException
      */
     public function getPublicStructures(): EsiResult
     {
-        $connector = new Connector();
-        $request = new GetPublicStructuresRequest();
+        $connector = new Connector;
+        $request = new GetPublicStructuresRequest;
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves structure information for a given structure ID.
      *
-     * @param Character $character
-     * @param int $structure_id The structure ID.
+     * @param  int  $structure_id  The structure ID.
      * @return EsiResult<Structure> Returns an instance of EsiResult that contains the retrieved structure information.
+     *
      * @throws ConnectionException
      */
     public function getStructure(Character $character, int $structure_id): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadStructures);
         $request = new GetStructureRequest($structure_id);
+
         return $connector->send($request);
     }
 
     /**
-     * @param Character $character
-     * @param EsiScope $scope
-     * @return Connector
      * @throws ConnectionException
      */
     private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector
@@ -196,66 +210,69 @@ class Esi
     /**
      * Retrieves the wallet journal for a given character.
      *
-     * @param Character $character
      * @return EsiResult<WalletJournalEntry[]> Returns an instance of EsiResult that contains the retrieved wallet journal.
+     *
      * @throws ConnectionException
      */
     public function getWalletJournal(Character $character): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadWallet);
         $request = new GetWalletJournalRequest($character->getId());
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves the EVE mails for a given character.
      *
-     * @param Character $character
      * @return EsiResult<EveMail> Returns an instance of EsiResult that contains the retrieved EVE mails.
+     *
      * @throws ConnectionException
      */
     public function getEveMails(Character $character): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadMail);
         $request = new GetEveMailsRequest($character->getId());
+
         return $connector->send($request);
     }
 
     /**
      * Retrieves an EVE mail for a given character and mail ID.
      *
-     * @param Character $character
-     * @param int $mail_id
      * @return EsiResult<EveMail>
+     *
      * @throws ConnectionException
      */
     public function getEveMail(Character $character, int $mail_id): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadMail);
         $request = new GetEveMailRequest($character->getId(), $mail_id);
+
         return $connector->send($request);
     }
 
     /**
      * Retrieves the assets for a given character.
      *
-     * @param Character $character
      * @return EsiResult<Collection<Asset>>
+     *
      * @throws ConnectionException
      */
     public function getAssets(Character $character): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAssets);
         $request = new GetAssetsRequest($character->getId());
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves the asset names for a given character.
      *
-     * @param Character $character
-     * @param array<int> $ids
+     * @param  array<int>  $ids
      * @return EsiResult<AssetName[]>
+     *
      * @throws ConnectionException
      */
     public function getAssetNames(Character $character, array $ids): EsiResult
@@ -287,23 +304,24 @@ class Esi
     /**
      * Retrieves the corporation assets for a given character.
      *
-     * @param Character $character
      * @return EsiResult<Collection<Asset>>
+     *
      * @throws ConnectionException
      */
     public function getCorporationAssets(Character $character): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationAssets);
         $request = new GetCorporationAssetsRequest($character->getCorporationId());
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Retrieves the corporation asset names for a given character.
      *
-     * @param Character $character
-     * @param array<int> $ids
+     * @param  array<int>  $ids
      * @return EsiResult<AssetName[]>
+     *
      * @throws ConnectionException
      */
     public function getCorporationAssetNames(Character $character, array $ids): EsiResult
@@ -317,7 +335,7 @@ class Esi
                 return $this->getCorporationAssetNames($character, $chunk);
             });
 
-            $data = $results->map(fn(EsiResult $result) => $result->data)->flatten();
+            $data = $results->map(fn (EsiResult $result) => $result->data)->flatten();
 
             return new EsiResult(data: $data);
         }
@@ -332,7 +350,7 @@ class Esi
             }
 
             // Split in two and try again
-            $half = (int)ceil(count($ids) / 2);
+            $half = (int) ceil(count($ids) / 2);
             $first = array_slice($ids, 0, $half);
             $second = array_slice($ids, $half);
 
@@ -347,99 +365,103 @@ class Esi
 
     /**
      * Retrieves a character by ID.
-     * @param int $character_id
+     *
      * @return EsiResult<DTO\Character>
+     *
      * @throws ConnectionException
      */
     public function getCharacter(int $character_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetCharacterRequest($character_id);
+
         return $connector->send($request);
     }
 
     /**
      * Opens a contract in the EVE Online client.
-     * @param Character $character
-     * @param int $contract_id
+     *
      * @return EsiResult<null>
+     *
      * @throws ConnectionException
      */
     public function openContract(Character $character, int $contract_id): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::OpenWindow);
         $request = new OpenContractRequest($contract_id);
+
         return $connector->send($request);
     }
 
     /**
      * Sends a mail to a character.
-     * @param Character $character
-     * @param array $recipients
-     * @param string $subject
-     * @param string $body
+     *
      * @return EsiResult<int>
+     *
      * @throws ConnectionException
      */
     public function sendMail(Character $character, array $recipients, string $subject, string $body): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::SendMail);
+
         return $connector->send(new SendMailRequest($character->getId(), $recipients, $subject, $body));
     }
-
 
     /**
      * Retrieves the contracts for a given character.
      *
-     * @param Character $character
      * @return EsiResult<Collection<CharacterContract>>
+     *
      * @throws ConnectionException
      */
     public function getCharacterContracts(Character $character): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadContracts);
+
         return $connector->sendPaginated(new GetCharacterContractsRequest($character->getId()));
     }
 
     /**
      * Retrieves the contract items for a given character and contract.
      *
-     * @param Character $character
-     * @param int $contract_id
      * @return EsiResult<Collection<PublicContractItem>>
+     *
      * @throws ConnectionException
      */
     public function getCharacterContractItems(Character $character, int $contract_id): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadContracts);
+
         return $connector->sendPaginated(new GetCharacterContractItemsRequest($character->getId(), $contract_id));
     }
 
     /**
      * Retrieves corporation details
      *
-     * @param int $corporation_id
      * @return EsiResult<Corporation>
+     *
      * @throws ConnectionException
      */
     public function getCorporation(int $corporation_id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetCorporationRequest($corporation_id);
+
         return $connector->send($request);
     }
 
     /**
      * Retrieves alliance details
      *
-     * @param int $id
      * @return EsiResult<Alliance>
+     *
      * @throws ConnectionException
      */
     public function getAlliance(int $id): EsiResult
     {
-        $connector = new Connector();
+        $connector = new Connector;
         $request = new GetAllianceRequest($id);
+
         return $connector->send($request);
     }
 
@@ -447,31 +469,29 @@ class Esi
      * Retrieves all alliances
      *
      * @return EsiResult<int[]>
+     *
      * @throws ConnectionException
      */
     public function getAlliances(): EsiResult
     {
-        $connector = new Connector();
-        $request = new GetAlliancesRequest();
+        $connector = new Connector;
+        $request = new GetAlliancesRequest;
+
         return $connector->sendPaginated($request);
     }
 
     /**
      * Updates an EVE mail
      *
-     * @param Character $character
-     * @param int $mail_id
-     * @param bool $read
-     * @param array<int>|null $labels
-     * @return EsiResult
+     * @param  array<int>|null  $labels
+     *
      * @throws ConnectionException
      */
     public function updateEveMail(Character $character, int $mail_id, bool $read = true, ?array $labels = null): EsiResult
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::OrganizeMail);
         $request = new UpdateEveMailRequest($character->getId(), $mail_id, $read, $labels);
+
         return $connector->send($request);
     }
-
-
 }

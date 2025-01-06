@@ -4,7 +4,6 @@ namespace NicolasKion\Esi\Enums;
 
 enum TransactionType: string
 {
-
     case AccelerationGateFee = 'acceleration_gate_fee';
     case AdvertisementListingFee = 'advertisement_listing_fee';
     case AgentDonation = 'agent_donation';

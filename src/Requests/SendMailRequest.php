@@ -12,17 +12,10 @@ use NicolasKion\Esi\Request;
 
 class SendMailRequest extends Request implements WithBody
 {
-
     /**
-     * @param int $sender_id
-     * @param EveMailRecipient[] $recipients
-     * @param string $subject
-     * @param string $body
+     * @param  EveMailRecipient[]  $recipients
      */
-    public function __construct(public int $sender_id, public array $recipients, public string $subject, public string $body)
-    {
-    }
-
+    public function __construct(public int $sender_id, public array $recipients, public string $subject, public string $body) {}
 
     public function getBody(): mixed
     {

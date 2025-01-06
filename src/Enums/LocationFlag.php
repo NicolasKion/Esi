@@ -4,7 +4,6 @@ namespace NicolasKion\Esi\Enums;
 
 enum LocationFlag: string
 {
-
     case AssetSafety = 'AssetSafety';
     case AutoFit = 'AutoFit';
     case Bonus = 'Bonus';

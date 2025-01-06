@@ -9,11 +9,9 @@ use NicolasKion\Esi\Interfaces\FromArray;
 readonly class DogmaItemAttribute implements FromArray
 {
     public function __construct(
-        public int   $attribute_id,
+        public int $attribute_id,
         public float $value
-    )
-    {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

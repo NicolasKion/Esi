@@ -17,8 +17,7 @@ class GetCharacterContractItemsRequest extends Request implements WithPagination
     public function __construct(
         public int $character_id,
         public int $contract_id
-    )
-    {
+    ) {
         //
     }
 

@@ -10,19 +10,16 @@ use NicolasKion\Esi\Interfaces\FromArray;
 
 readonly class Asset implements FromArray
 {
-    function __construct(
-        public ?bool        $is_blueprint_copy,
-        public bool         $is_singleton,
-        public int          $item_id,
+    public function __construct(
+        public ?bool $is_blueprint_copy,
+        public bool $is_singleton,
+        public int $item_id,
         public LocationFlag $location_flag,
-        public int          $location_id,
+        public int $location_id,
         public LocationType $location_type,
-        public int          $quantity,
-        public int          $type_id,
-    )
-    {
-
-    }
+        public int $quantity,
+        public int $type_id,
+    ) {}
 
     public static function fromArray(array $data): self
     {
@@ -38,4 +35,3 @@ readonly class Asset implements FromArray
         );
     }
 }
-

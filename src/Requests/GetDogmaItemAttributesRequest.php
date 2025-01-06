@@ -13,8 +13,7 @@ class GetDogmaItemAttributesRequest extends Request
     public function __construct(
         public int $type_id,
         public int $item_id,
-    )
-    {
+    ) {
         //
     }
 
