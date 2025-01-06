@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\Requests;
 
-
 use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Name;
 use NicolasKion\Esi\Enums\RequestMethod;
@@ -13,9 +12,7 @@ use NicolasKion\Esi\Request;
 
 class GetNamesRequest extends Request implements WithBody
 {
-    function __construct(public array $ids)
-    {
-    }
+    public function __construct(public array $ids) {}
 
     public function resolveEndpoint(): string
     {

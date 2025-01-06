@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\Requests;
 
-
 use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Alliance;
 use NicolasKion\Esi\Interfaces\WithPagination;
@@ -17,8 +16,7 @@ class GetAllianceRequest extends Request implements WithPagination
 
     public function __construct(
         public int $alliance_id,
-    )
-    {
+    ) {
         //
     }
 

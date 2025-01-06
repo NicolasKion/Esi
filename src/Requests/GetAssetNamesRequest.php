@@ -13,10 +13,9 @@ use NicolasKion\Esi\Request;
 class GetAssetNamesRequest extends Request implements WithBody
 {
     public function __construct(
-        public int   $character_id,
+        public int $character_id,
         public array $ids
-    )
-    {
+    ) {
         //
     }
 
@@ -29,7 +28,6 @@ class GetAssetNamesRequest extends Request implements WithBody
     {
         return sprintf('/characters/%d/assets/names/', $this->character_id);
     }
-
 
     public function createDtoFromResponse(Response $response): array
     {

@@ -13,5 +13,4 @@ interface EsiToken
     public function delete();
 
     public function update(array $data);
-
 }

@@ -20,5 +20,4 @@ readonly class DogmaItemEffect implements FromArray
             $data['is_default']
         );
     }
-
 }

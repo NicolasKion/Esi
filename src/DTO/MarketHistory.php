@@ -9,14 +9,13 @@ use NicolasKion\Esi\Interfaces\FromArray;
 readonly class MarketHistory implements FromArray
 {
     public function __construct(
-        public float  $average,
+        public float $average,
         public string $date,
-        public float  $highest,
-        public float  $lowest,
-        public int    $order_count,
-        public int    $volume
-    )
-    {
+        public float $highest,
+        public float $lowest,
+        public int $order_count,
+        public int $volume
+    ) {
         //
     }
 

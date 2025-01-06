@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\Requests;
 
-
 use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\Interfaces\WithPagination;
@@ -17,8 +16,7 @@ class GetCorporationRequest extends Request implements WithPagination
 
     public function __construct(
         public int $corporation_id,
-    )
-    {
+    ) {
         //
     }
 

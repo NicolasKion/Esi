@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\Requests;
 
-
 use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;

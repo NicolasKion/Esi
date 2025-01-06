@@ -10,20 +10,17 @@ readonly class Character
      * Create a new class instance.
      */
     public function __construct(
-        public ?int    $alliance_id,
-        public string  $birthday,
-        public int     $bloodline_id,
-        public int     $corporation_id,
+        public ?int $alliance_id,
+        public string $birthday,
+        public int $bloodline_id,
+        public int $corporation_id,
         public ?string $description,
-        public string  $gender,
-        public string  $name,
-        public int     $race_id,
-        public ?float  $security_status,
+        public string $gender,
+        public string $name,
+        public int $race_id,
+        public ?float $security_status,
         public ?string $title,
-    )
-    {
-
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {

@@ -6,9 +6,9 @@ use NicolasKion\Esi\Enums\EsiScope;
 
 interface Character
 {
-    function getEsiTokenWithScope(EsiScope $scope): EsiToken;
+    public function getEsiTokenWithScope(EsiScope $scope): EsiToken;
 
-    function getId(): int;
+    public function getId(): int;
 
-    function getCorporationId(): int;
+    public function getCorporationId(): int;
 }

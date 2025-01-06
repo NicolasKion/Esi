@@ -10,22 +10,20 @@ use NicolasKion\Esi\Interfaces\FromArray;
 
 readonly class WalletJournalEntry implements FromArray
 {
-    function __construct(
-        public ?float          $amount,
-        public ?float          $balance,
-        public ?int            $context_id,
-        public ?ContextIdType  $context_id_type,
-        public string          $date,
-        public ?int            $first_party_id,
-        public int             $id,
-        public ?string         $reason,
+    public function __construct(
+        public ?float $amount,
+        public ?float $balance,
+        public ?int $context_id,
+        public ?ContextIdType $context_id_type,
+        public string $date,
+        public ?int $first_party_id,
+        public int $id,
+        public ?string $reason,
         public TransactionType $ref_type,
-        public ?int            $second_party_id,
-        public ?float          $tax,
-        public ?int            $tax_receiver_id,
-    )
-    {
-    }
+        public ?int $second_party_id,
+        public ?float $tax,
+        public ?int $tax_receiver_id,
+    ) {}
 
     public static function fromArray(array $data): self
     {

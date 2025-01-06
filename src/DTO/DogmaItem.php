@@ -15,14 +15,12 @@ use NicolasKion\Esi\Interfaces\FromArray;
 readonly class DogmaItem implements FromArray
 {
     public function __construct(
-        public int   $created_by,
+        public int $created_by,
         public array $dogma_attributes,
         public array $dogma_effects,
-        public int   $mutator_type_id,
-        public int   $source_type_id,
-    )
-    {
-    }
+        public int $mutator_type_id,
+        public int $source_type_id,
+    ) {}
 
     public static function fromArray(array $data): self
     {

@@ -10,9 +10,7 @@ use NicolasKion\Esi\Request;
 
 class OpenContractRequest extends Request
 {
-    function __construct(public int $contract_id)
-    {
-    }
+    public function __construct(public int $contract_id) {}
 
     public function resolveEndpoint(): string
     {
@@ -22,7 +20,7 @@ class OpenContractRequest extends Request
     public function getQuery(): array
     {
         return [
-            'contract_id' => $this->contract_id
+            'contract_id' => $this->contract_id,
         ];
     }
 

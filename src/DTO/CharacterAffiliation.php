@@ -9,12 +9,11 @@ use NicolasKion\Esi\Interfaces\FromArray;
 readonly class CharacterAffiliation implements FromArray
 {
     public function __construct(
-        public int  $character_id,
-        public int  $corporation_id,
+        public int $character_id,
+        public int $corporation_id,
         public ?int $alliance_id,
         public ?int $faction_id,
-    )
-    {
+    ) {
         //
     }
 

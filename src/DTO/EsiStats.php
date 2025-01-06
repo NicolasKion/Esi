@@ -8,10 +8,9 @@ readonly class EsiStats
 {
     public function __construct(
         public ?string $expires,
-        public ?int    $errors_remaining,
-        public ?int    $error_limit_reset,
-    )
-    {
+        public ?int $errors_remaining,
+        public ?int $error_limit_reset,
+    ) {
         //
     }
 }

@@ -15,8 +15,7 @@ class GetStructureRequest extends Request
      */
     public function __construct(
         public int $structure_id,
-    )
-    {
+    ) {
         //
     }
 

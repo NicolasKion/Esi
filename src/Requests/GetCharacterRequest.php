@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\Requests;
 
-
 use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Character;
 use NicolasKion\Esi\Request;
 
 class GetCharacterRequest extends Request
 {
-
-    function __construct(public int $id)
-    {
-    }
+    public function __construct(public int $id) {}
 
     public function resolveEndpoint(): string
     {

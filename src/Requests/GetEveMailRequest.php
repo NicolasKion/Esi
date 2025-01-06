@@ -13,8 +13,7 @@ class GetEveMailRequest extends Request
     public function __construct(
         public int $character_id,
         public int $eve_mail_id
-    )
-    {
+    ) {
         //
     }
 

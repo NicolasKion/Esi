@@ -9,12 +9,10 @@ use NicolasKion\Esi\Interfaces\FromArray;
 
 readonly class EveMailRecipient implements FromArray
 {
-    function __construct(
-        public int           $recipient_id,
+    public function __construct(
+        public int $recipient_id,
         public RecipientType $recipient_type,
-    )
-    {
-    }
+    ) {}
 
     public static function fromArray(array $data): self
     {
