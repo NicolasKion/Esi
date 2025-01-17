@@ -102,7 +102,7 @@ class Connector
             ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
             ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
             ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken())
-                ->retry(5, 1000, fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
+                ->retry(config('esi.retry_policy.tries'), config('esi.retry_policy.delay'), fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
 
         $response = match ($request->getMethod()) {
             RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
@@ -113,8 +113,6 @@ class Connector
         };
 
         if ($response->failed()) {
-            ray($response->json());
-
             return new EsiResult(
                 stats: $this->getStatsFromResponse($response),
                 error: new EsiError(
@@ -177,7 +175,7 @@ class Connector
                 ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
                 ->when($request instanceof WithBody, fn (PendingRequest $r) => $request instanceof WithBody ? $r->withBody($request->getBody()) : null)
                 ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken())
-                    ->retry(5, 1000, fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
+                    ->retry(config('esi.retry_policy.tries'), config('esi.retry_policy.delay'), fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
 
             $response = match ($request->getMethod()) {
                 RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),

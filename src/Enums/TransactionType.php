@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NicolasKion\Esi\Enums;
 
 enum TransactionType: string

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NicolasKion\Esi;
 
 use Spatie\LaravelPackageTools\Package;
@@ -17,5 +19,9 @@ class EsiServiceProvider extends PackageServiceProvider
         $package
             ->name('esi')
             ->hasConfigFile();
+
+        $this->publishes([
+            __DIR__.'/Config/esi.php' => config_path('esi.php'),
+        ], 'esi-config');
     }
 }
