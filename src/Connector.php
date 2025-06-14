@@ -7,6 +7,7 @@ namespace NicolasKion\Esi;
 use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use NicolasKion\Esi\DTO\EsiError;
@@ -61,7 +62,7 @@ class Connector
         ])
             ->asForm()
             ->withBasicAuth(config('esi.client_id'), config('esi.client_secret'))
-            ->retry(5, 1000, fn (Exception $response) => $response->response?->status() >= 500, throw: false)
+            ->retry(5, 1000, fn (Exception $response) => $response instanceof RequestException && $response->response->status() >= 500, throw: false)
             ->post('https://login.eveonline.com/v2/oauth/token', [
                 'grant_type' => 'refresh_token',
                 'refresh_token' => $this->token->getRefreshToken(),
@@ -101,8 +102,13 @@ class Connector
             ->baseUrl('https://esi.evetech.net/latest')
             ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
             ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
-            ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken())
-                ->retry(config('esi.retry_policy.tries'), config('esi.retry_policy.delay'), fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
+            ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken()))
+            ->retry(
+                times: config('esi.retry_policy.tries'),
+                sleepMilliseconds: config('esi.retry_policy.delay'),
+                when: fn (Exception $response) => $response instanceof RequestException && $request->shouldRetry($response->response),
+                throw: false
+            );
 
         $response = match ($request->getMethod()) {
             RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
@@ -174,8 +180,13 @@ class Connector
                 ->withQueryParameters(['page' => $page])
                 ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
                 ->when($request instanceof WithBody, fn (PendingRequest $r) => $request instanceof WithBody ? $r->withBody($request->getBody()) : null)
-                ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken())
-                    ->retry(config('esi.retry_policy.tries'), config('esi.retry_policy.delay'), fn (Exception $response) => ($response->response ?? false) && $request->shouldRetry($response->response), throw: false));
+                ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken()))
+                ->retry(
+                    times: config('esi.retry_policy.tries'),
+                    sleepMilliseconds: config('esi.retry_policy.delay'),
+                    when: fn (Exception $response) => $response instanceof RequestException && $request->shouldRetry($response->response),
+                    throw: false
+                );
 
             $response = match ($request->getMethod()) {
                 RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
