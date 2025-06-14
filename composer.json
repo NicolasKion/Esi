@@ -21,7 +21,7 @@
         "illuminate/contracts": "^11.0 || ^12.0"
     },
     "require-dev": {
-        "larastan/larastan": "^2.9",
+        "larastan/larastan": "^v3",
         "laravel/pint": "^1.14",
         "nunomaduro/collision": "^8.1.1||^7.10.0",
         "orchestra/testbench": "^9.0.0||^8.22.0",
@@ -29,9 +29,9 @@
         "pestphp/pest-plugin-arch": "^v3",
         "pestphp/pest-plugin-laravel": "^3",
         "phpstan/extension-installer": "^1.3",
-        "phpstan/phpstan-deprecation-rules": "^1.1",
-        "phpstan/phpstan-phpunit": "^1.3",
-        "rector/rector": "^1.2"
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
