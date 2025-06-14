@@ -10,7 +10,7 @@ trait BasicPagination
 {
     public function hasMorePages(int $page, Response $response): bool
     {
-        $totalPages = (int) ($response->header('X-Pages') ?? 1);
+        $totalPages = (int) ($response->header('X-Pages') ?: 1);
 
         return $page < $totalPages;
     }
