@@ -16,6 +16,9 @@ enum EsiScope: string
     case ReadStructures = 'esi-universe.read_structures.v1';
     case ReadCorporationAssets = 'esi-assets.read_corporation_assets.v1';
     case ReadWallet = 'esi-wallet.read_character_wallet.v1';
+    case ReadLocations = 'esi-location.read_location.v1';
+    case ReadOnlineStatus = 'esi-location.read_online.v1';
+    case ReadShip = 'esi-location.read_ship_type.v1';
 
     public static function fromRequest(string $scopes): array
     {
