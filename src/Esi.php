@@ -15,11 +15,16 @@ use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
+use NicolasKion\Esi\DTO\Killmail;
+use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\MarketHistory;
 use NicolasKion\Esi\DTO\Name;
+use NicolasKion\Esi\DTO\Online;
 use NicolasKion\Esi\DTO\PublicContract;
 use NicolasKion\Esi\DTO\PublicContractBid;
 use NicolasKion\Esi\DTO\PublicContractItem;
+use NicolasKion\Esi\DTO\Ship;
+use NicolasKion\Esi\DTO\Sovereignty;
 use NicolasKion\Esi\DTO\Structure;
 use NicolasKion\Esi\DTO\WalletJournalEntry;
 use NicolasKion\Esi\DTO\War;
@@ -39,12 +44,17 @@ use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetDogmaItemAttributesRequest;
 use NicolasKion\Esi\Requests\GetEveMailRequest;
 use NicolasKion\Esi\Requests\GetEveMailsRequest;
+use NicolasKion\Esi\Requests\GetKillmailRequest;
+use NicolasKion\Esi\Requests\GetLocationRequest;
 use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
+use NicolasKion\Esi\Requests\GetOnlineRequest;
 use NicolasKion\Esi\Requests\GetPublicContractBidsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractItemsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractsRequest;
 use NicolasKion\Esi\Requests\GetPublicStructuresRequest;
+use NicolasKion\Esi\Requests\GetShipRequest;
+use NicolasKion\Esi\Requests\GetSovereigntyRequest;
 use NicolasKion\Esi\Requests\GetStructureRequest;
 use NicolasKion\Esi\Requests\GetWalletJournalRequest;
 use NicolasKion\Esi\Requests\GetWarRequest;
@@ -518,6 +528,81 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetWarRequest($war_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character location
+     *
+     * @returns EsiResult<Location>
+     *
+     * @throws ConnectionException
+     */
+    public function getLocation(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadLocations);
+        $request = new GetLocationRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character online status
+     *
+     * @returns EsiResult<Online>
+     *
+     * @throws ConnectionException
+     */
+    public function getOnline(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadOnlineStatus);
+        $request = new GetOnlineRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character ship
+     *
+     * @returns EsiResult<Ship>
+     *
+     * @throws ConnectionException
+     */
+    public function getShip(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadShip);
+        $request = new GetShipRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get the sovereignty of all systems
+     *
+     * @returns EsiResult<Sovereignty[]>
+     *
+     * @throws ConnectionException
+     */
+    public function getSovereignty(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetSovereigntyRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get a killmail
+     *
+     * @returns EsiResult<Killmail>
+     *
+     * @throws ConnectionException
+     */
+    public function getKillmail(int $killmail_id, string $killmail_hash): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetKillmailRequest($killmail_id, $killmail_hash);
 
         return $connector->send($request);
     }
