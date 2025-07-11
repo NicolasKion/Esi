@@ -19,6 +19,7 @@ enum EsiScope: string
     case ReadLocations = 'esi-location.read_location.v1';
     case ReadOnlineStatus = 'esi-location.read_online.v1';
     case ReadShip = 'esi-location.read_ship_type.v1';
+    case WriteWaypoint = 'esi-ui.write_waypoint.v1';
 
     public static function fromRequest(string $scopes): array
     {

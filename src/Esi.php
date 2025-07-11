@@ -606,4 +606,23 @@ class Esi
 
         return $connector->send($request);
     }
+
+    /**
+     * Set a waypoint for a character
+     *
+     *
+     * @throws ConnectionException
+     */
+    public function setWaypoint(Character $character, int $destination_id, bool $add_to_beginning = false, bool $clear_other_waypoints = false): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteWaypoint);
+        $request = new Requests\SetWaypointRequest(
+            character_id: $character->getId(),
+            destination_id: $destination_id,
+            add_to_beginning: $add_to_beginning,
+            clear_other_waypoints: $clear_other_waypoints
+        );
+
+        return $connector->send($request);
+    }
 }
