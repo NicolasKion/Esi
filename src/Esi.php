@@ -363,7 +363,7 @@ class Esi
         $request = new GetCorporationAssetNamesRequest($character->getCorporationId(), $ids);
         $response = $connector->send($request);
 
-        if (str_contains($response->error?->body ?? '', 'Invalid IDs in the request')) {
+        if (str_contains($response->error->body ?? '', 'Invalid IDs in the request')) {
             if (count($ids) === 1) {
                 return new EsiResult(data: $names);
             }
