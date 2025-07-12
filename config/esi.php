@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 return [
     /** @phpstan-ignore larastan.noEnvCallsOutsideOfConfig  */
     'user_agent' => env('APP_NAME'),
