@@ -2,6 +2,12 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.1.6 - 2025-07-12
+
+Add SetWaypoint support
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.1.5...v0.1.6
+
 ## v0.1.5 - 2025-07-08
 
 ### What's Changed
