@@ -36,9 +36,9 @@ class SetWaypointRequest extends Request
         return RequestMethod::POST;
     }
 
-    public function createDtoFromResponse(Response $response): int
+    public function createDtoFromResponse(Response $response): null
     {
-        return $response->json();
+        return null;
     }
 
     public function shouldRetry(Response $response): bool
