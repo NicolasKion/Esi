@@ -110,13 +110,24 @@ class Connector
                 throw: false
             );
 
-        $response = match ($request->getMethod()) {
-            RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
-            RequestMethod::POST => $pending_request->post($request->resolveEndpoint(), $request instanceof WithBody ? $request->getBody() : null),
-            RequestMethod::PUT => $pending_request->put($request->resolveEndpoint(), $request instanceof WithBody ? $request->getBody() : null),
-            RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
-            RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
-        };
+        try {
+
+            $response = match ($request->getMethod()) {
+                RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
+                RequestMethod::POST => $pending_request->post($request->resolveEndpoint(), $request instanceof WithBody ? $request->getBody() : null),
+                RequestMethod::PUT => $pending_request->put($request->resolveEndpoint(), $request instanceof WithBody ? $request->getBody() : null),
+                RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
+                RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
+            };
+
+        } catch (ConnectionException $e) {
+            return new EsiResult(
+                error: new EsiError(
+                    code: 500,
+                    body: $e->getMessage(),
+                ),
+            );
+        }
 
         if ($response->failed()) {
             return new EsiResult(
