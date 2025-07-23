@@ -25,7 +25,7 @@ class GetEveMailsRequest extends Request
     {
         $items = [];
 
-        foreach ($response->json() as $item) {
+        foreach ($response->json() ?? [] as $item) {
             $items[] = EveMail::fromArray($item);
         }
 
