@@ -25,6 +25,7 @@ use NicolasKion\Esi\DTO\PublicContractBid;
 use NicolasKion\Esi\DTO\PublicContractItem;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\Sovereignty;
+use NicolasKion\Esi\DTO\Status;
 use NicolasKion\Esi\DTO\Structure;
 use NicolasKion\Esi\DTO\WalletJournalEntry;
 use NicolasKion\Esi\DTO\War;
@@ -622,6 +623,21 @@ class Esi
             add_to_beginning: $add_to_beginning,
             clear_other_waypoints: $clear_other_waypoints
         );
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get the current status of the EVE Online server.
+     *
+     * @returns EsiResult<Status>
+     *
+     * @throws ConnectionException
+     */
+    public function getStatus(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new Requests\GetStatusRequest;
 
         return $connector->send($request);
     }
