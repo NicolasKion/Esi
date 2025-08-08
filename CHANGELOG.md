@@ -2,6 +2,14 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.1.9 - 2025-08-08
+
+### What's Changed
+
+* chore(deps): bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/NicolasKion/Esi/pull/6
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.1.8...v0.1.9
+
 ## v0.1.8 - 2025-07-23
 
 **Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.1.7...v0.1.8
