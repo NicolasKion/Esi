@@ -2,6 +2,10 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.2 - 2025-09-23
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.1.9...v0.2
+
 ## v0.1.9 - 2025-08-08
 
 ### What's Changed
