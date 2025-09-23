@@ -1,10 +1,11 @@
 <?php
 
+/** @noinspection PhpUnused */
+
 declare(strict_types=1);
 
 namespace NicolasKion\Esi;
 
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Collection;
 use NicolasKion\Esi\DTO\Alliance;
 use NicolasKion\Esi\DTO\Asset;
@@ -70,8 +71,6 @@ class Esi
      *
      * @param  int  $region_id  The ID of the region.
      * @return EsiResult<PublicContract[]> Returns an instance of EsiResult that contains the retrieved public contracts.
-     *
-     * @throws ConnectionException
      */
     public function getPublicContracts(int $region_id): EsiResult
     {
@@ -86,8 +85,6 @@ class Esi
      *
      * @param  int  $contract_id  The ID of the contract.
      * @return EsiResult<PublicContractItem[]> Returns an instance of EsiResult that contains the retrieved public contract items.
-     *
-     * @throws ConnectionException
      */
     public function getPublicContractItems(int $contract_id): EsiResult
     {
@@ -102,8 +99,6 @@ class Esi
      *
      * @param  int  $contract_id  The ID of the contract.
      * @return EsiResult<PublicContractBid[]> Returns an instance of EsiResult that contains the retrieved public contract bids.
-     *
-     * @throws ConnectionException
      */
     public function getPublicContractBids(int $contract_id): EsiResult
     {
@@ -118,8 +113,6 @@ class Esi
      *
      * @param  array<int>  $ids  The list of IDs.
      * @return EsiResult<CharacterAffiliation[]> Returns an instance of EsiResult that contains the retrieved character affiliations.
-     *
-     * @throws ConnectionException
      */
     public function getAffiliations(array $ids): EsiResult
     {
@@ -135,8 +128,6 @@ class Esi
      * @param  int  $type_id  The type ID.
      * @param  int  $item_id  The item ID.
      * @return EsiResult<DogmaItem> Returns an instance of EsiResult that contains the retrieved dogma item attributes.
-     *
-     * @throws ConnectionException
      */
     public function getDogmaItem(int $type_id, int $item_id): EsiResult
     {
@@ -152,8 +143,6 @@ class Esi
      * @param  int  $region_id  The ID of the region.
      * @param  int  $type_id  The type ID.
      * @return EsiResult<MarketHistory[]> Returns an instance of EsiResult that contains the retrieved market history.
-     *
-     * @throws ConnectionException
      */
     public function getMarketHistory(int $region_id, int $type_id): EsiResult
     {
@@ -168,8 +157,6 @@ class Esi
      *
      * @param  array<int>  $ids  The list of IDs.
      * @return EsiResult<Name[]> Returns an instance of EsiResult that contains the retrieved names.
-     *
-     * @throws ConnectionException
      */
     public function getNames(array $ids): EsiResult
     {
@@ -183,8 +170,6 @@ class Esi
      * Retrieves public structures.
      *
      * @return EsiResult<int[]> Returns an instance of EsiResult that contains the retrieved public structures.
-     *
-     * @throws ConnectionException
      */
     public function getPublicStructures(): EsiResult
     {
@@ -199,8 +184,6 @@ class Esi
      *
      * @param  int  $structure_id  The structure ID.
      * @return EsiResult<Structure> Returns an instance of EsiResult that contains the retrieved structure information.
-     *
-     * @throws ConnectionException
      */
     public function getStructure(Character $character, int $structure_id): EsiResult
     {
@@ -210,9 +193,6 @@ class Esi
         return $connector->send($request);
     }
 
-    /**
-     * @throws ConnectionException
-     */
     private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector
     {
         $token = $character->getEsiTokenWithScope($scope);
@@ -224,8 +204,6 @@ class Esi
      * Retrieves the wallet journal for a given character.
      *
      * @return EsiResult<WalletJournalEntry[]> Returns an instance of EsiResult that contains the retrieved wallet journal.
-     *
-     * @throws ConnectionException
      */
     public function getWalletJournal(Character $character): EsiResult
     {
@@ -239,8 +217,6 @@ class Esi
      * Retrieves the EVE mails for a given character.
      *
      * @return EsiResult<EveMail> Returns an instance of EsiResult that contains the retrieved EVE mails.
-     *
-     * @throws ConnectionException
      */
     public function getEveMails(Character $character): EsiResult
     {
@@ -254,8 +230,6 @@ class Esi
      * Retrieves an EVE mail for a given character and mail ID.
      *
      * @return EsiResult<EveMail>
-     *
-     * @throws ConnectionException
      */
     public function getEveMail(Character $character, int $mail_id): EsiResult
     {
@@ -269,8 +243,6 @@ class Esi
      * Retrieves the assets for a given character.
      *
      * @return EsiResult<Collection<Asset>>
-     *
-     * @throws ConnectionException
      */
     public function getAssets(Character $character): EsiResult
     {
@@ -285,8 +257,6 @@ class Esi
      *
      * @param  array<int>  $ids
      * @return EsiResult<AssetName[]>
-     *
-     * @throws ConnectionException
      */
     public function getAssetNames(Character $character, array $ids): EsiResult
     {
@@ -320,8 +290,6 @@ class Esi
      * Retrieves the corporation assets for a given character.
      *
      * @return EsiResult<Collection<Asset>>
-     *
-     * @throws ConnectionException
      */
     public function getCorporationAssets(Character $character): EsiResult
     {
@@ -336,8 +304,6 @@ class Esi
      *
      * @param  array<int>  $ids
      * @return EsiResult<AssetName[]>
-     *
-     * @throws ConnectionException
      */
     public function getCorporationAssetNames(Character $character, array $ids): EsiResult
     {
@@ -390,8 +356,6 @@ class Esi
      * Retrieves a character by ID.
      *
      * @return EsiResult<DTO\Character>
-     *
-     * @throws ConnectionException
      */
     public function getCharacter(int $character_id): EsiResult
     {
@@ -405,8 +369,6 @@ class Esi
      * Opens a contract in the EVE Online client.
      *
      * @return EsiResult<null>
-     *
-     * @throws ConnectionException
      */
     public function openContract(Character $character, int $contract_id): EsiResult
     {
@@ -420,8 +382,6 @@ class Esi
      * Sends a mail to a character.
      *
      * @return EsiResult<int>
-     *
-     * @throws ConnectionException
      */
     public function sendMail(Character $character, array $recipients, string $subject, string $body): EsiResult
     {
@@ -434,8 +394,6 @@ class Esi
      * Retrieves the contracts for a given character.
      *
      * @return EsiResult<Collection<CharacterContract>>
-     *
-     * @throws ConnectionException
      */
     public function getCharacterContracts(Character $character): EsiResult
     {
@@ -448,8 +406,6 @@ class Esi
      * Retrieves the contract items for a given character and contract.
      *
      * @return EsiResult<Collection<PublicContractItem>>
-     *
-     * @throws ConnectionException
      */
     public function getCharacterContractItems(Character $character, int $contract_id): EsiResult
     {
@@ -462,8 +418,6 @@ class Esi
      * Retrieves corporation details
      *
      * @return EsiResult<Corporation>
-     *
-     * @throws ConnectionException
      */
     public function getCorporation(int $corporation_id): EsiResult
     {
@@ -477,8 +431,6 @@ class Esi
      * Retrieves alliance details
      *
      * @return EsiResult<Alliance>
-     *
-     * @throws ConnectionException
      */
     public function getAlliance(int $id): EsiResult
     {
@@ -492,8 +444,6 @@ class Esi
      * Retrieves all alliances
      *
      * @return EsiResult<int[]>
-     *
-     * @throws ConnectionException
      */
     public function getAlliances(): EsiResult
     {
@@ -507,8 +457,6 @@ class Esi
      * Updates an EVE mail
      *
      * @param  array<int>|null  $labels
-     *
-     * @throws ConnectionException
      */
     public function updateEveMail(Character $character, int $mail_id, bool $read = true, ?array $labels = null): EsiResult
     {
@@ -522,8 +470,6 @@ class Esi
      * Retrieve a War
      *
      * @return EsiResult<War>
-     *
-     * @throws ConnectionException
      */
     public function getWar(int $war_id): EsiResult
     {
@@ -537,8 +483,6 @@ class Esi
      * Get character location
      *
      * @returns EsiResult<Location>
-     *
-     * @throws ConnectionException
      */
     public function getLocation(Character $character): EsiResult
     {
@@ -552,8 +496,6 @@ class Esi
      * Get character online status
      *
      * @returns EsiResult<Online>
-     *
-     * @throws ConnectionException
      */
     public function getOnline(Character $character): EsiResult
     {
@@ -567,8 +509,6 @@ class Esi
      * Get character ship
      *
      * @returns EsiResult<Ship>
-     *
-     * @throws ConnectionException
      */
     public function getShip(Character $character): EsiResult
     {
@@ -582,8 +522,6 @@ class Esi
      * Get the sovereignty of all systems
      *
      * @returns EsiResult<Sovereignty[]>
-     *
-     * @throws ConnectionException
      */
     public function getSovereignty(): EsiResult
     {
@@ -597,8 +535,6 @@ class Esi
      * Get a killmail
      *
      * @returns EsiResult<Killmail>
-     *
-     * @throws ConnectionException
      */
     public function getKillmail(int $killmail_id, string $killmail_hash): EsiResult
     {
@@ -610,9 +546,6 @@ class Esi
 
     /**
      * Set a waypoint for a character
-     *
-     *
-     * @throws ConnectionException
      */
     public function setWaypoint(Character $character, int $destination_id, bool $add_to_beginning = false, bool $clear_other_waypoints = false): EsiResult
     {
@@ -631,8 +564,6 @@ class Esi
      * Get the current status of the EVE Online server.
      *
      * @returns EsiResult<Status>
-     *
-     * @throws ConnectionException
      */
     public function getStatus(): EsiResult
     {

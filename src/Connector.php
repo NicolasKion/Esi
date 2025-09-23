@@ -18,6 +18,8 @@ use NicolasKion\Esi\Interfaces\EsiToken;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Interfaces\WithPagination;
 
+use function config;
+
 class Connector
 {
     const ERROR_LIMIT_REMAIN_HEADER = 'X-Esi-Error-Limit-Remain';
@@ -30,9 +32,6 @@ class Connector
 
     private ?EsiToken $token = null;
 
-    /**
-     * @throws ConnectionException
-     */
     public function __construct(?EsiToken $token = null)
     {
         if ($token) {
@@ -41,9 +40,6 @@ class Connector
         }
     }
 
-    /**
-     * @throws ConnectionException
-     */
     private function ensureTokenIsValid(): void
     {
         if ($this->token->isExpired()) {
@@ -51,22 +47,29 @@ class Connector
         }
     }
 
-    /**
-     * @throws ConnectionException
-     */
     private function refreshToken(): void
     {
-        $response = Http::withHeaders([
-            'User-Agent' => config('esi.user_agent'),
-            'Host' => 'login.eveonline.com',
-        ])
-            ->asForm()
-            ->withBasicAuth(config('esi.client_id'), config('esi.client_secret'))
-            ->retry(5, 1000, fn (Exception $response) => $response instanceof RequestException && $response->response->status() >= 500, throw: false)
-            ->post('https://login.eveonline.com/v2/oauth/token', [
-                'grant_type' => 'refresh_token',
-                'refresh_token' => $this->token->getRefreshToken(),
-            ]);
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => config('esi.user_agent'),
+                'Host' => 'login.eveonline.com',
+            ])
+                ->asForm()
+                ->withBasicAuth(config()->string('esi.client_id'), config()->string('esi.client_secret'))
+                ->retry(5, 1000, fn (Exception $response) => $response instanceof RequestException && $response->response->status() >= 500, throw: false)
+                ->post('https://login.eveonline.com/v2/oauth/token', [
+                    'grant_type' => 'refresh_token',
+                    'refresh_token' => $this->token->getRefreshToken(),
+                ]);
+
+        } catch (ConnectionException $e) {
+            $this->error = new EsiError(
+                code: 500,
+                body: $e->getMessage(),
+            );
+
+            return;
+        }
 
         if ($response->failed()) {
             $this->token->delete();
@@ -85,9 +88,6 @@ class Connector
         ]);
     }
 
-    /**
-     * @throws ConnectionException
-     */
     public function send(Request $request): EsiResult
     {
         if ($this->error) {
@@ -97,15 +97,16 @@ class Connector
         }
 
         $pending_request = Http::withHeaders([
-            'User-Agent' => config('esi.user_agent'),
+            'User-Agent' => config()->string('esi.user_agent'),
+            'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
         ])
-            ->baseUrl('https://esi.evetech.net/latest')
+            ->baseUrl(config()->string('esi.base_url'))
             ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
             ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
             ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken()))
             ->retry(
-                times: config('esi.retry_policy.tries'),
-                sleepMilliseconds: config('esi.retry_policy.delay'),
+                times: config()->integer('esi.retry_policy.tries'),
+                sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
                 when: fn (Exception $response) => $response instanceof RequestException && $request->shouldRetry($response->response),
                 throw: false
             );
@@ -130,13 +131,7 @@ class Connector
         }
 
         if ($response->failed()) {
-            return new EsiResult(
-                stats: $this->getStatsFromResponse($response),
-                error: new EsiError(
-                    code: $response->status(),
-                    body: $response->body(),
-                ),
-            );
+            return $this->handleFailedResponse($response);
         }
 
         return new EsiResult(
@@ -173,61 +168,74 @@ class Connector
         return (int) $reset;
     }
 
-    /**
-     * @throws ConnectionException
-     */
     public function sendPaginated(WithPagination $request): EsiResult
     {
-        $page = 1;
+        $page = 0;
 
         $results = [];
 
         do {
+            $page++;
+
             $pending_request = Http::withHeaders([
                 'User-Agent' => config('esi.user_agent'),
+                'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
             ])
-                ->baseUrl('https://esi.evetech.net/latest')
+                ->baseUrl(config()->string('esi.base_url'))
                 ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
                 ->withQueryParameters(['page' => $page])
                 ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
                 ->when($request instanceof WithBody, fn (PendingRequest $r) => $request instanceof WithBody ? $r->withBody($request->getBody()) : null)
                 ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken()))
                 ->retry(
-                    times: config('esi.retry_policy.tries'),
-                    sleepMilliseconds: config('esi.retry_policy.delay'),
+                    times: config()->integer('esi.retry_policy.tries'),
+                    sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
                     when: fn (Exception $response) => $response instanceof RequestException && $request->shouldRetry($response->response),
                     throw: false
                 );
 
-            $response = match ($request->getMethod()) {
-                RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
-                RequestMethod::POST => $pending_request->post($request->resolveEndpoint()),
-                RequestMethod::PUT => $pending_request->put($request->resolveEndpoint()),
-                RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
-                RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
-            };
-
-            if ($response->failed()) {
-                if (($response->forbidden() || $response->unauthorized()) && $this->token) {
-                    $this->token->delete();
-                }
-
+            try {
+                $response = match ($request->getMethod()) {
+                    RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
+                    RequestMethod::POST => $pending_request->post($request->resolveEndpoint()),
+                    RequestMethod::PUT => $pending_request->put($request->resolveEndpoint()),
+                    RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
+                    RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
+                };
+            } catch (ConnectionException $e) {
                 return new EsiResult(
-                    stats: $this->getStatsFromResponse($response),
                     error: new EsiError(
-                        code: $response->status(),
-                        body: $response->body(),
+                        code: 500,
+                        body: $e->getMessage(),
                     ),
                 );
             }
 
+            if ($response->failed()) {
+                return $this->handleFailedResponse($response);
+            }
+
             $results = array_merge($results, $request->createDtoFromResponse($response));
-            $page++;
-        } while ($request->hasMorePages($page - 1, $response));
+        } while ($request->hasMorePages($page, $response));
 
         return new EsiResult(
             stats: $this->getStatsFromResponse($response),
             data: $results,
+        );
+    }
+
+    private function handleFailedResponse(Response $response): EsiResult
+    {
+        if (($response->forbidden() || $response->unauthorized()) && $this->token) {
+            $this->token->delete();
+        }
+
+        return new EsiResult(
+            stats: $this->getStatsFromResponse($response),
+            error: new EsiError(
+                code: $response->status(),
+                body: $response->body(),
+            ),
         );
     }
 }
