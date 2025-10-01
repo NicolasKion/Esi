@@ -112,6 +112,7 @@ enum LocationFlag: string
     case SpecializedShipHold = 'SpecializedShipHold';
     case SpecializedSmallShipHold = 'SpecializedSmallShipHold';
     case StructureActive = 'StructureActive';
+    case StructureDeedBay = 'StructureDeedBay';
     case StructureFuel = 'StructureFuel';
     case StructureInactive = 'StructureInactive';
     case StructureOffline = 'StructureOffline';
@@ -130,6 +131,7 @@ enum LocationFlag: string
     case InfrastructureHangar = 'InfrastructureHangar';
     case CorpseBay = 'CorpseBay';
     case MoonMaterialBay = 'MoonMaterialBay';
+    case CapsuleerDeliveries = 'CapsuleerDeliveries';
 
     public static function isStructureLocation(LocationFlag $locationFlag): bool
     {
