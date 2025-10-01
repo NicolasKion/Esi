@@ -33,7 +33,7 @@ class GetAssetNamesRequest extends Request implements WithBody
     {
         $items = [];
 
-        foreach ($response->json() as $item) {
+        foreach ($response->json() ?? [] as $item) {
             $items[] = AssetName::fromArray($item);
         }
 
