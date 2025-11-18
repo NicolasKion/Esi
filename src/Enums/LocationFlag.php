@@ -131,6 +131,7 @@ enum LocationFlag: string
     case InfrastructureHangar = 'InfrastructureHangar';
     case CorpseBay = 'CorpseBay';
     case MoonMaterialBay = 'MoonMaterialBay';
+    case ExpeditionHold = 'ExpeditionHold';
     case CapsuleerDeliveries = 'CapsuleerDeliveries';
 
     public static function isStructureLocation(LocationFlag $locationFlag): bool
