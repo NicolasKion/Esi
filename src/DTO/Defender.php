@@ -11,7 +11,7 @@ class Defender implements FromArray
     public function __construct(
         public ?int $alliance_id,
         public ?int $corporation_id,
-        public int $isk_destroyed,
+        public float $isk_destroyed,
         public int $ships_killed,
     ) {}
 

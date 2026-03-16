@@ -13,7 +13,7 @@ readonly class War implements FromArray
         public array $allies,
         public string $declared,
         public Defender $defender,
-        public ?bool $finished,
+        public ?string $finished,
         public int $id,
         public bool $mutual,
         public bool $open_for_allies,
