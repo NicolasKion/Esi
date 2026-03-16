@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi;
 
-use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
@@ -17,6 +16,7 @@ use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\EsiToken;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Interfaces\WithPagination;
+use Throwable;
 
 use function config;
 
@@ -56,7 +56,7 @@ class Connector
             ])
                 ->asForm()
                 ->withBasicAuth(config()->string('esi.client_id'), config()->string('esi.client_secret'))
-                ->retry(5, 1000, fn (Exception $response) => $response instanceof RequestException && $response->response->status() >= 500, throw: false)
+                ->retry(5, 1000, fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $e->response->status() >= 500, throw: false)
                 ->post('https://login.eveonline.com/v2/oauth/token', [
                     'grant_type' => 'refresh_token',
                     'refresh_token' => $this->token->getRefreshToken(),
@@ -107,7 +107,7 @@ class Connector
             ->retry(
                 times: config()->integer('esi.retry_policy.tries'),
                 sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
-                when: fn (Exception $response) => $response instanceof RequestException && $request->shouldRetry($response->response),
+                when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
                 throw: false
             );
 
@@ -190,7 +190,7 @@ class Connector
                 ->retry(
                     times: config()->integer('esi.retry_policy.tries'),
                     sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
-                    when: fn (Exception $response) => $response instanceof RequestException && $request->shouldRetry($response->response),
+                    when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
                     throw: false
                 );
 
