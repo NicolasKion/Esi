@@ -2,6 +2,14 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.3 - 2026-03-16
+
+### What's Changed
+
+* chore(deps): bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 by @dependabot[bot] in https://github.com/NicolasKion/Esi/pull/13
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.2.3...v0.3
+
 ## v0.2.3 - 2025-11-18
 
 **Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.2.2...v0.2.3
