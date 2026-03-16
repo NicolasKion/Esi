@@ -32,14 +32,8 @@ class GetAffiliationsRequest extends Request implements WithBody
         return RequestMethod::POST;
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $affiliations = [];
-
-        foreach ($response->json() as $affiliation) {
-            $affiliations[] = CharacterAffiliation::fromArray($affiliation);
-        }
-
-        return $affiliations;
+        return array_map(CharacterAffiliation::fromArray(...), $data);
     }
 }

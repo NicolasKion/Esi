@@ -24,8 +24,8 @@ class GetStructureRequest extends Request
         return sprintf('/universe/structures/%d/', $this->structure_id);
     }
 
-    public function createDtoFromResponse(Response $response): Structure
+    public function createDto(Response $response, mixed $data): Structure
     {
-        return Structure::fromArray($response->json());
+        return Structure::fromArray($data);
     }
 }

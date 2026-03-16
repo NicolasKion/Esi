@@ -19,5 +19,5 @@ interface Request
 
     public function shouldRetry(Response $response): bool;
 
-    public function createDtoFromResponse(Response $response): mixed;
+    public function createDto(Response $response, mixed $data): mixed;
 }

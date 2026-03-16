@@ -22,8 +22,8 @@ class GetEveMailRequest extends Request
         return sprintf('/characters/%d/mail/%d/', $this->character_id, $this->eve_mail_id);
     }
 
-    public function createDtoFromResponse(Response $response): EveMail
+    public function createDto(Response $response, mixed $data): EveMail
     {
-        return EveMail::fromArray($response->json());
+        return EveMail::fromArray($data);
     }
 }

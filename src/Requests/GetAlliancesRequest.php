@@ -21,8 +21,8 @@ class GetAlliancesRequest extends Request implements WithPagination
     /**
      * @return int[]
      */
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        return $response->json();
+        return $data;
     }
 }

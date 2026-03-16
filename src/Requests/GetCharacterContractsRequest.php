@@ -28,14 +28,8 @@ class GetCharacterContractsRequest extends Request implements WithPagination
         return sprintf('/characters/%d/contracts/', $this->character_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $contracts = [];
-
-        foreach ($response->json() as $contract) {
-            $contracts[] = CharacterContract::fromArray($contract);
-        }
-
-        return $contracts;
+        return array_map(CharacterContract::fromArray(...), $data);
     }
 }

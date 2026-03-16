@@ -136,7 +136,7 @@ class Connector
 
         return new EsiResult(
             stats: $this->getStatsFromResponse($response),
-            data: $request->createDtoFromResponse($response),
+            data: $request->createDto($response, $this->normalizeJson($response)),
         );
     }
 
@@ -215,13 +215,28 @@ class Connector
                 return $this->handleFailedResponse($response);
             }
 
-            $results = array_merge($results, $request->createDtoFromResponse($response));
+            $results = array_merge($results, $request->createDto($response, $this->normalizeJson($response)));
         } while ($request->hasMorePages($page, $response));
 
         return new EsiResult(
             stats: $this->getStatsFromResponse($response),
             data: $results,
         );
+    }
+
+    private function normalizeJson(Response $response): mixed
+    {
+        $data = $response->json();
+
+        if (is_array($data)) {
+            return Unicode::normalizeArray($data);
+        }
+
+        if (is_string($data)) {
+            return Unicode::normalize($data);
+        }
+
+        return $data;
     }
 
     private function handleFailedResponse(Response $response): EsiResult

@@ -22,8 +22,8 @@ class GetDogmaItemAttributesRequest extends Request
         return sprintf('/dogma/dynamic/items/%d/%d/', $this->type_id, $this->item_id);
     }
 
-    public function createDtoFromResponse(Response $response): DogmaItem
+    public function createDto(Response $response, mixed $data): DogmaItem
     {
-        return DogmaItem::fromArray($response->json());
+        return DogmaItem::fromArray($data);
     }
 }

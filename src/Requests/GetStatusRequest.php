@@ -15,8 +15,8 @@ class GetStatusRequest extends Request
         return '/status';
     }
 
-    public function createDtoFromResponse(Response $response): Status
+    public function createDto(Response $response, mixed $data): Status
     {
-        return Status::fromArray($response->json());
+        return Status::fromArray($data);
     }
 }

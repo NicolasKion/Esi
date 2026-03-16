@@ -25,14 +25,8 @@ class GetPublicContractItemsRequest extends Request implements WithPagination
         return sprintf('/contracts/public/items/%d/', $this->contract_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $items = [];
-
-        foreach ($response->json() ?? [] as $item) {
-            $items[] = PublicContractItem::fromArray($item);
-        }
-
-        return $items;
+        return array_map(PublicContractItem::fromArray(...), $data ?? []);
     }
 }

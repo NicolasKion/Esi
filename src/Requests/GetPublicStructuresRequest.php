@@ -21,8 +21,8 @@ class GetPublicStructuresRequest extends Request implements WithPagination
     /**
      * @returns int[]
      */
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        return $response->json();
+        return $data;
     }
 }

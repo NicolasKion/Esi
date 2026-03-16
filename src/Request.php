@@ -35,5 +35,5 @@ abstract class Request implements Interfaces\Request
         return false;
     }
 
-    abstract public function createDtoFromResponse(Response $response): mixed;
+    abstract public function createDto(Response $response, mixed $data): mixed;
 }

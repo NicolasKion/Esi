@@ -37,9 +37,9 @@ class SendMailRequest extends Request implements WithBody
         return RequestMethod::POST;
     }
 
-    public function createDtoFromResponse(Response $response): int
+    public function createDto(Response $response, mixed $data): int
     {
-        return $response->json();
+        return $data;
     }
 
     public function shouldRetry(Response $response): bool

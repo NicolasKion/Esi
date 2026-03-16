@@ -23,8 +23,8 @@ class GetWarRequest extends Request
         return sprintf('wars/%d', $this->war_id);
     }
 
-    public function createDtoFromResponse(Response $response): War
+    public function createDto(Response $response, mixed $data): War
     {
-        return War::fromArray($response->json());
+        return War::fromArray($data);
     }
 }

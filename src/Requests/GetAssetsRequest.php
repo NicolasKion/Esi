@@ -25,14 +25,8 @@ class GetAssetsRequest extends Request implements WithPagination
         return sprintf('/characters/%d/assets/', $this->character_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $items = [];
-
-        foreach ($response->json() as $item) {
-            $items[] = Asset::fromArray($item);
-        }
-
-        return $items;
+        return array_map(Asset::fromArray(...), $data);
     }
 }

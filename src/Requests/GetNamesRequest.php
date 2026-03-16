@@ -29,14 +29,8 @@ class GetNamesRequest extends Request implements WithBody
         return RequestMethod::POST;
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $names = [];
-
-        foreach ($response->json() as $name) {
-            $names[] = Name::fromArray($name);
-        }
-
-        return $names;
+        return array_map(Name::fromArray(...), $data);
     }
 }

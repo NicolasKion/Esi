@@ -28,14 +28,8 @@ class GetPublicContractsRequest extends Request implements WithPagination
         return sprintf('/contracts/public/%d/', $this->region_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $contracts = [];
-
-        foreach ($response->json() as $contract) {
-            $contracts[] = PublicContract::fromArray($contract);
-        }
-
-        return $contracts;
+        return array_map(PublicContract::fromArray(...), $data);
     }
 }

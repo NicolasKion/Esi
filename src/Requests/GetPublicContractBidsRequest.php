@@ -25,14 +25,8 @@ class GetPublicContractBidsRequest extends Request implements WithPagination
         return sprintf('/contracts/public/bids/%d/', $this->contract_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $items = [];
-
-        foreach ($response->json() ?? [] as $item) {
-            $items[] = PublicContractBid::fromArray($item);
-        }
-
-        return $items;
+        return array_map(PublicContractBid::fromArray(...), $data ?? []);
     }
 }

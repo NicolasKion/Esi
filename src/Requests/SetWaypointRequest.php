@@ -36,7 +36,7 @@ class SetWaypointRequest extends Request
         return RequestMethod::POST;
     }
 
-    public function createDtoFromResponse(Response $response): null
+    public function createDto(Response $response, mixed $data): null
     {
         return null;
     }

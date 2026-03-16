@@ -22,14 +22,8 @@ class GetMarketHistoryRequest extends Request
         return sprintf('/markets/%d/history/?type_id=%d', $this->region_id, $this->type_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $data = [];
-
-        foreach ($response->json() as $item) {
-            $data[] = MarketHistory::fromArray($item);
-        }
-
-        return $data;
+        return array_map(MarketHistory::fromArray(...), $data);
     }
 }

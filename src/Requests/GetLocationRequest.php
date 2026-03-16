@@ -24,8 +24,8 @@ class GetLocationRequest extends Request
         return sprintf('/characters/%d/location/', $this->character_id);
     }
 
-    public function createDtoFromResponse(Response $response): Location
+    public function createDto(Response $response, mixed $data): Location
     {
-        return Location::fromArray($response->json());
+        return Location::fromArray($data);
     }
 }

@@ -15,14 +15,8 @@ class GetSovereigntyRequest extends Request
         return '/sovereignty/map/';
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $data = [];
-
-        foreach ($response->json() as $item) {
-            $data[] = Sovereignty::fromArray($item);
-        }
-
-        return $data;
+        return array_map(Sovereignty::fromArray(...), $data);
     }
 }

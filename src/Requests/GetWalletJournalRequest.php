@@ -14,28 +14,17 @@ class GetWalletJournalRequest extends Request implements WithPagination
 {
     use BasicPagination;
 
-    /**
-     * Create a new class instance.
-     */
     public function __construct(
         public int $character_id
-    ) {
-        //
-    }
+    ) {}
 
     public function resolveEndpoint(): string
     {
         return sprintf('/characters/%d/wallet/journal/', $this->character_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $items = [];
-
-        foreach ($response->json() as $item) {
-            $items[] = WalletJournalEntry::fromArray($item);
-        }
-
-        return $items;
+        return array_map(WalletJournalEntry::fromArray(...), $data);
     }
 }

@@ -36,9 +36,9 @@ class UpdateEveMailRequest extends Request implements WithBody
         return RequestMethod::PUT;
     }
 
-    public function createDtoFromResponse(Response $response): mixed
+    public function createDto(Response $response, mixed $data): mixed
     {
-        return $response->json();
+        return $data;
     }
 
     public function shouldRetry(Response $response): bool

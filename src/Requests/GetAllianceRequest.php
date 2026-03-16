@@ -25,8 +25,8 @@ class GetAllianceRequest extends Request implements WithPagination
         return sprintf('/alliances/%d/', $this->alliance_id);
     }
 
-    public function createDtoFromResponse(Response $response): Alliance
+    public function createDto(Response $response, mixed $data): Alliance
     {
-        return Alliance::fromArray($response->json());
+        return Alliance::fromArray($data);
     }
 }

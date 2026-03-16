@@ -17,8 +17,8 @@ class GetCharacterRequest extends Request
         return sprintf('/characters/%d/', $this->id);
     }
 
-    public function createDtoFromResponse(Response $response): Character
+    public function createDto(Response $response, mixed $data): Character
     {
-        return Character::fromArray($response->json());
+        return Character::fromArray($data);
     }
 }

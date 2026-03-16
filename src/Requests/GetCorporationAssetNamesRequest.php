@@ -24,15 +24,9 @@ class GetCorporationAssetNamesRequest extends Request implements WithBody
         return sprintf('/corporations/%d/assets/names/', $this->corporation_id);
     }
 
-    public function createDtoFromResponse(Response $response): array
+    public function createDto(Response $response, mixed $data): array
     {
-        $items = [];
-
-        foreach ($response->json() ?? [] as $item) {
-            $items[] = AssetName::fromArray($item);
-        }
-
-        return $items;
+        return array_map(AssetName::fromArray(...), $data ?? []);
     }
 
     public function getBody(): array

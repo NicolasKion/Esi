@@ -25,8 +25,8 @@ class GetKillmailRequest extends Request
         return sprintf('/killmails/%d/%s/', $this->killmail_id, $this->killmail_hash);
     }
 
-    public function createDtoFromResponse(Response $response): Killmail
+    public function createDto(Response $response, mixed $data): Killmail
     {
-        return Killmail::fromArray($response->json());
+        return Killmail::fromArray($data);
     }
 }

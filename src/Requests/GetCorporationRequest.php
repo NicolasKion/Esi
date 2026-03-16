@@ -25,8 +25,8 @@ class GetCorporationRequest extends Request implements WithPagination
         return sprintf('/corporations/%d/', $this->corporation_id);
     }
 
-    public function createDtoFromResponse(Response $response): Corporation
+    public function createDto(Response $response, mixed $data): Corporation
     {
-        return Corporation::fromArray($response->json());
+        return Corporation::fromArray($data);
     }
 }

@@ -24,8 +24,8 @@ class GetShipRequest extends Request
         return sprintf('/characters/%d/ship/', $this->character_id);
     }
 
-    public function createDtoFromResponse(Response $response): Ship
+    public function createDto(Response $response, mixed $data): Ship
     {
-        return Ship::fromArray($response->json());
+        return Ship::fromArray($data);
     }
 }

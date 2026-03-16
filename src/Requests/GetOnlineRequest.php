@@ -24,8 +24,8 @@ class GetOnlineRequest extends Request
         return sprintf('/characters/%d/online/', $this->character_id);
     }
 
-    public function createDtoFromResponse(Response $response): Online
+    public function createDto(Response $response, mixed $data): Online
     {
-        return Online::fromArray($response->json());
+        return Online::fromArray($data);
     }
 }
