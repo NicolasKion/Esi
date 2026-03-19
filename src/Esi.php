@@ -13,6 +13,8 @@ use NicolasKion\Esi\DTO\AssetName;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterContract;
 use NicolasKion\Esi\DTO\Corporation;
+use NicolasKion\Esi\DTO\CorporationDivisions;
+use NicolasKion\Esi\DTO\CorporationStructure;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
@@ -42,7 +44,9 @@ use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetsRequest;
+use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
+use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
 use NicolasKion\Esi\Requests\GetDogmaItemAttributesRequest;
 use NicolasKion\Esi\Requests\GetEveMailRequest;
 use NicolasKion\Esi\Requests\GetEveMailsRequest;
@@ -425,6 +429,32 @@ class Esi
         $request = new GetCorporationRequest($corporation_id);
 
         return $connector->send($request);
+    }
+
+    /**
+     * Retrieves corporation division names (hangar and wallet).
+     *
+     * @return EsiResult<CorporationDivisions>
+     */
+    public function getCorporationDivisions(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationDivisions);
+        $request = new GetCorporationDivisionsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves corporation structures.
+     *
+     * @return EsiResult<CorporationStructure[]>
+     */
+    public function getCorporationStructures(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStructures);
+        $request = new GetCorporationStructuresRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
     }
 
     /**
