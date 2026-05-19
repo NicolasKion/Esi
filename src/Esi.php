@@ -26,6 +26,7 @@ use NicolasKion\Esi\DTO\Online;
 use NicolasKion\Esi\DTO\PublicContract;
 use NicolasKion\Esi\DTO\PublicContractBid;
 use NicolasKion\Esi\DTO\PublicContractItem;
+use NicolasKion\Esi\DTO\RaidableSkyhook;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\Sovereignty;
 use NicolasKion\Esi\DTO\Status;
@@ -59,6 +60,7 @@ use NicolasKion\Esi\Requests\GetPublicContractBidsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractItemsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractsRequest;
 use NicolasKion\Esi\Requests\GetPublicStructuresRequest;
+use NicolasKion\Esi\Requests\GetRaidableSkyhooksRequest;
 use NicolasKion\Esi\Requests\GetShipRequest;
 use NicolasKion\Esi\Requests\GetSovereigntyRequest;
 use NicolasKion\Esi\Requests\GetStructureRequest;
@@ -586,6 +588,19 @@ class Esi
             add_to_beginning: $add_to_beginning,
             clear_other_waypoints: $clear_other_waypoints
         );
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a listing of all Skyhooks that currently or will shortly be raidable.
+     *
+     * @return EsiResult<RaidableSkyhook[]>
+     */
+    public function getRaidableSkyhooks(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetRaidableSkyhooksRequest;
 
         return $connector->send($request);
     }
