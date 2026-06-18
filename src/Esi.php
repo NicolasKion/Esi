@@ -12,6 +12,8 @@ use NicolasKion\Esi\DTO\Asset;
 use NicolasKion\Esi\DTO\AssetName;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterContract;
+use NicolasKion\Esi\DTO\Contact;
+use NicolasKion\Esi\DTO\ContactLabel;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\CorporationDivisions;
 use NicolasKion\Esi\DTO\CorporationStructure;
@@ -35,16 +37,25 @@ use NicolasKion\Esi\DTO\WalletJournalEntry;
 use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\EsiScope;
 use NicolasKion\Esi\Interfaces\Character;
+use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
+use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
+use NicolasKion\Esi\Requests\EditCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetAffiliationsRequest;
+use NicolasKion\Esi\Requests\GetAllianceContactLabelsRequest;
+use NicolasKion\Esi\Requests\GetAllianceContactsRequest;
 use NicolasKion\Esi\Requests\GetAllianceRequest;
 use NicolasKion\Esi\Requests\GetAlliancesRequest;
 use NicolasKion\Esi\Requests\GetAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetAssetsRequest;
+use NicolasKion\Esi\Requests\GetCharacterContactLabelsRequest;
+use NicolasKion\Esi\Requests\GetCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetsRequest;
+use NicolasKion\Esi\Requests\GetCorporationContactLabelsRequest;
+use NicolasKion\Esi\Requests\GetCorporationContactsRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
@@ -483,6 +494,123 @@ class Esi
         $request = new GetAlliancesRequest;
 
         return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the contacts for a given character.
+     *
+     * @return EsiResult<Contact[]>
+     */
+    public function getCharacterContacts(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterContacts);
+
+        return $connector->sendPaginated(new GetCharacterContactsRequest($character->getId()));
+    }
+
+    /**
+     * Retrieves the contact labels for a given character.
+     *
+     * @return EsiResult<ContactLabel[]>
+     */
+    public function getCharacterContactLabels(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterContacts);
+
+        return $connector->send(new GetCharacterContactLabelsRequest($character->getId()));
+    }
+
+    /**
+     * Adds contacts for a given character.
+     *
+     * @param  int[]  $contact_ids  The contacts to add (1-100 entries).
+     * @param  float  $standing  The standing to assign (-10 to 10).
+     * @param  int[]|null  $label_ids  Optional labels to apply to the new contacts.
+     * @param  bool  $watched  Whether the contacts should be watched (characters only).
+     * @return EsiResult<int[]> The IDs of the contacts that were added.
+     */
+    public function addCharacterContacts(Character $character, array $contact_ids, float $standing, ?array $label_ids = null, bool $watched = false): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteCharacterContacts);
+
+        return $connector->send(new AddCharacterContactsRequest($character->getId(), $contact_ids, $standing, $label_ids, $watched));
+    }
+
+    /**
+     * Edits contacts for a given character.
+     *
+     * @param  int[]  $contact_ids  The contacts to edit (1-100 entries).
+     * @param  float  $standing  The standing to assign (-10 to 10).
+     * @param  int[]|null  $label_ids  Optional labels to apply to the contacts.
+     * @param  bool  $watched  Whether the contacts should be watched (characters only).
+     * @return EsiResult<null>
+     */
+    public function editCharacterContacts(Character $character, array $contact_ids, float $standing, ?array $label_ids = null, bool $watched = false): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteCharacterContacts);
+
+        return $connector->send(new EditCharacterContactsRequest($character->getId(), $contact_ids, $standing, $label_ids, $watched));
+    }
+
+    /**
+     * Deletes contacts for a given character.
+     *
+     * @param  int[]  $contact_ids  The contacts to delete.
+     * @return EsiResult<null>
+     */
+    public function deleteCharacterContacts(Character $character, array $contact_ids): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteCharacterContacts);
+
+        return $connector->send(new DeleteCharacterContactsRequest($character->getId(), $contact_ids));
+    }
+
+    /**
+     * Retrieves the contacts for a given corporation.
+     *
+     * @return EsiResult<Contact[]>
+     */
+    public function getCorporationContacts(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationContacts);
+
+        return $connector->sendPaginated(new GetCorporationContactsRequest($corporation_id));
+    }
+
+    /**
+     * Retrieves the contact labels for a given corporation.
+     *
+     * @return EsiResult<ContactLabel[]>
+     */
+    public function getCorporationContactLabels(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationContacts);
+
+        return $connector->send(new GetCorporationContactLabelsRequest($corporation_id));
+    }
+
+    /**
+     * Retrieves the contacts for a given alliance.
+     *
+     * @return EsiResult<Contact[]>
+     */
+    public function getAllianceContacts(Character $character, int $alliance_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAllianceContacts);
+
+        return $connector->sendPaginated(new GetAllianceContactsRequest($alliance_id));
+    }
+
+    /**
+     * Retrieves the contact labels for a given alliance.
+     *
+     * @return EsiResult<ContactLabel[]>
+     */
+    public function getAllianceContactLabels(Character $character, int $alliance_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAllianceContacts);
+
+        return $connector->send(new GetAllianceContactLabelsRequest($alliance_id));
     }
 
     /**

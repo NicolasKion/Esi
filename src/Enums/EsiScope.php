@@ -22,6 +22,10 @@ enum EsiScope: string
     case WriteWaypoint = 'esi-ui.write_waypoint.v1';
     case ReadCorporationDivisions = 'esi-corporations.read_divisions.v1';
     case ReadCorporationStructures = 'esi-corporations.read_structures.v1';
+    case ReadCharacterContacts = 'esi-characters.read_contacts.v1';
+    case WriteCharacterContacts = 'esi-characters.write_contacts.v1';
+    case ReadCorporationContacts = 'esi-corporations.read_contacts.v1';
+    case ReadAllianceContacts = 'esi-alliances.read_contacts.v1';
 
     public static function fromRequest(string $scopes): array
     {
