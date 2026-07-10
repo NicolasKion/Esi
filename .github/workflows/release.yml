@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag to release, e.g. v1.2.3 (created at main HEAD if it does not exist)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -16,8 +22,37 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          ref: main
 
       - name: Create release
         uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
           generate_release_notes: true
+
+      # The changelog is updated here instead of in a release-triggered workflow:
+      # releases created with GITHUB_TOKEN never emit events that trigger other workflows.
+      - name: Fetch release notes
+        id: notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          {
+            echo 'body<<RELEASE_NOTES_EOF'
+            gh release view '${{ inputs.tag || github.ref_name }}' --json body --jq .body
+            echo 'RELEASE_NOTES_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Update changelog
+        uses: stefanzweifel/changelog-updater-action@v1
+        with:
+          latest-version: ${{ inputs.tag || github.ref_name }}
+          release-notes: ${{ steps.notes.outputs.body }}
+
+      - name: Commit updated CHANGELOG
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          branch: main
+          commit_message: Update CHANGELOG
+          file_pattern: CHANGELOG.md
