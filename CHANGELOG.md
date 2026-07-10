@@ -2,6 +2,26 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.5.1 - 2026-06-18
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.5...v0.5.1
+
+## v0.5 - 2026-06-18
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.4...v0.5
+
+## v0.4 - 2026-05-19
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.3.2...v0.4
+
+## v0.3.2 - 2026-05-19
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.3.1...v0.3.2
+
+## v0.3.1 - 2026-03-19
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.3...v0.3.1
+
 ## v0.3 - 2026-03-16
 
 ### What's Changed
