@@ -18,6 +18,9 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: ${{ github.head_ref }}
+          # Deploy key so style fixes on main can bypass the required status
+          # checks (GITHUB_TOKEN pushes are rejected by the ruleset).
+          ssh-key: ${{ secrets.COMMIT_SSH_KEY }}
 
       - name: Fix PHP code style issues
         uses: aglipanci/laravel-pint-action@2.6

@@ -2,6 +2,17 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.6 - 2026-07-10
+
+### What's Changed
+
+* feat: add universe ids endpoint — `Esi::getIds()` resolves names to IDs via `POST /universe/ids/`, the inverse of `getNames()`
+* ci: rework release automation — tests and PHPStan gate every PR, Dependabot PRs auto-merge when green, and dependency updates are auto-released nightly
+* docs: rewrite README and backfill missing changelog entries
+* chore(deps): bump actions/checkout from 6 to 7 by @dependabot[bot] in https://github.com/NicolasKion/Esi/pull/18
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.5.1...v0.6
+
 ## v0.5.1 - 2026-06-18
 
 **Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.5...v0.5.1
