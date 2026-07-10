@@ -33,6 +33,7 @@ use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\Sovereignty;
 use NicolasKion\Esi\DTO\Status;
 use NicolasKion\Esi\DTO\Structure;
+use NicolasKion\Esi\DTO\UniverseIds;
 use NicolasKion\Esi\DTO\WalletJournalEntry;
 use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\EsiScope;
@@ -62,6 +63,7 @@ use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
 use NicolasKion\Esi\Requests\GetDogmaItemAttributesRequest;
 use NicolasKion\Esi\Requests\GetEveMailRequest;
 use NicolasKion\Esi\Requests\GetEveMailsRequest;
+use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
 use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
@@ -179,6 +181,22 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetNamesRequest($ids);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Resolves a list of names to IDs, grouped by category.
+     *
+     * Only exact matches are returned. Names are limited to 500 per request by ESI.
+     *
+     * @param  array<string>  $names  The list of names to resolve.
+     * @return EsiResult<UniverseIds> Returns an instance of EsiResult that contains the resolved IDs.
+     */
+    public function getIds(array $names): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetIdsRequest($names);
 
         return $connector->send($request);
     }
