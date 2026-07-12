@@ -1,0 +1,32 @@
+{
+    "description": "string",
+    "disallow_auto_repeat": true,
+    "discharge_attribute_id": 90000001,
+    "display_name": "string",
+    "duration_attribute_id": 90000001,
+    "effect_category": 90000001,
+    "effect_id": 90000001,
+    "electronic_chance": true,
+    "falloff_attribute_id": 90000001,
+    "icon_id": 90000001,
+    "is_assistance": true,
+    "is_offensive": true,
+    "is_warp_safe": true,
+    "modifiers": [
+        {
+            "domain": "string",
+            "effect_id": 90000001,
+            "func": "string",
+            "modified_attribute_id": 90000001,
+            "modifying_attribute_id": 90000001,
+            "operator": 90000001
+        }
+    ],
+    "name": "string",
+    "post_expression": 90000001,
+    "pre_expression": 90000001,
+    "published": true,
+    "range_attribute_id": 90000001,
+    "range_chance": true,
+    "tracking_speed_attribute_id": 90000001
+}
