@@ -13,16 +13,21 @@ interface EsiToken
     public function getAccessToken(): string;
 
     /**
-     * The return value is ignored by the library; implementers may return
-     * whatever their storage layer does (e.g. Eloquent's bool).
+     * The return value is ignored by the library, so the return type is left
+     * unconstrained: implementers may return whatever their storage layer does
+     * (e.g. Eloquent's bool), or nothing at all.
+     *
+     * @return mixed
      */
-    public function delete(): mixed;
+    public function delete();
 
     /**
-     * The return value is ignored by the library; implementers may return
-     * whatever their storage layer does (e.g. Eloquent's bool).
+     * The return value is ignored by the library, so the return type is left
+     * unconstrained: implementers may return whatever their storage layer does
+     * (e.g. Eloquent's bool), or nothing at all.
      *
      * @param  array<string, mixed>  $data
+     * @return mixed
      */
-    public function update(array $data): mixed;
+    public function update(array $data);
 }

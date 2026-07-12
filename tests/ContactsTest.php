@@ -30,15 +30,9 @@ function fakeContactCharacter(): Character
             return 'access';
         }
 
-        public function delete(): mixed
-        {
-            return null;
-        }
+        public function delete(): void {}
 
-        public function update(array $data): mixed
-        {
-            return null;
-        }
+        public function update(array $data): void {}
     };
 
     return new class($token) implements Character
