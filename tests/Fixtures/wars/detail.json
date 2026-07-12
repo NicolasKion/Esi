@@ -1,0 +1,27 @@
+{
+    "aggressor": {
+        "alliance_id": 90000001,
+        "corporation_id": 90000001,
+        "isk_destroyed": 1.5,
+        "ships_killed": 90000001
+    },
+    "allies": [
+        {
+            "alliance_id": 90000001,
+            "corporation_id": 90000001
+        }
+    ],
+    "declared": "2026-06-09T12:00:00Z",
+    "defender": {
+        "alliance_id": 90000001,
+        "corporation_id": 90000001,
+        "isk_destroyed": 1.5,
+        "ships_killed": 90000001
+    },
+    "finished": "2026-06-09T12:00:00Z",
+    "id": 90000001,
+    "mutual": true,
+    "open_for_allies": true,
+    "retracted": "2026-06-09T12:00:00Z",
+    "started": "2026-06-09T12:00:00Z"
+}

@@ -1,0 +1,12 @@
+[
+    {
+        "is_blueprint_copy": true,
+        "is_singleton": true,
+        "item_id": 90000001,
+        "location_flag": "AssetSafety",
+        "location_id": 90000001,
+        "location_type": "station",
+        "quantity": 90000001,
+        "type_id": 90000001
+    }
+]

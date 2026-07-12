@@ -1,0 +1,17 @@
+{
+    "created_by": 90000001,
+    "dogma_attributes": [
+        {
+            "attribute_id": 90000001,
+            "value": 1.5
+        }
+    ],
+    "dogma_effects": [
+        {
+            "effect_id": 90000001,
+            "is_default": true
+        }
+    ],
+    "mutator_type_id": 90000001,
+    "source_type_id": 90000001
+}

@@ -1,0 +1,26 @@
+[
+    {
+        "acceptor_id": 90000001,
+        "assignee_id": 90000001,
+        "availability": "public",
+        "buyout": 1.5,
+        "collateral": 1.5,
+        "contract_id": 90000001,
+        "date_accepted": "2026-06-09T12:00:00Z",
+        "date_completed": "2026-06-09T12:00:00Z",
+        "date_expired": "2026-06-09T12:00:00Z",
+        "date_issued": "2026-06-09T12:00:00Z",
+        "days_to_complete": 90000001,
+        "end_location_id": 90000001,
+        "for_corporation": true,
+        "issuer_corporation_id": 90000001,
+        "issuer_id": 90000001,
+        "price": 1.5,
+        "reward": 1.5,
+        "start_location_id": 90000001,
+        "status": "outstanding",
+        "title": "string",
+        "type": "item_exchange",
+        "volume": 1.5
+    }
+]

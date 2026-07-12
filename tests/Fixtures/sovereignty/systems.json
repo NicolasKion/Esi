@@ -1,0 +1,29 @@
+{
+    "solar_systems": [
+        {
+            "solar_system_id": 30000001,
+            "claim": {
+                "alliance": {
+                    "alliance_id": 99000001,
+                    "corporation_id": 98000001,
+                    "claimed_since": "2026-02-23T12:00:00Z",
+                    "is_capital_system": false
+                }
+            }
+        },
+        {
+            "solar_system_id": 30000002,
+            "claim": {
+                "faction": {
+                    "faction_id": 500002
+                }
+            }
+        },
+        {
+            "solar_system_id": 30000003,
+            "claim": {
+                "unclaimed": true
+            }
+        }
+    ]
+}
