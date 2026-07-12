@@ -11,6 +11,9 @@ enum EsiScope: string
     case PublicData = 'publicData';
     case OpenWindow = 'esi-ui.open_window.v1';
     case ReadContracts = 'esi-contracts.read_character_contracts.v1';
+    case ReadCorporationContracts = 'esi-contracts.read_corporation_contracts.v1';
+    case ReadKillmails = 'esi-killmails.read_killmails.v1';
+    case ReadCorporationKillmails = 'esi-killmails.read_corporation_killmails.v1';
     case ReadMail = 'esi-mail.read_mail.v1';
     case SendMail = 'esi-mail.send_mail.v1';
     case OrganizeMail = 'esi-mail.organize_mail.v1';
