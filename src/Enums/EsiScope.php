@@ -60,6 +60,9 @@ enum EsiScope: string
     case ReadCharacterMining = 'esi-industry.read_character_mining.v1';
     case ReadCorporationMining = 'esi-industry.read_corporation_mining.v1';
     case ReadCorporationIndustryJobs = 'esi-industry.read_corporation_jobs.v1';
+    case ReadCharacterOrders = 'esi-markets.read_character_orders.v1';
+    case ReadCorporationOrders = 'esi-markets.read_corporation_orders.v1';
+    case ReadLoyaltyPoints = 'esi-characters.read_loyalty.v1';
 
     /**
      * @return array<int, string>

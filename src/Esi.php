@@ -12,6 +12,7 @@ use NicolasKion\Esi\DTO\AllianceHistory;
 use NicolasKion\Esi\DTO\AllianceIcons;
 use NicolasKion\Esi\DTO\Ancestry;
 use NicolasKion\Esi\DTO\Asset;
+use NicolasKion\Esi\DTO\AssetLocation;
 use NicolasKion\Esi\DTO\AssetName;
 use NicolasKion\Esi\DTO\AsteroidBelt;
 use NicolasKion\Esi\DTO\Bloodline;
@@ -71,6 +72,7 @@ use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\KillmailRef;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\LoyaltyOffer;
+use NicolasKion\Esi\DTO\LoyaltyPoints;
 use NicolasKion\Esi\DTO\MailingList;
 use NicolasKion\Esi\DTO\MailLabels;
 use NicolasKion\Esi\DTO\MarketGroup;
@@ -87,6 +89,8 @@ use NicolasKion\Esi\DTO\Moon;
 use NicolasKion\Esi\DTO\Name;
 use NicolasKion\Esi\DTO\Notification;
 use NicolasKion\Esi\DTO\Online;
+use NicolasKion\Esi\DTO\PersonalMarketOrder;
+use NicolasKion\Esi\DTO\PersonalMarketOrderHistory;
 use NicolasKion\Esi\DTO\Planet;
 use NicolasKion\Esi\DTO\PublicContract;
 use NicolasKion\Esi\DTO\PublicContractBid;
@@ -141,6 +145,7 @@ use NicolasKion\Esi\Requests\GetAllianceIconsRequest;
 use NicolasKion\Esi\Requests\GetAllianceRequest;
 use NicolasKion\Esi\Requests\GetAlliancesRequest;
 use NicolasKion\Esi\Requests\GetAncestriesRequest;
+use NicolasKion\Esi\Requests\GetAssetLocationsRequest;
 use NicolasKion\Esi\Requests\GetAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetAssetsRequest;
 use NicolasKion\Esi\Requests\GetAsteroidBeltRequest;
@@ -163,6 +168,8 @@ use NicolasKion\Esi\Requests\GetCharacterIndustryJobsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMiningRequest;
 use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
+use NicolasKion\Esi\Requests\GetCharacterOrderHistoryRequest;
+use NicolasKion\Esi\Requests\GetCharacterOrdersRequest;
 use NicolasKion\Esi\Requests\GetCharacterPortraitRequest;
 use NicolasKion\Esi\Requests\GetCharacterRecentKillmailsRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
@@ -173,6 +180,7 @@ use NicolasKion\Esi\Requests\GetCharacterStandingsRequest;
 use NicolasKion\Esi\Requests\GetCharacterTitlesRequest;
 use NicolasKion\Esi\Requests\GetConstellationRequest;
 use NicolasKion\Esi\Requests\GetCorporationAllianceHistoryRequest;
+use NicolasKion\Esi\Requests\GetCorporationAssetLocationsRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetsRequest;
 use NicolasKion\Esi\Requests\GetCorporationBlueprintsRequest;
@@ -196,6 +204,8 @@ use NicolasKion\Esi\Requests\GetCorporationMemberTrackingRequest;
 use NicolasKion\Esi\Requests\GetCorporationMiningExtractionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationMiningObserverRequest;
 use NicolasKion\Esi\Requests\GetCorporationMiningObserversRequest;
+use NicolasKion\Esi\Requests\GetCorporationOrderHistoryRequest;
+use NicolasKion\Esi\Requests\GetCorporationOrdersRequest;
 use NicolasKion\Esi\Requests\GetCorporationRecentKillmailsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetCorporationRolesHistoryRequest;
@@ -236,6 +246,7 @@ use NicolasKion\Esi\Requests\GetInsurancePricesRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
 use NicolasKion\Esi\Requests\GetLoyaltyOffersRequest;
+use NicolasKion\Esi\Requests\GetLoyaltyPointsRequest;
 use NicolasKion\Esi\Requests\GetMailingListsRequest;
 use NicolasKion\Esi\Requests\GetMailLabelsRequest;
 use NicolasKion\Esi\Requests\GetMarketGroupRequest;
@@ -513,6 +524,58 @@ class Esi
     }
 
     /**
+     * Retrieves the open market orders placed by a character.
+     *
+     * @return EsiResult<array<int, PersonalMarketOrder>>
+     */
+    public function getCharacterOrders(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterOrders);
+        $request = new GetCharacterOrdersRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the cancelled and expired market orders placed by a character (up to 90 days in the past).
+     *
+     * @return EsiResult<array<int, PersonalMarketOrderHistory>>
+     */
+    public function getCharacterOrderHistory(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterOrders);
+        $request = new GetCharacterOrderHistoryRequest($character->getId());
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the open market orders placed on behalf of a corporation.
+     *
+     * @return EsiResult<array<int, PersonalMarketOrder>>
+     */
+    public function getCorporationOrders(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationOrders);
+        $request = new GetCorporationOrdersRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the cancelled and expired market orders placed on behalf of a corporation (up to 90 days in the past).
+     *
+     * @return EsiResult<array<int, PersonalMarketOrderHistory>>
+     */
+    public function getCorporationOrderHistory(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationOrders);
+        $request = new GetCorporationOrderHistoryRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
      * Retrieves names for a given list of IDs.
      *
      * @param  array<int>  $ids  The list of IDs.
@@ -783,6 +846,34 @@ class Esi
         }
 
         return $response;
+    }
+
+    /**
+     * Retrieves the locations of a set of a character's assets.
+     *
+     * @param  array<int, int>  $item_ids
+     * @return EsiResult<array<int, AssetLocation>>
+     */
+    public function getAssetLocations(Character $character, array $item_ids): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAssets);
+        $request = new GetAssetLocationsRequest($character->getId(), $item_ids);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the locations of a set of a corporation's assets.
+     *
+     * @param  array<int, int>  $item_ids
+     * @return EsiResult<array<int, AssetLocation>>
+     */
+    public function getCorporationAssetLocations(Character $character, int $corporation_id, array $item_ids): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationAssets);
+        $request = new GetCorporationAssetLocationsRequest($corporation_id, $item_ids);
+
+        return $connector->send($request);
     }
 
     /**
@@ -2249,6 +2340,19 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetLoyaltyOffersRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the loyalty points a character has with every corporation it has worked for.
+     *
+     * @return EsiResult<array<int, LoyaltyPoints>>
+     */
+    public function getLoyaltyPoints(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadLoyaltyPoints);
+        $request = new GetLoyaltyPointsRequest($character->getId());
 
         return $connector->send($request);
     }
