@@ -45,6 +45,8 @@ enum EsiScope: string
     case ReadCharacterCorporationRoles = 'esi-characters.read_corporation_roles.v1';
     case ReadCharacterStandings = 'esi-characters.read_standings.v1';
     case ReadCharacterTitles = 'esi-characters.read_titles.v1';
+    case ReadCharacterFwStats = 'esi-characters.read_fw_stats.v1';
+    case ReadCorporationFwStats = 'esi-corporations.read_fw_stats.v1';
 
     /**
      * @return array<int, string>

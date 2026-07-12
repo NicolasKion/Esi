@@ -18,6 +18,7 @@ use NicolasKion\Esi\DTO\Bloodline;
 use NicolasKion\Esi\DTO\Blueprint;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterContract;
+use NicolasKion\Esi\DTO\CharacterFactionWarfareStats;
 use NicolasKion\Esi\DTO\CharacterMedal;
 use NicolasKion\Esi\DTO\CharacterPortrait;
 use NicolasKion\Esi\DTO\CharacterRoles;
@@ -29,6 +30,7 @@ use NicolasKion\Esi\DTO\ContactNotification;
 use NicolasKion\Esi\DTO\ContainerLog;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\CorporationDivisions;
+use NicolasKion\Esi\DTO\CorporationFactionWarfareStats;
 use NicolasKion\Esi\DTO\CorporationHistory;
 use NicolasKion\Esi\DTO\CorporationIcons;
 use NicolasKion\Esi\DTO\CorporationMedal;
@@ -42,6 +44,12 @@ use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
 use NicolasKion\Esi\DTO\Facility;
 use NicolasKion\Esi\DTO\Faction;
+use NicolasKion\Esi\DTO\FactionWarfareCharacterLeaderboard;
+use NicolasKion\Esi\DTO\FactionWarfareCorporationLeaderboard;
+use NicolasKion\Esi\DTO\FactionWarfareFactionStats;
+use NicolasKion\Esi\DTO\FactionWarfareLeaderboard;
+use NicolasKion\Esi\DTO\FactionWarfareSystem;
+use NicolasKion\Esi\DTO\FactionWarfareWar;
 use NicolasKion\Esi\DTO\Graphic;
 use NicolasKion\Esi\DTO\IssuedMedal;
 use NicolasKion\Esi\DTO\JumpFatigue;
@@ -112,6 +120,7 @@ use NicolasKion\Esi\Requests\GetCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterCorporationHistoryRequest;
+use NicolasKion\Esi\Requests\GetCharacterFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCharacterFatigueRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
 use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
@@ -130,6 +139,7 @@ use NicolasKion\Esi\Requests\GetCorporationContactsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContainerLogsRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationFacilitiesRequest;
+use NicolasKion\Esi\Requests\GetCorporationFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIconsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIssuedMedalsRequest;
 use NicolasKion\Esi\Requests\GetCorporationMedalsRequest;
@@ -155,6 +165,12 @@ use NicolasKion\Esi\Requests\GetDogmaItemAttributesRequest;
 use NicolasKion\Esi\Requests\GetEveMailRequest;
 use NicolasKion\Esi\Requests\GetEveMailsRequest;
 use NicolasKion\Esi\Requests\GetFactionsRequest;
+use NicolasKion\Esi\Requests\GetFactionWarfareCharacterLeaderboardsRequest;
+use NicolasKion\Esi\Requests\GetFactionWarfareCorporationLeaderboardsRequest;
+use NicolasKion\Esi\Requests\GetFactionWarfareLeaderboardsRequest;
+use NicolasKion\Esi\Requests\GetFactionWarfareStatsRequest;
+use NicolasKion\Esi\Requests\GetFactionWarfareSystemsRequest;
+use NicolasKion\Esi\Requests\GetFactionWarfareWarsRequest;
 use NicolasKion\Esi\Requests\GetGraphicRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
@@ -1786,6 +1802,110 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterContacts);
         $request = new GetCspaChargeRequest($character->getId(), $character_ids);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the faction warfare leaderboard of factions.
+     *
+     * @return EsiResult<FactionWarfareLeaderboard>
+     */
+    public function getFactionWarfareLeaderboards(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionWarfareLeaderboardsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the faction warfare leaderboard of characters.
+     *
+     * @return EsiResult<FactionWarfareCharacterLeaderboard>
+     */
+    public function getFactionWarfareCharacterLeaderboards(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionWarfareCharacterLeaderboardsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the faction warfare leaderboard of corporations.
+     *
+     * @return EsiResult<FactionWarfareCorporationLeaderboard>
+     */
+    public function getFactionWarfareCorporationLeaderboards(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionWarfareCorporationLeaderboardsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves faction warfare statistics for every faction.
+     *
+     * @return EsiResult<array<int, FactionWarfareFactionStats>>
+     */
+    public function getFactionWarfareStats(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionWarfareStatsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves faction warfare occupancy details for every solar system.
+     *
+     * @return EsiResult<array<int, FactionWarfareSystem>>
+     */
+    public function getFactionWarfareSystems(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionWarfareSystemsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the ongoing faction warfare wars.
+     *
+     * @return EsiResult<array<int, FactionWarfareWar>>
+     */
+    public function getFactionWarfareWars(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionWarfareWarsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves faction warfare statistics for a given character.
+     *
+     * @return EsiResult<CharacterFactionWarfareStats>
+     */
+    public function getCharacterFactionWarfareStats(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterFwStats);
+        $request = new GetCharacterFactionWarfareStatsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves faction warfare statistics for a given corporation.
+     *
+     * @return EsiResult<CorporationFactionWarfareStats>
+     */
+    public function getCorporationFactionWarfareStats(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFwStats);
+        $request = new GetCorporationFactionWarfareStatsRequest($corporation_id);
 
         return $connector->send($request);
     }

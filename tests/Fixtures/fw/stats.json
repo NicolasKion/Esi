@@ -1,0 +1,17 @@
+[
+    {
+        "faction_id": 90000001,
+        "kills": {
+            "last_week": 90000001,
+            "total": 90000001,
+            "yesterday": 90000001
+        },
+        "pilots": 90000001,
+        "systems_controlled": 90000001,
+        "victory_points": {
+            "last_week": 90000001,
+            "total": 90000001,
+            "yesterday": 90000001
+        }
+    }
+]
