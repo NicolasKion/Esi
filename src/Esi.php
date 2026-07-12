@@ -54,6 +54,10 @@ use NicolasKion\Esi\DTO\FactionWarfareFactionStats;
 use NicolasKion\Esi\DTO\FactionWarfareLeaderboard;
 use NicolasKion\Esi\DTO\FactionWarfareSystem;
 use NicolasKion\Esi\DTO\FactionWarfareWar;
+use NicolasKion\Esi\DTO\Fleet;
+use NicolasKion\Esi\DTO\FleetInfo;
+use NicolasKion\Esi\DTO\FleetMember;
+use NicolasKion\Esi\DTO\FleetWing;
 use NicolasKion\Esi\DTO\Graphic;
 use NicolasKion\Esi\DTO\Incursion;
 use NicolasKion\Esi\DTO\InsurancePrice;
@@ -108,7 +112,11 @@ use NicolasKion\Esi\Enums\MarketOrderType;
 use NicolasKion\Esi\Enums\RoutePreference;
 use NicolasKion\Esi\Interfaces\Character;
 use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
+use NicolasKion\Esi\Requests\CreateFleetSquadRequest;
+use NicolasKion\Esi\Requests\CreateFleetWingRequest;
 use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
+use NicolasKion\Esi\Requests\DeleteFleetSquadRequest;
+use NicolasKion\Esi\Requests\DeleteFleetWingRequest;
 use NicolasKion\Esi\Requests\EditCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetAffiliationsRequest;
 use NicolasKion\Esi\Requests\GetAgentsResearchRequest;
@@ -134,6 +142,7 @@ use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterCorporationHistoryRequest;
 use NicolasKion\Esi\Requests\GetCharacterFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCharacterFatigueRequest;
+use NicolasKion\Esi\Requests\GetCharacterFleetRequest;
 use NicolasKion\Esi\Requests\GetCharacterImplantsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
 use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
@@ -189,6 +198,9 @@ use NicolasKion\Esi\Requests\GetFactionWarfareLeaderboardsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareSystemsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareWarsRequest;
+use NicolasKion\Esi\Requests\GetFleetMembersRequest;
+use NicolasKion\Esi\Requests\GetFleetRequest;
+use NicolasKion\Esi\Requests\GetFleetWingsRequest;
 use NicolasKion\Esi\Requests\GetGraphicRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetIncursionsRequest;
@@ -240,9 +252,15 @@ use NicolasKion\Esi\Requests\GetWalletBalanceRequest;
 use NicolasKion\Esi\Requests\GetWalletJournalRequest;
 use NicolasKion\Esi\Requests\GetWalletTransactionsRequest;
 use NicolasKion\Esi\Requests\GetWarRequest;
+use NicolasKion\Esi\Requests\InviteFleetMemberRequest;
+use NicolasKion\Esi\Requests\KickFleetMemberRequest;
+use NicolasKion\Esi\Requests\MoveFleetMemberRequest;
 use NicolasKion\Esi\Requests\OpenContractRequest;
+use NicolasKion\Esi\Requests\RenameFleetSquadRequest;
+use NicolasKion\Esi\Requests\RenameFleetWingRequest;
 use NicolasKion\Esi\Requests\SendMailRequest;
 use NicolasKion\Esi\Requests\UpdateEveMailRequest;
+use NicolasKion\Esi\Requests\UpdateFleetRequest;
 
 class Esi
 {
@@ -2115,6 +2133,188 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadImplants);
         $request = new GetCharacterImplantsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the fleet information of a character.
+     *
+     * @return EsiResult<FleetInfo>
+     */
+    public function getCharacterFleet(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadFleet);
+        $request = new GetCharacterFleetRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a fleet.
+     *
+     * @return EsiResult<Fleet>
+     */
+    public function getFleet(Character $character, int $fleet_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadFleet);
+        $request = new GetFleetRequest($fleet_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the members of a fleet.
+     *
+     * @return EsiResult<array<int, FleetMember>>
+     */
+    public function getFleetMembers(Character $character, int $fleet_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadFleet);
+        $request = new GetFleetMembersRequest($fleet_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the wings of a fleet.
+     *
+     * @return EsiResult<array<int, FleetWing>>
+     */
+    public function getFleetWings(Character $character, int $fleet_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadFleet);
+        $request = new GetFleetWingsRequest($fleet_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Updates settings of a fleet.
+     *
+     * @return EsiResult<null>
+     */
+    public function updateFleet(Character $character, int $fleet_id, ?bool $is_free_move = null, ?string $motd = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new UpdateFleetRequest($fleet_id, $is_free_move, $motd);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Invites a character into a fleet.
+     *
+     * @return EsiResult<null>
+     */
+    public function inviteFleetMember(Character $character, int $fleet_id, int $character_id, string $role, ?int $squad_id = null, ?int $wing_id = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new InviteFleetMemberRequest($fleet_id, $character_id, $role, $squad_id, $wing_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Kicks a member out of a fleet.
+     *
+     * @return EsiResult<null>
+     */
+    public function kickFleetMember(Character $character, int $fleet_id, int $member_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new KickFleetMemberRequest($fleet_id, $member_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Moves a fleet member to a new role or squad/wing.
+     *
+     * @return EsiResult<null>
+     */
+    public function moveFleetMember(Character $character, int $fleet_id, int $member_id, string $role, ?int $squad_id = null, ?int $wing_id = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new MoveFleetMemberRequest($fleet_id, $member_id, $role, $squad_id, $wing_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Creates a new wing in a fleet.
+     *
+     * @return EsiResult<int> The ID of the new wing.
+     */
+    public function createFleetWing(Character $character, int $fleet_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new CreateFleetWingRequest($fleet_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Deletes a wing from a fleet.
+     *
+     * @return EsiResult<null>
+     */
+    public function deleteFleetWing(Character $character, int $fleet_id, int $wing_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new DeleteFleetWingRequest($fleet_id, $wing_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Renames a fleet wing.
+     *
+     * @return EsiResult<null>
+     */
+    public function renameFleetWing(Character $character, int $fleet_id, int $wing_id, string $name): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new RenameFleetWingRequest($fleet_id, $wing_id, $name);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Creates a new squad in a fleet wing.
+     *
+     * @return EsiResult<int> The ID of the new squad.
+     */
+    public function createFleetSquad(Character $character, int $fleet_id, int $wing_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new CreateFleetSquadRequest($fleet_id, $wing_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Deletes a squad from a fleet.
+     *
+     * @return EsiResult<null>
+     */
+    public function deleteFleetSquad(Character $character, int $fleet_id, int $squad_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new DeleteFleetSquadRequest($fleet_id, $squad_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Renames a fleet squad.
+     *
+     * @return EsiResult<null>
+     */
+    public function renameFleetSquad(Character $character, int $fleet_id, int $squad_id, string $name): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFleet);
+        $request = new RenameFleetSquadRequest($fleet_id, $squad_id, $name);
 
         return $connector->send($request);
     }
