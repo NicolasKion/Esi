@@ -287,7 +287,9 @@ it('returns an error result when fetching mercenary tactical operations fails', 
 
 it('fetches and maps the public freelance jobs listing', function (): void {
     Http::fake([
-        'esi.evetech.net/freelance-jobs*' => Http::response(esiFixture('freelance/jobs.json')),
+        'esi.evetech.net/freelance-jobs*' => Http::sequence()
+            ->push(esiFixture('freelance/jobs.json'))
+            ->push(['cursor' => ['after' => ''], 'freelance_jobs' => []]),
     ]);
 
     $result = (new Esi)->getFreelanceJobs();
@@ -371,7 +373,9 @@ it("fetches and maps a character's participation in a freelance job", function (
 
 it('fetches and maps the freelance jobs created by a corporation', function (): void {
     Http::fake([
-        'esi.evetech.net/corporations/456/freelance-jobs*' => Http::response(esiFixture('freelance/jobs.json')),
+        'esi.evetech.net/corporations/456/freelance-jobs*' => Http::sequence()
+            ->push(esiFixture('freelance/jobs.json'))
+            ->push(['cursor' => ['after' => ''], 'freelance_jobs' => []]),
     ]);
 
     $result = (new Esi)->getCorporationFreelanceJobs(fakeCharacter(), 456);
@@ -384,7 +388,9 @@ it('fetches and maps the freelance jobs created by a corporation', function (): 
 
 it("fetches and maps a corporation's freelance job participants", function (): void {
     Http::fake([
-        'esi.evetech.net/corporations/456/freelance-jobs/3868eaed-8278-4cb7-9709-7d7de9c20dc7/participants*' => Http::response(esiFixture('freelance/participants.json')),
+        'esi.evetech.net/corporations/456/freelance-jobs/3868eaed-8278-4cb7-9709-7d7de9c20dc7/participants*' => Http::sequence()
+            ->push(esiFixture('freelance/participants.json'))
+            ->push(['cursor' => ['after' => ''], 'participants' => []]),
     ]);
 
     $result = (new Esi)->getCorporationFreelanceJobParticipants(fakeCharacter(), 456, '3868eaed-8278-4cb7-9709-7d7de9c20dc7');

@@ -216,19 +216,21 @@ it('fetches and maps the full detail of a corporation\'s Sovereignty Hub', funct
 
 it('fetches and maps a listing of corporation projects', function (): void {
     Http::fake([
-        'esi.evetech.net/corporations/456/projects' => Http::response([
-            'cursor' => ['after' => 'a', 'before' => 'b'],
-            'projects' => [
-                [
-                    'id' => '3868eaed-8278-4cb7-9709-7d7de9c20dc7',
-                    'last_modified' => '2025-06-01T00:00:00Z',
-                    'name' => 'Project Name',
-                    'progress' => ['current' => 50, 'desired' => 100],
-                    'reward' => ['initial' => 12345.5, 'remaining' => 5432.1],
-                    'state' => 'Active',
+        'esi.evetech.net/corporations/456/projects*' => Http::sequence()
+            ->push([
+                'cursor' => ['after' => 'a', 'before' => 'b'],
+                'projects' => [
+                    [
+                        'id' => '3868eaed-8278-4cb7-9709-7d7de9c20dc7',
+                        'last_modified' => '2025-06-01T00:00:00Z',
+                        'name' => 'Project Name',
+                        'progress' => ['current' => 50, 'desired' => 100],
+                        'reward' => ['initial' => 12345.5, 'remaining' => 5432.1],
+                        'state' => 'Active',
+                    ],
                 ],
-            ],
-        ]),
+            ])
+            ->push(['cursor' => ['after' => ''], 'projects' => []]),
     ]);
 
     $result = (new Esi)->getCorporationProjects(fakeCharacter(), 456);
@@ -330,12 +332,14 @@ it('fetches and maps a character\'s contribution to a corporation project', func
 
 it('fetches and maps the contributors to a corporation project', function (): void {
     Http::fake([
-        'esi.evetech.net/corporations/456/projects/3868eaed-8278-4cb7-9709-7d7de9c20dc7/contributors' => Http::response([
-            'contributors' => [
-                ['contributed' => 10, 'id' => 90000001, 'name' => 'Contributor Name'],
-            ],
-            'cursor' => ['after' => 'a', 'before' => 'b'],
-        ]),
+        'esi.evetech.net/corporations/456/projects/3868eaed-8278-4cb7-9709-7d7de9c20dc7/contributors*' => Http::sequence()
+            ->push([
+                'contributors' => [
+                    ['contributed' => 10, 'id' => 90000001, 'name' => 'Contributor Name'],
+                ],
+                'cursor' => ['after' => 'a', 'before' => 'b'],
+            ])
+            ->push(['contributors' => [], 'cursor' => ['after' => '']]),
     ]);
 
     $result = (new Esi)->getCorporationProjectContributors(fakeCharacter(), 456, '3868eaed-8278-4cb7-9709-7d7de9c20dc7');
