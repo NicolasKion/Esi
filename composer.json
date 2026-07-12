@@ -35,8 +35,7 @@
     },
     "autoload": {
         "psr-4": {
-            "NicolasKion\\Esi\\": "src/",
-            "NicolasKion\\Esi\\Database\\Factories\\": "database/factories/"
+            "NicolasKion\\Esi\\": "src/"
         }
     },
     "autoload-dev": {
