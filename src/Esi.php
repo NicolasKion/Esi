@@ -66,6 +66,8 @@ use NicolasKion\Esi\DTO\JumpFatigue;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\LoyaltyOffer;
+use NicolasKion\Esi\DTO\MailingList;
+use NicolasKion\Esi\DTO\MailLabels;
 use NicolasKion\Esi\DTO\MarketGroup;
 use NicolasKion\Esi\DTO\MarketHistory;
 use NicolasKion\Esi\DTO\MarketOrder;
@@ -114,9 +116,12 @@ use NicolasKion\Esi\Interfaces\Character;
 use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
 use NicolasKion\Esi\Requests\CreateFleetSquadRequest;
 use NicolasKion\Esi\Requests\CreateFleetWingRequest;
+use NicolasKion\Esi\Requests\CreateMailLabelRequest;
 use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
 use NicolasKion\Esi\Requests\DeleteFleetSquadRequest;
 use NicolasKion\Esi\Requests\DeleteFleetWingRequest;
+use NicolasKion\Esi\Requests\DeleteMailLabelRequest;
+use NicolasKion\Esi\Requests\DeleteMailRequest;
 use NicolasKion\Esi\Requests\EditCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetAffiliationsRequest;
 use NicolasKion\Esi\Requests\GetAgentsResearchRequest;
@@ -208,6 +213,8 @@ use NicolasKion\Esi\Requests\GetInsurancePricesRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
 use NicolasKion\Esi\Requests\GetLoyaltyOffersRequest;
+use NicolasKion\Esi\Requests\GetMailingListsRequest;
+use NicolasKion\Esi\Requests\GetMailLabelsRequest;
 use NicolasKion\Esi\Requests\GetMarketGroupRequest;
 use NicolasKion\Esi\Requests\GetMarketGroupsRequest;
 use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
@@ -1034,6 +1041,71 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::OrganizeMail);
         $request = new UpdateEveMailRequest($character->getId(), $mail_id, $read, $labels);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the mail labels and unread counts for a given character.
+     *
+     * @return EsiResult<MailLabels>
+     */
+    public function getMailLabels(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadMail);
+        $request = new GetMailLabelsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the mailing lists a given character is subscribed to.
+     *
+     * @return EsiResult<array<int, MailingList>>
+     */
+    public function getMailingLists(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadMail);
+        $request = new GetMailingListsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Creates a mail label for a given character.
+     *
+     * @return EsiResult<int> Returns an instance of EsiResult that contains the new label's ID.
+     */
+    public function createMailLabel(Character $character, string $name, ?string $color = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::OrganizeMail);
+        $request = new CreateMailLabelRequest($character->getId(), $name, $color);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Deletes a mail label for a given character.
+     *
+     * @return EsiResult<null>
+     */
+    public function deleteMailLabel(Character $character, int $label_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::OrganizeMail);
+        $request = new DeleteMailLabelRequest($character->getId(), $label_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Deletes a mail for a given character.
+     *
+     * @return EsiResult<null>
+     */
+    public function deleteMail(Character $character, int $mail_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::OrganizeMail);
+        $request = new DeleteMailRequest($character->getId(), $mail_id);
 
         return $connector->send($request);
     }
