@@ -1,0 +1,12 @@
+{
+    "skills": [
+        {
+            "active_skill_level": 90000001,
+            "skill_id": 90000001,
+            "skillpoints_in_skill": 90000001,
+            "trained_skill_level": 90000001
+        }
+    ],
+    "total_sp": 90000001,
+    "unallocated_sp": 90000001
+}

@@ -1,0 +1,19 @@
+{
+    "home_location": {
+        "location_id": 90000001,
+        "location_type": "station"
+    },
+    "jump_clones": [
+        {
+            "implants": [
+                90000001
+            ],
+            "jump_clone_id": 90000001,
+            "location_id": 90000001,
+            "location_type": "station",
+            "name": "string"
+        }
+    ],
+    "last_clone_jump_date": "2026-06-09T12:00:00Z",
+    "last_station_change_date": "2026-06-09T12:00:00Z"
+}

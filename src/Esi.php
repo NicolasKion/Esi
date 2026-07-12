@@ -17,11 +17,14 @@ use NicolasKion\Esi\DTO\AsteroidBelt;
 use NicolasKion\Esi\DTO\Bloodline;
 use NicolasKion\Esi\DTO\Blueprint;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
+use NicolasKion\Esi\DTO\CharacterAttributes;
+use NicolasKion\Esi\DTO\CharacterClones;
 use NicolasKion\Esi\DTO\CharacterContract;
 use NicolasKion\Esi\DTO\CharacterFactionWarfareStats;
 use NicolasKion\Esi\DTO\CharacterMedal;
 use NicolasKion\Esi\DTO\CharacterPortrait;
 use NicolasKion\Esi\DTO\CharacterRoles;
+use NicolasKion\Esi\DTO\CharacterSkills;
 use NicolasKion\Esi\DTO\CharacterTitle;
 use NicolasKion\Esi\DTO\Constellation;
 use NicolasKion\Esi\DTO\Contact;
@@ -80,6 +83,7 @@ use NicolasKion\Esi\DTO\RoleHistory;
 use NicolasKion\Esi\DTO\Schematic;
 use NicolasKion\Esi\DTO\Shareholder;
 use NicolasKion\Esi\DTO\Ship;
+use NicolasKion\Esi\DTO\SkillQueueEntry;
 use NicolasKion\Esi\DTO\Sovereignty;
 use NicolasKion\Esi\DTO\Standing;
 use NicolasKion\Esi\DTO\Star;
@@ -119,7 +123,9 @@ use NicolasKion\Esi\Requests\GetAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetAssetsRequest;
 use NicolasKion\Esi\Requests\GetAsteroidBeltRequest;
 use NicolasKion\Esi\Requests\GetBloodlinesRequest;
+use NicolasKion\Esi\Requests\GetCharacterAttributesRequest;
 use NicolasKion\Esi\Requests\GetCharacterBlueprintsRequest;
+use NicolasKion\Esi\Requests\GetCharacterClonesRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactNotificationsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactsRequest;
@@ -128,11 +134,14 @@ use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterCorporationHistoryRequest;
 use NicolasKion\Esi\Requests\GetCharacterFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCharacterFatigueRequest;
+use NicolasKion\Esi\Requests\GetCharacterImplantsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
 use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
 use NicolasKion\Esi\Requests\GetCharacterPortraitRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
 use NicolasKion\Esi\Requests\GetCharacterRolesRequest;
+use NicolasKion\Esi\Requests\GetCharacterSkillQueueRequest;
+use NicolasKion\Esi\Requests\GetCharacterSkillsRequest;
 use NicolasKion\Esi\Requests\GetCharacterStandingsRequest;
 use NicolasKion\Esi\Requests\GetCharacterTitlesRequest;
 use NicolasKion\Esi\Requests\GetConstellationRequest;
@@ -2041,6 +2050,71 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetRouteRequest($origin_system_id, $destination_system_id, $preference, $avoid_systems, $security_penalty);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character skills
+     *
+     * @return EsiResult<CharacterSkills>
+     */
+    public function getCharacterSkills(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadSkills);
+        $request = new GetCharacterSkillsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character skill queue
+     *
+     * @return EsiResult<array<int, SkillQueueEntry>>
+     */
+    public function getCharacterSkillQueue(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadSkillQueue);
+        $request = new GetCharacterSkillQueueRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character attributes
+     *
+     * @return EsiResult<CharacterAttributes>
+     */
+    public function getCharacterAttributes(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadSkills);
+        $request = new GetCharacterAttributesRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character clones
+     *
+     * @return EsiResult<CharacterClones>
+     */
+    public function getCharacterClones(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadClones);
+        $request = new GetCharacterClonesRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Get character implants
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getCharacterImplants(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadImplants);
+        $request = new GetCharacterImplantsRequest($character->getId());
 
         return $connector->send($request);
     }
