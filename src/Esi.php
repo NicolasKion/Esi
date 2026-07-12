@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi;
 
+use NicolasKion\Esi\DTO\AgentResearch;
 use NicolasKion\Esi\DTO\Alliance;
 use NicolasKion\Esi\DTO\AllianceHistory;
 use NicolasKion\Esi\DTO\AllianceIcons;
@@ -17,12 +18,18 @@ use NicolasKion\Esi\DTO\Bloodline;
 use NicolasKion\Esi\DTO\Blueprint;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterContract;
+use NicolasKion\Esi\DTO\CharacterMedal;
+use NicolasKion\Esi\DTO\CharacterPortrait;
+use NicolasKion\Esi\DTO\CharacterRoles;
+use NicolasKion\Esi\DTO\CharacterTitle;
 use NicolasKion\Esi\DTO\Constellation;
 use NicolasKion\Esi\DTO\Contact;
 use NicolasKion\Esi\DTO\ContactLabel;
+use NicolasKion\Esi\DTO\ContactNotification;
 use NicolasKion\Esi\DTO\ContainerLog;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\CorporationDivisions;
+use NicolasKion\Esi\DTO\CorporationHistory;
 use NicolasKion\Esi\DTO\CorporationIcons;
 use NicolasKion\Esi\DTO\CorporationMedal;
 use NicolasKion\Esi\DTO\CorporationRoles;
@@ -37,6 +44,7 @@ use NicolasKion\Esi\DTO\Facility;
 use NicolasKion\Esi\DTO\Faction;
 use NicolasKion\Esi\DTO\Graphic;
 use NicolasKion\Esi\DTO\IssuedMedal;
+use NicolasKion\Esi\DTO\JumpFatigue;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\MarketGroup;
@@ -47,6 +55,7 @@ use NicolasKion\Esi\DTO\MemberTitles;
 use NicolasKion\Esi\DTO\MemberTracking;
 use NicolasKion\Esi\DTO\Moon;
 use NicolasKion\Esi\DTO\Name;
+use NicolasKion\Esi\DTO\Notification;
 use NicolasKion\Esi\DTO\Online;
 use NicolasKion\Esi\DTO\Planet;
 use NicolasKion\Esi\DTO\PublicContract;
@@ -84,6 +93,7 @@ use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
 use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
 use NicolasKion\Esi\Requests\EditCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetAffiliationsRequest;
+use NicolasKion\Esi\Requests\GetAgentsResearchRequest;
 use NicolasKion\Esi\Requests\GetAllianceContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetAllianceContactsRequest;
 use NicolasKion\Esi\Requests\GetAllianceCorporationsRequest;
@@ -95,11 +105,21 @@ use NicolasKion\Esi\Requests\GetAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetAssetsRequest;
 use NicolasKion\Esi\Requests\GetAsteroidBeltRequest;
 use NicolasKion\Esi\Requests\GetBloodlinesRequest;
+use NicolasKion\Esi\Requests\GetCharacterBlueprintsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactLabelsRequest;
+use NicolasKion\Esi\Requests\GetCharacterContactNotificationsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
+use NicolasKion\Esi\Requests\GetCharacterCorporationHistoryRequest;
+use NicolasKion\Esi\Requests\GetCharacterFatigueRequest;
+use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
+use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
+use NicolasKion\Esi\Requests\GetCharacterPortraitRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
+use NicolasKion\Esi\Requests\GetCharacterRolesRequest;
+use NicolasKion\Esi\Requests\GetCharacterStandingsRequest;
+use NicolasKion\Esi\Requests\GetCharacterTitlesRequest;
 use NicolasKion\Esi\Requests\GetConstellationRequest;
 use NicolasKion\Esi\Requests\GetCorporationAllianceHistoryRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetNamesRequest;
@@ -126,6 +146,7 @@ use NicolasKion\Esi\Requests\GetCorporationStarbaseRequest;
 use NicolasKion\Esi\Requests\GetCorporationStarbasesRequest;
 use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
 use NicolasKion\Esi\Requests\GetCorporationTitlesRequest;
+use NicolasKion\Esi\Requests\GetCspaChargeRequest;
 use NicolasKion\Esi\Requests\GetDogmaAttributeRequest;
 use NicolasKion\Esi\Requests\GetDogmaAttributesRequest;
 use NicolasKion\Esi\Requests\GetDogmaEffectRequest;
@@ -1608,6 +1629,163 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationTitles);
         $request = new GetCorporationTitlesRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the corporation history of a character.
+     *
+     * @return EsiResult<array<int, CorporationHistory>>
+     */
+    public function getCharacterCorporationHistory(int $character_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetCharacterCorporationHistoryRequest($character_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the portrait URLs of a character.
+     *
+     * @return EsiResult<CharacterPortrait>
+     */
+    public function getCharacterPortrait(int $character_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetCharacterPortraitRequest($character_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a character's agents research progress.
+     *
+     * @return EsiResult<array<int, AgentResearch>>
+     */
+    public function getAgentsResearch(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAgentsResearch);
+        $request = new GetAgentsResearchRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the blueprints owned by a character.
+     *
+     * @return EsiResult<array<int, Blueprint>>
+     */
+    public function getCharacterBlueprints(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterBlueprints);
+        $request = new GetCharacterBlueprintsRequest($character->getId());
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves a character's jump fatigue.
+     *
+     * @return EsiResult<JumpFatigue>
+     */
+    public function getCharacterFatigue(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadFatigue);
+        $request = new GetCharacterFatigueRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the medals of a character.
+     *
+     * @return EsiResult<array<int, CharacterMedal>>
+     */
+    public function getCharacterMedals(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterMedals);
+        $request = new GetCharacterMedalsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the notifications of a character.
+     *
+     * @return EsiResult<array<int, Notification>>
+     */
+    public function getCharacterNotifications(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadNotifications);
+        $request = new GetCharacterNotificationsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the contact notifications of a character.
+     *
+     * @return EsiResult<array<int, ContactNotification>>
+     */
+    public function getCharacterContactNotifications(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadNotifications);
+        $request = new GetCharacterContactNotificationsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the corporation roles of a character.
+     *
+     * @return EsiResult<CharacterRoles>
+     */
+    public function getCharacterRoles(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterCorporationRoles);
+        $request = new GetCharacterRolesRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the standings of a character.
+     *
+     * @return EsiResult<array<int, Standing>>
+     */
+    public function getCharacterStandings(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterStandings);
+        $request = new GetCharacterStandingsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the titles of a character.
+     *
+     * @return EsiResult<array<int, CharacterTitle>>
+     */
+    public function getCharacterTitles(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterTitles);
+        $request = new GetCharacterTitlesRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Calculates the CSPA charge cost for contacting a set of characters.
+     *
+     * @param  array<int, int>  $character_ids
+     * @return EsiResult<float>
+     */
+    public function getCspaCharge(Character $character, array $character_ids): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterContacts);
+        $request = new GetCspaChargeRequest($character->getId(), $character_ids);
 
         return $connector->send($request);
     }
