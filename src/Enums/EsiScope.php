@@ -27,6 +27,16 @@ enum EsiScope: string
     case WriteCharacterContacts = 'esi-characters.write_contacts.v1';
     case ReadCorporationContacts = 'esi-corporations.read_contacts.v1';
     case ReadAllianceContacts = 'esi-alliances.read_contacts.v1';
+    case ReadCorporationBlueprints = 'esi-corporations.read_blueprints.v1';
+    case ReadCorporationContainerLogs = 'esi-corporations.read_container_logs.v1';
+    case ReadCorporationFacilities = 'esi-corporations.read_facilities.v1';
+    case ReadCorporationMedals = 'esi-corporations.read_medals.v1';
+    case ReadCorporationMembership = 'esi-corporations.read_corporation_membership.v1';
+    case TrackCorporationMembers = 'esi-corporations.track_members.v1';
+    case ReadCorporationTitles = 'esi-corporations.read_titles.v1';
+    case ReadCorporationWallets = 'esi-wallet.read_corporation_wallets.v1';
+    case ReadCorporationStandings = 'esi-corporations.read_standings.v1';
+    case ReadCorporationStarbases = 'esi-corporations.read_starbases.v1';
 
     /**
      * @return array<int, string>
