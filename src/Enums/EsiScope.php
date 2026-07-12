@@ -63,6 +63,12 @@ enum EsiScope: string
     case ReadCharacterOrders = 'esi-markets.read_character_orders.v1';
     case ReadCorporationOrders = 'esi-markets.read_corporation_orders.v1';
     case ReadLoyaltyPoints = 'esi-characters.read_loyalty.v1';
+    case ReadCalendarEvents = 'esi-calendar.read_calendar_events.v1';
+    case RespondCalendarEvents = 'esi-calendar.respond_calendar_events.v1';
+    case ReadFittings = 'esi-fittings.read_fittings.v1';
+    case WriteFittings = 'esi-fittings.write_fittings.v1';
+    case ManagePlanets = 'esi-planets.manage_planets.v1';
+    case ReadCustomsOffices = 'esi-planets.read_customs_offices.v1';
 
     /**
      * @return array<int, string>
