@@ -51,6 +51,8 @@ enum EsiScope: string
     case ReadSkillQueue = 'esi-skills.read_skillqueue.v1';
     case ReadClones = 'esi-clones.read_clones.v1';
     case ReadImplants = 'esi-clones.read_implants.v1';
+    case ReadFleet = 'esi-fleets.read_fleet.v1';
+    case WriteFleet = 'esi-fleets.write_fleet.v1';
 
     /**
      * @return array<int, string>
