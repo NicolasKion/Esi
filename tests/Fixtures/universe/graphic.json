@@ -1,0 +1,10 @@
+{
+    "collision_file": "string",
+    "graphic_file": "string",
+    "graphic_id": 90000001,
+    "icon_folder": "string",
+    "sof_dna": "string",
+    "sof_fation_name": "string",
+    "sof_hull_name": "string",
+    "sof_race_name": "string"
+}

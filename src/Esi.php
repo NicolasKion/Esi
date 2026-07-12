@@ -8,10 +8,14 @@ namespace NicolasKion\Esi;
 
 use NicolasKion\Esi\DTO\Alliance;
 use NicolasKion\Esi\DTO\AllianceIcons;
+use NicolasKion\Esi\DTO\Ancestry;
 use NicolasKion\Esi\DTO\Asset;
 use NicolasKion\Esi\DTO\AssetName;
+use NicolasKion\Esi\DTO\AsteroidBelt;
+use NicolasKion\Esi\DTO\Bloodline;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterContract;
+use NicolasKion\Esi\DTO\Constellation;
 use NicolasKion\Esi\DTO\Contact;
 use NicolasKion\Esi\DTO\ContactLabel;
 use NicolasKion\Esi\DTO\Corporation;
@@ -22,23 +26,39 @@ use NicolasKion\Esi\DTO\DogmaEffect;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
+use NicolasKion\Esi\DTO\Faction;
+use NicolasKion\Esi\DTO\Graphic;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\MarketGroup;
 use NicolasKion\Esi\DTO\MarketHistory;
 use NicolasKion\Esi\DTO\MarketOrder;
 use NicolasKion\Esi\DTO\MarketPrice;
+use NicolasKion\Esi\DTO\Moon;
 use NicolasKion\Esi\DTO\Name;
 use NicolasKion\Esi\DTO\Online;
+use NicolasKion\Esi\DTO\Planet;
 use NicolasKion\Esi\DTO\PublicContract;
 use NicolasKion\Esi\DTO\PublicContractBid;
 use NicolasKion\Esi\DTO\PublicContractItem;
+use NicolasKion\Esi\DTO\Race;
 use NicolasKion\Esi\DTO\RaidableSkyhook;
+use NicolasKion\Esi\DTO\Region;
+use NicolasKion\Esi\DTO\Schematic;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\Sovereignty;
+use NicolasKion\Esi\DTO\Star;
+use NicolasKion\Esi\DTO\Stargate;
+use NicolasKion\Esi\DTO\Station;
 use NicolasKion\Esi\DTO\Status;
 use NicolasKion\Esi\DTO\Structure;
+use NicolasKion\Esi\DTO\System;
+use NicolasKion\Esi\DTO\SystemJumps;
+use NicolasKion\Esi\DTO\SystemKills;
+use NicolasKion\Esi\DTO\UniverseCategory;
+use NicolasKion\Esi\DTO\UniverseGroup;
 use NicolasKion\Esi\DTO\UniverseIds;
+use NicolasKion\Esi\DTO\UniverseType;
 use NicolasKion\Esi\DTO\WalletJournalEntry;
 use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\EsiScope;
@@ -54,13 +74,17 @@ use NicolasKion\Esi\Requests\GetAllianceCorporationsRequest;
 use NicolasKion\Esi\Requests\GetAllianceIconsRequest;
 use NicolasKion\Esi\Requests\GetAllianceRequest;
 use NicolasKion\Esi\Requests\GetAlliancesRequest;
+use NicolasKion\Esi\Requests\GetAncestriesRequest;
 use NicolasKion\Esi\Requests\GetAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetAssetsRequest;
+use NicolasKion\Esi\Requests\GetAsteroidBeltRequest;
+use NicolasKion\Esi\Requests\GetBloodlinesRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
+use NicolasKion\Esi\Requests\GetConstellationRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContactLabelsRequest;
@@ -75,6 +99,8 @@ use NicolasKion\Esi\Requests\GetDogmaEffectsRequest;
 use NicolasKion\Esi\Requests\GetDogmaItemAttributesRequest;
 use NicolasKion\Esi\Requests\GetEveMailRequest;
 use NicolasKion\Esi\Requests\GetEveMailsRequest;
+use NicolasKion\Esi\Requests\GetFactionsRequest;
+use NicolasKion\Esi\Requests\GetGraphicRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
@@ -84,17 +110,38 @@ use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
 use NicolasKion\Esi\Requests\GetMarketOrdersRequest;
 use NicolasKion\Esi\Requests\GetMarketPricesRequest;
 use NicolasKion\Esi\Requests\GetMarketTypesRequest;
+use NicolasKion\Esi\Requests\GetMoonRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
 use NicolasKion\Esi\Requests\GetOnlineRequest;
+use NicolasKion\Esi\Requests\GetPlanetRequest;
 use NicolasKion\Esi\Requests\GetPublicContractBidsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractItemsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractsRequest;
 use NicolasKion\Esi\Requests\GetPublicStructuresRequest;
+use NicolasKion\Esi\Requests\GetRacesRequest;
 use NicolasKion\Esi\Requests\GetRaidableSkyhooksRequest;
+use NicolasKion\Esi\Requests\GetRegionRequest;
+use NicolasKion\Esi\Requests\GetSchematicRequest;
 use NicolasKion\Esi\Requests\GetShipRequest;
 use NicolasKion\Esi\Requests\GetSovereigntyRequest;
+use NicolasKion\Esi\Requests\GetStargateRequest;
+use NicolasKion\Esi\Requests\GetStarRequest;
+use NicolasKion\Esi\Requests\GetStationRequest;
 use NicolasKion\Esi\Requests\GetStructureMarketOrdersRequest;
 use NicolasKion\Esi\Requests\GetStructureRequest;
+use NicolasKion\Esi\Requests\GetSystemJumpsRequest;
+use NicolasKion\Esi\Requests\GetSystemKillsRequest;
+use NicolasKion\Esi\Requests\GetSystemRequest;
+use NicolasKion\Esi\Requests\GetUniverseCategoriesRequest;
+use NicolasKion\Esi\Requests\GetUniverseCategoryRequest;
+use NicolasKion\Esi\Requests\GetUniverseConstellationsRequest;
+use NicolasKion\Esi\Requests\GetUniverseGraphicsRequest;
+use NicolasKion\Esi\Requests\GetUniverseGroupRequest;
+use NicolasKion\Esi\Requests\GetUniverseGroupsRequest;
+use NicolasKion\Esi\Requests\GetUniverseRegionsRequest;
+use NicolasKion\Esi\Requests\GetUniverseSystemsRequest;
+use NicolasKion\Esi\Requests\GetUniverseTypeRequest;
+use NicolasKion\Esi\Requests\GetUniverseTypesRequest;
 use NicolasKion\Esi\Requests\GetWalletJournalRequest;
 use NicolasKion\Esi\Requests\GetWarRequest;
 use NicolasKion\Esi\Requests\OpenContractRequest;
@@ -928,6 +975,357 @@ class Esi
     {
         $connector = new Connector;
         $request = new Requests\GetStatusRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of category IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseCategories(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseCategoriesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a category.
+     *
+     * @return EsiResult<UniverseCategory>
+     */
+    public function getUniverseCategory(int $category_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseCategoryRequest($category_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of group IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseGroups(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseGroupsRequest;
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves information about a group.
+     *
+     * @return EsiResult<UniverseGroup>
+     */
+    public function getUniverseGroup(int $group_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseGroupRequest($group_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of type IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseTypes(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseTypesRequest;
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves information about a type.
+     *
+     * @return EsiResult<UniverseType>
+     */
+    public function getUniverseType(int $type_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseTypeRequest($type_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of constellation IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseConstellations(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseConstellationsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a constellation.
+     *
+     * @return EsiResult<Constellation>
+     */
+    public function getConstellation(int $constellation_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetConstellationRequest($constellation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of graphic IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseGraphics(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseGraphicsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a graphic.
+     *
+     * @return EsiResult<Graphic>
+     */
+    public function getGraphic(int $graphic_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetGraphicRequest($graphic_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of region IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseRegions(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseRegionsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a region.
+     *
+     * @return EsiResult<Region>
+     */
+    public function getRegion(int $region_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetRegionRequest($region_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of solar system IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getUniverseSystems(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetUniverseSystemsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a solar system.
+     *
+     * @return EsiResult<System>
+     */
+    public function getSystem(int $system_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetSystemRequest($system_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a station.
+     *
+     * @return EsiResult<Station>
+     */
+    public function getStation(int $station_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetStationRequest($station_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a stargate.
+     *
+     * @return EsiResult<Stargate>
+     */
+    public function getStargate(int $stargate_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetStargateRequest($stargate_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a star.
+     *
+     * @return EsiResult<Star>
+     */
+    public function getStar(int $star_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetStarRequest($star_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a planet.
+     *
+     * @return EsiResult<Planet>
+     */
+    public function getPlanet(int $planet_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetPlanetRequest($planet_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a moon.
+     *
+     * @return EsiResult<Moon>
+     */
+    public function getMoon(int $moon_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMoonRequest($moon_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about an asteroid belt.
+     *
+     * @return EsiResult<AsteroidBelt>
+     */
+    public function getAsteroidBelt(int $asteroid_belt_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetAsteroidBeltRequest($asteroid_belt_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a schematic.
+     *
+     * @return EsiResult<Schematic>
+     */
+    public function getSchematic(int $schematic_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetSchematicRequest($schematic_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of character ancestries.
+     *
+     * @return EsiResult<array<int, Ancestry>>
+     */
+    public function getAncestries(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetAncestriesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of character bloodlines.
+     *
+     * @return EsiResult<array<int, Bloodline>>
+     */
+    public function getBloodlines(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetBloodlinesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of factions.
+     *
+     * @return EsiResult<array<int, Faction>>
+     */
+    public function getFactions(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFactionsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of character races.
+     *
+     * @return EsiResult<array<int, Race>>
+     */
+    public function getRaces(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetRacesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the number of jumps per solar system, as seen in the last hour.
+     *
+     * @return EsiResult<array<int, SystemJumps>>
+     */
+    public function getSystemJumps(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetSystemJumpsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the number of ship, pod, and NPC kills per solar system, as seen in the last hour.
+     *
+     * @return EsiResult<array<int, SystemKills>>
+     */
+    public function getSystemKills(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetSystemKillsRequest;
 
         return $connector->send($request);
     }
