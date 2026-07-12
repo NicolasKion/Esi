@@ -13,7 +13,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   release:
@@ -25,6 +24,9 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: main
+          # Deploy key: it's in the branch ruleset's bypass list, so the
+          # changelog commit below can be pushed straight to main.
+          ssh-key: ${{ secrets.COMMIT_SSH_KEY }}
 
       - name: Create release
         uses: softprops/action-gh-release@v3
@@ -51,24 +53,11 @@ jobs:
           latest-version: ${{ inputs.tag || github.ref_name }}
           release-notes: ${{ steps.notes.outputs.body }}
 
-      # main's branch ruleset requires every change to go through a pull request,
-      # so the changelog update is opened as a PR rather than pushed directly.
-      - name: Open changelog PR
-        uses: peter-evans/create-pull-request@v7
+      # The deploy key is a bypass actor on the branch ruleset, so the changelog
+      # commit can go straight to main without a pull request.
+      - name: Commit updated CHANGELOG
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          # A PAT makes the PR's required status checks run (and lets it
-          # auto-merge). PRs opened with the default GITHUB_TOKEN don't trigger
-          # CI, so without RELEASE_PAT a maintainer has to merge it manually.
-          token: ${{ secrets.RELEASE_PAT || secrets.GITHUB_TOKEN }}
-          base: main
-          branch: changelog/${{ inputs.tag || github.ref_name }}
-          add-paths: CHANGELOG.md
-          commit-message: "docs: update changelog for ${{ inputs.tag || github.ref_name }}"
-          title: "docs: update changelog for ${{ inputs.tag || github.ref_name }}"
-          body: |
-            Automated changelog update for **${{ inputs.tag || github.ref_name }}**.
-
-            The release workflow can't commit to `main` directly (the branch
-            ruleset requires a pull request), so it opens this with the
-            generated release notes instead.
-          delete-branch: true
+          branch: main
+          commit_message: Update CHANGELOG
+          file_pattern: CHANGELOG.md
