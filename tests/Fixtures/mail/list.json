@@ -1,0 +1,18 @@
+[
+    {
+        "from": 90000001,
+        "is_read": true,
+        "labels": [
+            90000001
+        ],
+        "mail_id": 90000001,
+        "recipients": [
+            {
+                "recipient_id": 90000001,
+                "recipient_type": "alliance"
+            }
+        ],
+        "subject": "string",
+        "timestamp": "2026-06-09T12:00:00Z"
+    }
+]

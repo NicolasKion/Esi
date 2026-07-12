@@ -1,0 +1,14 @@
+{
+    "hangar": [
+        {
+            "division": 90000001,
+            "name": "string"
+        }
+    ],
+    "wallet": [
+        {
+            "division": 90000001,
+            "name": "string"
+        }
+    ]
+}

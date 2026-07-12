@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
 /**
  *The online status of a character
  */
-readonly class Status implements FromArray
+readonly class Status extends Dto
 {
     public function __construct(
         public int $players,
@@ -18,13 +18,13 @@ readonly class Status implements FromArray
         public bool $vip,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            players: $data['players'] ?? 0,
-            server_version: $data['server_version'],
-            start_time: $data['start_time'],
-            vip: $data['vip'] ?? false,
+            players: $data->integer('players', 0),
+            server_version: $data->string('server_version', ''),
+            start_time: $data->string('start_time', ''),
+            vip: $data->boolean('vip', false),
         );
     }
 }

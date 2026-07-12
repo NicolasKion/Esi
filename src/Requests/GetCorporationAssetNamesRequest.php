@@ -10,8 +10,14 @@ use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<array<int, AssetName>>
+ */
 class GetCorporationAssetNamesRequest extends Request implements WithBody
 {
+    /**
+     * @param  array<int, int>  $ids
+     */
     public function __construct(
         public int $corporation_id,
         public array $ids
@@ -24,11 +30,17 @@ class GetCorporationAssetNamesRequest extends Request implements WithBody
         return sprintf('/corporations/%d/assets/names/', $this->corporation_id);
     }
 
+    /**
+     * @return array<int, AssetName>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(AssetName::fromArray(...), $data ?? []);
+        return AssetName::hydrateList($data);
     }
 
+    /**
+     * @return array<int, int>
+     */
     public function getBody(): array
     {
         return $this->ids;

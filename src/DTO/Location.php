@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
 /**
  *The location of a character
  */
-readonly class Location implements FromArray
+readonly class Location extends Dto
 {
     public function __construct(
         public int $solar_system_id,
@@ -17,12 +17,12 @@ readonly class Location implements FromArray
         public ?int $structure_id = null,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            solar_system_id: $data['solar_system_id'],
-            station_id: $data['station_id'] ?? null,
-            structure_id: $data['structure_id'] ?? null,
+            solar_system_id: $data->integer('solar_system_id', 0),
+            station_id: $data->integer('station_id'),
+            structure_id: $data->integer('structure_id'),
         );
     }
 }

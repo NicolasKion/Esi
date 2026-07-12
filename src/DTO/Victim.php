@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-class Victim
+use NicolasKion\Esi\Support\Data;
+
+readonly class Victim extends Dto
 {
     /**
-     * @param  Item[]|null  $items
+     * @param  array<int, Item>|null  $items
      */
     public function __construct(
         public int $damage_taken,
@@ -20,20 +22,17 @@ class Victim
         public ?Position $position = null,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
-        $items = isset($data['items']) ? array_map(fn ($item) => Item::fromArray($item), $data['items']) : null;
-        $position = isset($data['position']) ? Position::fromArray($data['position']) : null;
-
         return new self(
-            damage_taken: $data['damage_taken'],
-            ship_type_id: $data['ship_type_id'] ?? null,
-            character_id: $data['character_id'] ?? null,
-            corporation_id: $data['corporation_id'] ?? null,
-            alliance_id: $data['alliance_id'] ?? null,
-            faction_id: $data['faction_id'] ?? null,
-            items: $items,
-            position: $position,
+            damage_taken: $data->integer('damage_taken', 0),
+            ship_type_id: $data->integer('ship_type_id'),
+            character_id: $data->integer('character_id'),
+            corporation_id: $data->integer('corporation_id'),
+            alliance_id: $data->integer('alliance_id'),
+            faction_id: $data->integer('faction_id'),
+            items: $data->has('items') ? $data->list('items', Item::fromData(...)) : null,
+            position: $data->has('position') ? Position::fromData($data->object('position')) : null,
         );
     }
 }

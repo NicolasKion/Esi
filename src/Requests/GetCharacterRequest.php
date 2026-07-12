@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Character;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Character>
+ */
 class GetCharacterRequest extends Request
 {
     public function __construct(public int $id) {}
@@ -19,6 +22,6 @@ class GetCharacterRequest extends Request
 
     public function createDto(Response $response, mixed $data): Character
     {
-        return Character::fromArray($data);
+        return Character::hydrate($data);
     }
 }

@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Killmail>
+ */
 class GetKillmailRequest extends Request
 {
     /**
@@ -27,6 +30,6 @@ class GetKillmailRequest extends Request
 
     public function createDto(Response $response, mixed $data): Killmail
     {
-        return Killmail::fromArray($data);
+        return Killmail::hydrate($data);
     }
 }

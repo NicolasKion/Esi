@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-class Ally implements FromArray
+readonly class Ally extends Dto
 {
     public function __construct(
         public ?int $alliance_id,
         public ?int $corporation_id,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            alliance_id: $data['alliance_id'] ?? null,
-            corporation_id: $data['corporation_id'] ?? null,
+            alliance_id: $data->integer('alliance_id'),
+            corporation_id: $data->integer('corporation_id'),
         );
     }
 }

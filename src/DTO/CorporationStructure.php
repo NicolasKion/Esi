@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class CorporationStructure implements FromArray
+readonly class CorporationStructure extends Dto
 {
     /**
-     * @param  CorporationStructureService[]  $services
+     * @param  array<int, CorporationStructureService>  $services
      */
     public function __construct(
         public int $corporation_id,
@@ -29,24 +29,24 @@ readonly class CorporationStructure implements FromArray
         public array $services,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            corporation_id: $data['corporation_id'],
-            profile_id: $data['profile_id'],
-            state: $data['state'],
-            structure_id: $data['structure_id'],
-            system_id: $data['system_id'],
-            type_id: $data['type_id'],
-            name: $data['name'] ?? null,
-            fuel_expires: $data['fuel_expires'] ?? null,
-            reinforce_hour: $data['reinforce_hour'] ?? null,
-            next_reinforce_hour: $data['next_reinforce_hour'] ?? null,
-            next_reinforce_apply: $data['next_reinforce_apply'] ?? null,
-            state_timer_start: $data['state_timer_start'] ?? null,
-            state_timer_end: $data['state_timer_end'] ?? null,
-            unanchors_at: $data['unanchors_at'] ?? null,
-            services: array_map(CorporationStructureService::fromArray(...), $data['services'] ?? []),
+            corporation_id: $data->integer('corporation_id', 0),
+            profile_id: $data->integer('profile_id', 0),
+            state: $data->string('state', ''),
+            structure_id: $data->integer('structure_id', 0),
+            system_id: $data->integer('system_id', 0),
+            type_id: $data->integer('type_id', 0),
+            name: $data->string('name'),
+            fuel_expires: $data->string('fuel_expires'),
+            reinforce_hour: $data->integer('reinforce_hour'),
+            next_reinforce_hour: $data->integer('next_reinforce_hour'),
+            next_reinforce_apply: $data->string('next_reinforce_apply'),
+            state_timer_start: $data->string('state_timer_start'),
+            state_timer_end: $data->string('state_timer_end'),
+            unanchors_at: $data->string('unanchors_at'),
+            services: $data->list('services', CorporationStructureService::fromData(...)),
         );
     }
 }

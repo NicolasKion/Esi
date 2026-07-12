@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Ship>
+ */
 class GetShipRequest extends Request
 {
     /**
@@ -26,6 +29,6 @@ class GetShipRequest extends Request
 
     public function createDto(Response $response, mixed $data): Ship
     {
-        return Ship::fromArray($data);
+        return Ship::hydrate($data);
     }
 }

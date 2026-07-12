@@ -9,6 +9,9 @@ use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<War>
+ */
 class GetWarRequest extends Request
 {
     public function __construct(public int $war_id) {}
@@ -25,6 +28,6 @@ class GetWarRequest extends Request
 
     public function createDto(Response $response, mixed $data): War
     {
-        return War::fromArray($data);
+        return War::hydrate($data);
     }
 }

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class Position implements FromArray
+readonly class Position extends Dto
 {
     public function __construct(
         public float $x,
@@ -16,12 +16,12 @@ readonly class Position implements FromArray
         //
     }
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            $data['x'],
-            $data['y'],
-            $data['z']
+            x: $data->float('x', 0.0),
+            y: $data->float('y', 0.0),
+            z: $data->float('z', 0.0),
         );
     }
 }

@@ -9,11 +9,20 @@ use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<null>
+ */
 class UpdateEveMailRequest extends Request implements WithBody
 {
+    /**
+     * @param  array<int, int>|null  $labels
+     */
     public function __construct(public int $character_id, public int $mail_id, public bool $read = true, public ?array $labels = null) {}
 
-    public function getBody(): mixed
+    /**
+     * @return array<string, mixed>
+     */
+    public function getBody(): array
     {
         $data = [
             'read' => $this->read,
@@ -36,9 +45,9 @@ class UpdateEveMailRequest extends Request implements WithBody
         return RequestMethod::PUT;
     }
 
-    public function createDto(Response $response, mixed $data): mixed
+    public function createDto(Response $response, mixed $data): null
     {
-        return $data;
+        return null;
     }
 
     public function shouldRetry(Response $response): bool

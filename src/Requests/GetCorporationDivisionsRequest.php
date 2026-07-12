@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\CorporationDivisions;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<CorporationDivisions>
+ */
 class GetCorporationDivisionsRequest extends Request
 {
     public function __construct(public int $corporation_id) {}
@@ -19,6 +22,6 @@ class GetCorporationDivisionsRequest extends Request
 
     public function createDto(Response $response, mixed $data): CorporationDivisions
     {
-        return CorporationDivisions::fromArray($data);
+        return CorporationDivisions::hydrate($data);
     }
 }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\DTO;
 
 use NicolasKion\Esi\Enums\NameCategory;
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class Name implements FromArray
+readonly class Name extends Dto
 {
     public function __construct(
         public NameCategory $category,
@@ -17,12 +17,12 @@ readonly class Name implements FromArray
         //
     }
 
-    public static function fromArray(array $data): FromArray
+    public static function fromData(Data $data): self
     {
         return new self(
-            NameCategory::from($data['category']),
-            $data['id'],
-            $data['name'],
+            category: NameCategory::from($data->string('category', '')),
+            id: $data->integer('id', 0),
+            name: $data->string('name', ''),
         );
     }
 }

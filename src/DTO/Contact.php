@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\DTO;
 
 use NicolasKion\Esi\Enums\ContactType;
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class Contact implements FromArray
+readonly class Contact extends Dto
 {
     /**
-     * @param  int[]  $label_ids
+     * @param  array<int, int>  $label_ids
      */
     public function __construct(
         public int $contact_id,
@@ -21,15 +21,15 @@ readonly class Contact implements FromArray
         public array $label_ids,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            contact_id: $data['contact_id'],
-            contact_type: ContactType::from($data['contact_type']),
-            standing: (float) $data['standing'],
-            is_watched: $data['is_watched'] ?? null,
-            is_blocked: $data['is_blocked'] ?? null,
-            label_ids: $data['label_ids'] ?? [],
+            contact_id: $data->integer('contact_id', 0),
+            contact_type: ContactType::from($data->string('contact_type', '')),
+            standing: $data->float('standing', 0.0),
+            is_watched: $data->boolean('is_watched'),
+            is_blocked: $data->boolean('is_blocked'),
+            label_ids: $data->integers('label_ids'),
         );
     }
 }

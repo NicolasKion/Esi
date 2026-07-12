@@ -1,0 +1,12 @@
+{
+    "skyhooks": [
+        {
+            "planet_id": 40000002,
+            "solar_system_id": 30000001,
+            "theft_vulnerability": {
+                "end": "2026-02-23T16:00:00Z",
+                "start": "2026-02-23T12:00:00Z"
+            }
+        }
+    ]
+}

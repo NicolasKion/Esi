@@ -10,8 +10,14 @@ use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<array<int, Name>>
+ */
 class GetNamesRequest extends Request implements WithBody
 {
+    /**
+     * @param  array<int, int>  $ids
+     */
     public function __construct(public array $ids) {}
 
     public function resolveEndpoint(): string
@@ -19,6 +25,9 @@ class GetNamesRequest extends Request implements WithBody
         return '/universe/names/';
     }
 
+    /**
+     * @return array<int, int>
+     */
     public function getBody(): array
     {
         return $this->ids;
@@ -29,8 +38,11 @@ class GetNamesRequest extends Request implements WithBody
         return RequestMethod::POST;
     }
 
+    /**
+     * @return array<int, Name>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(Name::fromArray(...), $data);
+        return Name::hydrateList($data);
     }
 }

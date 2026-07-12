@@ -6,7 +6,6 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi;
 
-use Illuminate\Support\Collection;
 use NicolasKion\Esi\DTO\Alliance;
 use NicolasKion\Esi\DTO\Asset;
 use NicolasKion\Esi\DTO\AssetName;
@@ -89,7 +88,7 @@ class Esi
      * Retrieves public contracts for a given region.
      *
      * @param  int  $region_id  The ID of the region.
-     * @return EsiResult<PublicContract[]> Returns an instance of EsiResult that contains the retrieved public contracts.
+     * @return EsiResult<array<int, PublicContract>> Returns an instance of EsiResult that contains the retrieved public contracts.
      */
     public function getPublicContracts(int $region_id): EsiResult
     {
@@ -103,7 +102,7 @@ class Esi
      * Retrieves public contract items for a given contract.
      *
      * @param  int  $contract_id  The ID of the contract.
-     * @return EsiResult<PublicContractItem[]> Returns an instance of EsiResult that contains the retrieved public contract items.
+     * @return EsiResult<array<int, PublicContractItem>> Returns an instance of EsiResult that contains the retrieved public contract items.
      */
     public function getPublicContractItems(int $contract_id): EsiResult
     {
@@ -117,7 +116,7 @@ class Esi
      * Retrieves public contract bids for a given contract.
      *
      * @param  int  $contract_id  The ID of the contract.
-     * @return EsiResult<PublicContractBid[]> Returns an instance of EsiResult that contains the retrieved public contract bids.
+     * @return EsiResult<array<int, PublicContractBid>> Returns an instance of EsiResult that contains the retrieved public contract bids.
      */
     public function getPublicContractBids(int $contract_id): EsiResult
     {
@@ -131,7 +130,7 @@ class Esi
      * Retrieves character affiliations for a given list of IDs.
      *
      * @param  array<int>  $ids  The list of IDs.
-     * @return EsiResult<CharacterAffiliation[]> Returns an instance of EsiResult that contains the retrieved character affiliations.
+     * @return EsiResult<array<int, CharacterAffiliation>> Returns an instance of EsiResult that contains the retrieved character affiliations.
      */
     public function getAffiliations(array $ids): EsiResult
     {
@@ -161,7 +160,7 @@ class Esi
      *
      * @param  int  $region_id  The ID of the region.
      * @param  int  $type_id  The type ID.
-     * @return EsiResult<MarketHistory[]> Returns an instance of EsiResult that contains the retrieved market history.
+     * @return EsiResult<array<int, MarketHistory>> Returns an instance of EsiResult that contains the retrieved market history.
      */
     public function getMarketHistory(int $region_id, int $type_id): EsiResult
     {
@@ -175,7 +174,7 @@ class Esi
      * Retrieves names for a given list of IDs.
      *
      * @param  array<int>  $ids  The list of IDs.
-     * @return EsiResult<Name[]> Returns an instance of EsiResult that contains the retrieved names.
+     * @return EsiResult<array<int, Name>> Returns an instance of EsiResult that contains the retrieved names.
      */
     public function getNames(array $ids): EsiResult
     {
@@ -204,7 +203,7 @@ class Esi
     /**
      * Retrieves public structures.
      *
-     * @return EsiResult<int[]> Returns an instance of EsiResult that contains the retrieved public structures.
+     * @return EsiResult<array<int, int>> Returns an instance of EsiResult that contains the retrieved public structures.
      */
     public function getPublicStructures(): EsiResult
     {
@@ -228,17 +227,10 @@ class Esi
         return $connector->send($request);
     }
 
-    private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector
-    {
-        $token = $character->getEsiTokenWithScope($scope);
-
-        return new Connector($token);
-    }
-
     /**
      * Retrieves the wallet journal for a given character.
      *
-     * @return EsiResult<WalletJournalEntry[]> Returns an instance of EsiResult that contains the retrieved wallet journal.
+     * @return EsiResult<array<int, WalletJournalEntry>> Returns an instance of EsiResult that contains the retrieved wallet journal.
      */
     public function getWalletJournal(Character $character): EsiResult
     {
@@ -251,7 +243,7 @@ class Esi
     /**
      * Retrieves the EVE mails for a given character.
      *
-     * @return EsiResult<EveMail> Returns an instance of EsiResult that contains the retrieved EVE mails.
+     * @return EsiResult<array<int, EveMail>> Returns an instance of EsiResult that contains the retrieved EVE mails.
      */
     public function getEveMails(Character $character): EsiResult
     {
@@ -277,7 +269,7 @@ class Esi
     /**
      * Retrieves the assets for a given character.
      *
-     * @return EsiResult<Collection<Asset>>
+     * @return EsiResult<array<int, Asset>>
      */
     public function getAssets(Character $character): EsiResult
     {
@@ -291,11 +283,11 @@ class Esi
      * Retrieves the asset names for a given character.
      *
      * @param  array<int>  $ids
-     * @return EsiResult<AssetName[]>
+     * @return EsiResult<array<int, AssetName>>
      */
     public function getAssetNames(Character $character, array $ids): EsiResult
     {
-        /** @var AssetName[] $names */
+        /** @var array<int, AssetName> $names */
         $names = [];
 
         if ($ids === []) {
@@ -314,7 +306,6 @@ class Esi
                 return $result;
             }
 
-            /** @var AssetName[] $names */
             $names = [...$names, ...$result->data];
         }
 
@@ -324,7 +315,7 @@ class Esi
     /**
      * Retrieves the corporation assets for a given character.
      *
-     * @return EsiResult<Collection<Asset>>
+     * @return EsiResult<array<int, Asset>>
      */
     public function getCorporationAssets(Character $character): EsiResult
     {
@@ -338,12 +329,12 @@ class Esi
      * Retrieves the corporation asset names for a given character.
      *
      * @param  array<int>  $ids
-     * @return EsiResult<AssetName[]>
+     * @return EsiResult<array<int, AssetName>>
      */
     public function getCorporationAssetNames(Character $character, array $ids): EsiResult
     {
 
-        /** @var AssetName[] $names */
+        /** @var array<int, AssetName> $names */
         $names = [];
 
         if ($ids === []) {
@@ -355,8 +346,7 @@ class Esi
                 return $this->getCorporationAssetNames($character, $chunk);
             });
 
-            /** @var AssetName[] $names */
-            $names = $results->map(fn (EsiResult $result) => $result->data)->flatten()->all();
+            $names = $results->flatMap(fn (EsiResult $result) => $result->data)->all();
 
             return new EsiResult(data: $names);
         }
@@ -378,7 +368,6 @@ class Esi
             $first_result = $this->getCorporationAssetNames($character, $first);
             $second_result = $this->getCorporationAssetNames($character, $second);
 
-            /** @var AssetName[] $names */
             $names = [...$first_result->data, ...$second_result->data];
 
             return new EsiResult(data: $names);
@@ -416,6 +405,7 @@ class Esi
     /**
      * Sends a mail to a character.
      *
+     * @param  array<int, array<string, mixed>>  $recipients
      * @return EsiResult<int>
      */
     public function sendMail(Character $character, array $recipients, string $subject, string $body): EsiResult
@@ -428,7 +418,7 @@ class Esi
     /**
      * Retrieves the contracts for a given character.
      *
-     * @return EsiResult<Collection<CharacterContract>>
+     * @return EsiResult<array<int, CharacterContract>>
      */
     public function getCharacterContracts(Character $character): EsiResult
     {
@@ -440,7 +430,7 @@ class Esi
     /**
      * Retrieves the contract items for a given character and contract.
      *
-     * @return EsiResult<Collection<PublicContractItem>>
+     * @return EsiResult<array<int, PublicContractItem>>
      */
     public function getCharacterContractItems(Character $character, int $contract_id): EsiResult
     {
@@ -478,7 +468,7 @@ class Esi
     /**
      * Retrieves corporation structures.
      *
-     * @return EsiResult<CorporationStructure[]>
+     * @return EsiResult<array<int, CorporationStructure>>
      */
     public function getCorporationStructures(Character $character, int $corporation_id): EsiResult
     {
@@ -504,7 +494,7 @@ class Esi
     /**
      * Retrieves all alliances
      *
-     * @return EsiResult<int[]>
+     * @return EsiResult<array<int, int>>
      */
     public function getAlliances(): EsiResult
     {
@@ -517,7 +507,7 @@ class Esi
     /**
      * Retrieves the contacts for a given character.
      *
-     * @return EsiResult<Contact[]>
+     * @return EsiResult<array<int, Contact>>
      */
     public function getCharacterContacts(Character $character): EsiResult
     {
@@ -529,7 +519,7 @@ class Esi
     /**
      * Retrieves the contact labels for a given character.
      *
-     * @return EsiResult<ContactLabel[]>
+     * @return EsiResult<array<int, ContactLabel>>
      */
     public function getCharacterContactLabels(Character $character): EsiResult
     {
@@ -545,7 +535,7 @@ class Esi
      * @param  float  $standing  The standing to assign (-10 to 10).
      * @param  int[]|null  $label_ids  Optional labels to apply to the new contacts.
      * @param  bool  $watched  Whether the contacts should be watched (characters only).
-     * @return EsiResult<int[]> The IDs of the contacts that were added.
+     * @return EsiResult<array<int, int>> The IDs of the contacts that were added.
      */
     public function addCharacterContacts(Character $character, array $contact_ids, float $standing, ?array $label_ids = null, bool $watched = false): EsiResult
     {
@@ -586,7 +576,7 @@ class Esi
     /**
      * Retrieves the contacts for a given corporation.
      *
-     * @return EsiResult<Contact[]>
+     * @return EsiResult<array<int, Contact>>
      */
     public function getCorporationContacts(Character $character, int $corporation_id): EsiResult
     {
@@ -598,7 +588,7 @@ class Esi
     /**
      * Retrieves the contact labels for a given corporation.
      *
-     * @return EsiResult<ContactLabel[]>
+     * @return EsiResult<array<int, ContactLabel>>
      */
     public function getCorporationContactLabels(Character $character, int $corporation_id): EsiResult
     {
@@ -610,7 +600,7 @@ class Esi
     /**
      * Retrieves the contacts for a given alliance.
      *
-     * @return EsiResult<Contact[]>
+     * @return EsiResult<array<int, Contact>>
      */
     public function getAllianceContacts(Character $character, int $alliance_id): EsiResult
     {
@@ -622,7 +612,7 @@ class Esi
     /**
      * Retrieves the contact labels for a given alliance.
      *
-     * @return EsiResult<ContactLabel[]>
+     * @return EsiResult<array<int, ContactLabel>>
      */
     public function getAllianceContactLabels(Character $character, int $alliance_id): EsiResult
     {
@@ -634,7 +624,8 @@ class Esi
     /**
      * Updates an EVE mail
      *
-     * @param  array<int>|null  $labels
+     * @param  array<int, int>|null  $labels
+     * @return EsiResult<null>
      */
     public function updateEveMail(Character $character, int $mail_id, bool $read = true, ?array $labels = null): EsiResult
     {
@@ -660,7 +651,7 @@ class Esi
     /**
      * Get character location
      *
-     * @returns EsiResult<Location>
+     * @return EsiResult<Location>
      */
     public function getLocation(Character $character): EsiResult
     {
@@ -673,7 +664,7 @@ class Esi
     /**
      * Get character online status
      *
-     * @returns EsiResult<Online>
+     * @return EsiResult<Online>
      */
     public function getOnline(Character $character): EsiResult
     {
@@ -686,7 +677,7 @@ class Esi
     /**
      * Get character ship
      *
-     * @returns EsiResult<Ship>
+     * @return EsiResult<Ship>
      */
     public function getShip(Character $character): EsiResult
     {
@@ -699,7 +690,7 @@ class Esi
     /**
      * Get the sovereignty of all systems
      *
-     * @returns EsiResult<Sovereignty[]>
+     * @return EsiResult<array<int, Sovereignty>>
      */
     public function getSovereignty(): EsiResult
     {
@@ -712,7 +703,7 @@ class Esi
     /**
      * Get a killmail
      *
-     * @returns EsiResult<Killmail>
+     * @return EsiResult<Killmail>
      */
     public function getKillmail(int $killmail_id, string $killmail_hash): EsiResult
     {
@@ -724,6 +715,8 @@ class Esi
 
     /**
      * Set a waypoint for a character
+     *
+     * @return EsiResult<null>
      */
     public function setWaypoint(Character $character, int $destination_id, bool $add_to_beginning = false, bool $clear_other_waypoints = false): EsiResult
     {
@@ -741,7 +734,7 @@ class Esi
     /**
      * Retrieves a listing of all Skyhooks that currently or will shortly be raidable.
      *
-     * @return EsiResult<RaidableSkyhook[]>
+     * @return EsiResult<array<int, RaidableSkyhook>>
      */
     public function getRaidableSkyhooks(): EsiResult
     {
@@ -754,7 +747,7 @@ class Esi
     /**
      * Get the current status of the EVE Online server.
      *
-     * @returns EsiResult<Status>
+     * @return EsiResult<Status>
      */
     public function getStatus(): EsiResult
     {
@@ -762,5 +755,12 @@ class Esi
         $request = new Requests\GetStatusRequest;
 
         return $connector->send($request);
+    }
+
+    private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector
+    {
+        $token = $character->getEsiTokenWithScope($scope);
+
+        return new Connector($token);
     }
 }

@@ -1,0 +1,16 @@
+{
+    "body": "string",
+    "from": 90000001,
+    "labels": [
+        90000001
+    ],
+    "read": true,
+    "recipients": [
+        {
+            "recipient_id": 90000001,
+            "recipient_type": "alliance"
+        }
+    ],
+    "subject": "string",
+    "timestamp": "2026-06-09T12:00:00Z"
+}

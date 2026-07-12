@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-class Killmail
+use NicolasKion\Esi\Support\Data;
+
+readonly class Killmail extends Dto
 {
     /**
-     * @param  Attacker[]  $attackers
+     * @param  array<int, Attacker>  $attackers
      */
     public function __construct(
         public array $attackers,
@@ -19,19 +21,16 @@ class Killmail
         public ?int $moon_id = null,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
-        $attackers = array_map(fn ($attacker) => Attacker::fromArray($attacker), $data['attackers']);
-        $victim = Victim::fromArray($data['victim']);
-
         return new self(
-            attackers: $attackers,
-            killmail_id: $data['killmail_id'],
-            killmail_time: $data['killmail_time'],
-            solar_system_id: $data['solar_system_id'],
-            victim: $victim,
-            war_id: $data['war_id'] ?? null,
-            moon_id: $data['moon_id'] ?? null,
+            attackers: $data->list('attackers', Attacker::fromData(...)),
+            killmail_id: $data->integer('killmail_id', 0),
+            killmail_time: $data->string('killmail_time', ''),
+            solar_system_id: $data->integer('solar_system_id', 0),
+            victim: Victim::fromData($data->object('victim')),
+            war_id: $data->integer('war_id'),
+            moon_id: $data->integer('moon_id'),
         );
     }
 }

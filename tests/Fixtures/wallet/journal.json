@@ -1,0 +1,17 @@
+[
+    {
+        "amount": 1.5,
+        "balance": 1.5,
+        "context_id": 90000001,
+        "context_id_type": "structure_id",
+        "date": "2026-06-09T12:00:00Z",
+        "description": "string",
+        "first_party_id": 90000001,
+        "id": 90000001,
+        "reason": "string",
+        "ref_type": "acceleration_gate_fee",
+        "second_party_id": 90000001,
+        "tax": 1.5,
+        "tax_receiver_id": 90000001
+    }
+]

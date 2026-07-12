@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class CharacterAffiliation implements FromArray
+readonly class CharacterAffiliation extends Dto
 {
     public function __construct(
         public int $character_id,
@@ -17,13 +17,13 @@ readonly class CharacterAffiliation implements FromArray
         //
     }
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            character_id: $data['character_id'],
-            corporation_id: $data['corporation_id'],
-            alliance_id: $data['alliance_id'] ?? null,
-            faction_id: $data['faction_id'] ?? null,
+            character_id: $data->integer('character_id', 0),
+            corporation_id: $data->integer('corporation_id', 0),
+            alliance_id: $data->integer('alliance_id'),
+            faction_id: $data->integer('faction_id'),
         );
     }
 }

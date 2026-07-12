@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Online;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Online>
+ */
 class GetOnlineRequest extends Request
 {
     /**
@@ -26,6 +29,6 @@ class GetOnlineRequest extends Request
 
     public function createDto(Response $response, mixed $data): Online
     {
-        return Online::fromArray($data);
+        return Online::hydrate($data);
     }
 }

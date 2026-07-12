@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class RaidableSkyhook implements FromArray
+readonly class RaidableSkyhook extends Dto
 {
     public function __construct(
         public int $planet_id,
@@ -14,12 +14,12 @@ readonly class RaidableSkyhook implements FromArray
         public SkyhookTheftVulnerability $theft_vulnerability,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            planet_id: $data['planet_id'],
-            solar_system_id: $data['solar_system_id'],
-            theft_vulnerability: SkyhookTheftVulnerability::fromArray($data['theft_vulnerability']),
+            planet_id: $data->integer('planet_id', 0),
+            solar_system_id: $data->integer('solar_system_id', 0),
+            theft_vulnerability: SkyhookTheftVulnerability::fromData($data->object('theft_vulnerability')),
         );
     }
 }

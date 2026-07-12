@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Location>
+ */
 class GetLocationRequest extends Request
 {
     /**
@@ -26,6 +29,6 @@ class GetLocationRequest extends Request
 
     public function createDto(Response $response, mixed $data): Location
     {
-        return Location::fromArray($data);
+        return Location::hydrate($data);
     }
 }

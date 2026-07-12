@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\DTO;
 
 use NicolasKion\Esi\Enums\ContractType;
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class PublicContract implements FromArray
+readonly class PublicContract extends Dto
 {
     public function __construct(
         public int $contract_id,
@@ -26,29 +26,27 @@ readonly class PublicContract implements FromArray
         public ?float $reward,
         public ?float $volume,
         public ?string $title,
-    ) {
-        //
-    }
+    ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            contract_id: (int) $data['contract_id'],
-            issuer_id: (int) $data['issuer_id'],
-            issuer_corporation_id: (int) $data['issuer_corporation_id'],
-            date_issued: $data['date_issued'],
-            date_expired: $data['date_expired'],
-            type: ContractType::from($data['type']),
-            buyout: $data['buyout'] ?? null,
-            collateral: $data['collateral'] ?? null,
-            days_to_complete: $data['days_to_complete'] ?? null,
-            start_location_id: $data['start_location_id'] ?? null,
-            end_location_id: $data['end_location_id'] ?? null,
-            for_corporation: $data['for_corporation'] ?? null,
-            price: $data['price'] ?? null,
-            reward: $data['reward'] ?? null,
-            volume: $data['volume'] ?? null,
-            title: $data['title'] ?? null,
+            contract_id: $data->integer('contract_id', 0),
+            issuer_id: $data->integer('issuer_id', 0),
+            issuer_corporation_id: $data->integer('issuer_corporation_id', 0),
+            date_issued: $data->string('date_issued', ''),
+            date_expired: $data->string('date_expired', ''),
+            type: ContractType::from($data->string('type', '')),
+            buyout: $data->float('buyout'),
+            collateral: $data->float('collateral'),
+            days_to_complete: $data->integer('days_to_complete'),
+            start_location_id: $data->integer('start_location_id'),
+            end_location_id: $data->integer('end_location_id'),
+            for_corporation: $data->boolean('for_corporation'),
+            price: $data->float('price'),
+            reward: $data->float('reward'),
+            volume: $data->float('volume'),
+            title: $data->string('title'),
         );
     }
 }

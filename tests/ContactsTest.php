@@ -30,9 +30,9 @@ function fakeContactCharacter(): Character
             return 'access';
         }
 
-        public function delete() {}
+        public function delete(): void {}
 
-        public function update(array $data) {}
+        public function update(array $data): void {}
     };
 
     return new class($token) implements Character
@@ -123,13 +123,11 @@ it('adds character contacts with the ids in the body and standing in the query',
     expect($result->wasSuccessful())->toBeTrue()
         ->and($result->data)->toBe([111, 222]);
 
-    Http::assertSent(function ($request) {
-        return $request->method() === 'POST'
-            && str_contains($request->url(), '/characters/123/contacts/')
-            && str_contains($request->url(), 'standing=5')
-            && str_contains($request->url(), 'label_ids=9')
-            && $request->data() === [111, 222];
-    });
+    Http::assertSent(fn ($request) => $request->method() === 'POST'
+        && str_contains($request->url(), '/characters/123/contacts/')
+        && str_contains($request->url(), 'standing=5')
+        && str_contains($request->url(), 'label_ids=9')
+        && $request->data() === [111, 222]);
 });
 
 it('deletes character contacts with comma-separated ids in the query', function (): void {
@@ -141,8 +139,6 @@ it('deletes character contacts with comma-separated ids in the query', function 
 
     expect($result->wasSuccessful())->toBeTrue();
 
-    Http::assertSent(function ($request) {
-        return $request->method() === 'DELETE'
-            && str_contains(urldecode($request->url()), 'contact_ids=111,222');
-    });
+    Http::assertSent(fn ($request) => $request->method() === 'DELETE'
+        && str_contains(urldecode($request->url()), 'contact_ids=111,222'));
 });

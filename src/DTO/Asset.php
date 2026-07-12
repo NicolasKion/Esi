@@ -6,9 +6,9 @@ namespace NicolasKion\Esi\DTO;
 
 use NicolasKion\Esi\Enums\LocationFlag;
 use NicolasKion\Esi\Enums\LocationType;
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class Asset implements FromArray
+readonly class Asset extends Dto
 {
     public function __construct(
         public ?bool $is_blueprint_copy,
@@ -21,17 +21,17 @@ readonly class Asset implements FromArray
         public int $type_id,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            is_blueprint_copy: $data['is_blueprint_copy'] ?? null,
-            is_singleton: $data['is_singleton'],
-            item_id: $data['item_id'],
-            location_flag: LocationFlag::from($data['location_flag']),
-            location_id: $data['location_id'],
-            location_type: LocationType::from($data['location_type']),
-            quantity: $data['quantity'],
-            type_id: $data['type_id'],
+            is_blueprint_copy: $data->boolean('is_blueprint_copy'),
+            is_singleton: $data->boolean('is_singleton', false),
+            item_id: $data->integer('item_id', 0),
+            location_flag: LocationFlag::from($data->string('location_flag', '')),
+            location_id: $data->integer('location_id', 0),
+            location_type: LocationType::from($data->string('location_type', '')),
+            quantity: $data->integer('quantity', 0),
+            type_id: $data->integer('type_id', 0),
         );
     }
 }

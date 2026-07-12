@@ -1,0 +1,16 @@
+{
+    "alliance_id": 99000001,
+    "ceo_id": 90000001,
+    "creator_id": 90000001,
+    "date_founded": "2026-06-09T12:00:00Z",
+    "description": "string",
+    "faction_id": 500002,
+    "home_station_id": 60000001,
+    "member_count": 90000001,
+    "name": "string",
+    "shares": 90000001,
+    "tax_rate": 1.5,
+    "ticker": "string",
+    "url": "string",
+    "war_eligible": true
+}

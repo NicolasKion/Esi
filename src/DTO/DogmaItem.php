@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
 /**
  * Represents an item in the ESI API (Dogma Item Attributes and Effects)
  *
- * @property DogmaItemAttribute[] $dogma_attributes
- * @property DogmaItemEffect[] $dogma_effects
+ * @property array<int, DogmaItemAttribute> $dogma_attributes
+ * @property array<int, DogmaItemEffect> $dogma_effects
  */
-readonly class DogmaItem implements FromArray
+readonly class DogmaItem extends Dto
 {
+    /**
+     * @param  array<int, DogmaItemAttribute>  $dogma_attributes
+     * @param  array<int, DogmaItemEffect>  $dogma_effects
+     */
     public function __construct(
         public int $created_by,
         public array $dogma_attributes,
@@ -22,24 +26,14 @@ readonly class DogmaItem implements FromArray
         public int $source_type_id,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
-        $dogma_attributes = [];
-        foreach ($data['dogma_attributes'] as $attribute) {
-            $dogma_attributes[] = DogmaItemAttribute::fromArray($attribute);
-        }
-
-        $dogma_effects = [];
-        foreach ($data['dogma_effects'] as $effect) {
-            $dogma_effects[] = DogmaItemEffect::fromArray($effect);
-        }
-
         return new self(
-            created_by: $data['created_by'],
-            dogma_attributes: $dogma_attributes,
-            dogma_effects: $dogma_effects,
-            mutator_type_id: $data['mutator_type_id'],
-            source_type_id: $data['source_type_id'],
+            created_by: $data->integer('created_by', 0),
+            dogma_attributes: $data->list('dogma_attributes', DogmaItemAttribute::fromData(...)),
+            dogma_effects: $data->list('dogma_effects', DogmaItemEffect::fromData(...)),
+            mutator_type_id: $data->integer('mutator_type_id', 0),
+            source_type_id: $data->integer('source_type_id', 0),
         );
     }
 }

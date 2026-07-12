@@ -1,0 +1,24 @@
+[
+    {
+        "corporation_id": 90000001,
+        "fuel_expires": "2026-06-09T12:00:00Z",
+        "name": "string",
+        "next_reinforce_apply": "2026-06-09T12:00:00Z",
+        "next_reinforce_hour": 90000001,
+        "profile_id": 90000001,
+        "reinforce_hour": 90000001,
+        "services": [
+            {
+                "name": "string",
+                "state": "online"
+            }
+        ],
+        "state": "anchor_vulnerable",
+        "state_timer_end": "2026-06-09T12:00:00Z",
+        "state_timer_start": "2026-06-09T12:00:00Z",
+        "structure_id": 90000001,
+        "system_id": 90000001,
+        "type_id": 90000001,
+        "unanchors_at": "2026-06-09T12:00:00Z"
+    }
+]

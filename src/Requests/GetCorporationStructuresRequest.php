@@ -10,6 +10,11 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Traits\BasicPagination;
 
+/**
+ * @extends Request<array<int, CorporationStructure>>
+ *
+ * @implements WithPagination<array<int, CorporationStructure>>
+ */
 class GetCorporationStructuresRequest extends Request implements WithPagination
 {
     use BasicPagination;
@@ -21,8 +26,11 @@ class GetCorporationStructuresRequest extends Request implements WithPagination
         return sprintf('/corporations/%d/structures/', $this->corporation_id);
     }
 
+    /**
+     * @return array<int, CorporationStructure>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(CorporationStructure::fromArray(...), $data);
+        return CorporationStructure::hydrateList($data);
     }
 }

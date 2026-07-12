@@ -1,0 +1,51 @@
+{
+    "attackers": [
+        {
+            "alliance_id": 90000001,
+            "character_id": 90000001,
+            "corporation_id": 90000001,
+            "damage_done": 90000001,
+            "faction_id": 90000001,
+            "final_blow": true,
+            "security_status": 1.5,
+            "ship_type_id": 90000001,
+            "weapon_type_id": 90000001
+        }
+    ],
+    "killmail_id": 90000001,
+    "killmail_time": "2026-06-09T12:00:00Z",
+    "moon_id": 90000001,
+    "solar_system_id": 90000001,
+    "victim": {
+        "alliance_id": 90000001,
+        "character_id": 90000001,
+        "corporation_id": 90000001,
+        "damage_taken": 90000001,
+        "faction_id": 90000001,
+        "items": [
+            {
+                "flag": 90000001,
+                "item_type_id": 90000001,
+                "items": [
+                    {
+                        "flag": 90000001,
+                        "item_type_id": 90000001,
+                        "quantity_destroyed": 90000001,
+                        "quantity_dropped": 90000001,
+                        "singleton": 90000001
+                    }
+                ],
+                "quantity_destroyed": 90000001,
+                "quantity_dropped": 90000001,
+                "singleton": 90000001
+            }
+        ],
+        "position": {
+            "x": 1.5,
+            "y": 1.5,
+            "z": 1.5
+        },
+        "ship_type_id": 90000001
+    },
+    "war_id": 90000001
+}

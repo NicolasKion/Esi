@@ -1,0 +1,15 @@
+{
+    "achievement_score": 1234,
+    "alliance_id": 99000001,
+    "birthday": "2026-06-09T12:00:00Z",
+    "bloodline_id": 1,
+    "character_title_id": "3868eaed-8278-4cb7-9709-7d7de9c20dc7",
+    "corporation_id": 98777771,
+    "corporation_title": "string",
+    "description": "string",
+    "faction_id": 500002,
+    "gender": "male",
+    "name": "string",
+    "race_id": 1,
+    "security_status": 5
+}

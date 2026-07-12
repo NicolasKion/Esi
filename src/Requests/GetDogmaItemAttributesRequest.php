@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<DogmaItem>
+ */
 class GetDogmaItemAttributesRequest extends Request
 {
     public function __construct(
@@ -24,6 +27,6 @@ class GetDogmaItemAttributesRequest extends Request
 
     public function createDto(Response $response, mixed $data): DogmaItem
     {
-        return DogmaItem::fromArray($data);
+        return DogmaItem::hydrate($data);
     }
 }

@@ -1,0 +1,56 @@
+# Visit https://soloterm.com to learn more
+#
+# On-demand dev commands for the ESI package. None auto-start — launch the one
+# you need from the Solo UI. They map to the composer scripts in composer.json.
+name: esi
+icon: null
+processes:
+  Tests:
+    command: vendor/bin/pest
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+
+  # `herd coverage` runs Pest through Herd's bundled Xdebug in coverage mode
+  # (no PCOV / php.ini setup needed).
+  Tests (coverage):
+    command: herd coverage vendor/bin/pest --coverage
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+
+  PHPStan:
+    command: vendor/bin/phpstan analyse
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+
+  Format (Pint):
+    command: vendor/bin/pint
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+
+  Format check (Pint):
+    command: vendor/bin/pint --test
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
+
+  Check all:
+    command: vendor/bin/pint --test && vendor/bin/phpstan analyse --no-progress && vendor/bin/pest
+    working_dir: null
+    auto_start: false
+    auto_restart: false
+    restart_when_changed: []
+    env: {}

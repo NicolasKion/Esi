@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
 /**
  *The online status of a character
  */
-readonly class Ship implements FromArray
+readonly class Ship extends Dto
 {
     public function __construct(
         public int $ship_type_id,
@@ -17,12 +17,12 @@ readonly class Ship implements FromArray
         public string $ship_name,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            ship_type_id: $data['ship_type_id'],
-            ship_item_id: $data['ship_item_id'],
-            ship_name: $data['ship_name'],
+            ship_type_id: $data->integer('ship_type_id', 0),
+            ship_item_id: $data->integer('ship_item_id', 0),
+            ship_name: $data->string('ship_name', ''),
         );
     }
 }

@@ -10,6 +10,11 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Traits\BasicPagination;
 
+/**
+ * @extends Request<array<int, CharacterContract>>
+ *
+ * @implements WithPagination<array<int, CharacterContract>>
+ */
 class GetCharacterContractsRequest extends Request implements WithPagination
 {
     use BasicPagination;
@@ -28,8 +33,11 @@ class GetCharacterContractsRequest extends Request implements WithPagination
         return sprintf('/characters/%d/contracts/', $this->character_id);
     }
 
+    /**
+     * @return array<int, CharacterContract>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(CharacterContract::fromArray(...), $data);
+        return CharacterContract::hydrateList($data);
     }
 }
