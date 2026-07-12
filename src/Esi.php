@@ -17,6 +17,9 @@ use NicolasKion\Esi\DTO\AssetName;
 use NicolasKion\Esi\DTO\AsteroidBelt;
 use NicolasKion\Esi\DTO\Bloodline;
 use NicolasKion\Esi\DTO\Blueprint;
+use NicolasKion\Esi\DTO\CalendarEvent;
+use NicolasKion\Esi\DTO\CalendarEventAttendee;
+use NicolasKion\Esi\DTO\CalendarEventSummary;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterAttributes;
 use NicolasKion\Esi\DTO\CharacterClones;
@@ -43,6 +46,7 @@ use NicolasKion\Esi\DTO\CorporationRoles;
 use NicolasKion\Esi\DTO\CorporationStructure;
 use NicolasKion\Esi\DTO\CorporationTitle;
 use NicolasKion\Esi\DTO\CorporationWallet;
+use NicolasKion\Esi\DTO\CustomsOffice;
 use NicolasKion\Esi\DTO\DogmaAttribute;
 use NicolasKion\Esi\DTO\DogmaEffect;
 use NicolasKion\Esi\DTO\DogmaItem;
@@ -56,6 +60,7 @@ use NicolasKion\Esi\DTO\FactionWarfareFactionStats;
 use NicolasKion\Esi\DTO\FactionWarfareLeaderboard;
 use NicolasKion\Esi\DTO\FactionWarfareSystem;
 use NicolasKion\Esi\DTO\FactionWarfareWar;
+use NicolasKion\Esi\DTO\Fitting;
 use NicolasKion\Esi\DTO\Fleet;
 use NicolasKion\Esi\DTO\FleetInfo;
 use NicolasKion\Esi\DTO\FleetMember;
@@ -92,6 +97,8 @@ use NicolasKion\Esi\DTO\Online;
 use NicolasKion\Esi\DTO\PersonalMarketOrder;
 use NicolasKion\Esi\DTO\PersonalMarketOrderHistory;
 use NicolasKion\Esi\DTO\Planet;
+use NicolasKion\Esi\DTO\PlanetColony;
+use NicolasKion\Esi\DTO\PlanetLayout;
 use NicolasKion\Esi\DTO\PublicContract;
 use NicolasKion\Esi\DTO\PublicContractBid;
 use NicolasKion\Esi\DTO\PublicContractItem;
@@ -127,10 +134,12 @@ use NicolasKion\Esi\Enums\MarketOrderType;
 use NicolasKion\Esi\Enums\RoutePreference;
 use NicolasKion\Esi\Interfaces\Character;
 use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
+use NicolasKion\Esi\Requests\CreateFittingRequest;
 use NicolasKion\Esi\Requests\CreateFleetSquadRequest;
 use NicolasKion\Esi\Requests\CreateFleetWingRequest;
 use NicolasKion\Esi\Requests\CreateMailLabelRequest;
 use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
+use NicolasKion\Esi\Requests\DeleteFittingRequest;
 use NicolasKion\Esi\Requests\DeleteFleetSquadRequest;
 use NicolasKion\Esi\Requests\DeleteFleetWingRequest;
 use NicolasKion\Esi\Requests\DeleteMailLabelRequest;
@@ -150,6 +159,9 @@ use NicolasKion\Esi\Requests\GetAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetAssetsRequest;
 use NicolasKion\Esi\Requests\GetAsteroidBeltRequest;
 use NicolasKion\Esi\Requests\GetBloodlinesRequest;
+use NicolasKion\Esi\Requests\GetCalendarEventAttendeesRequest;
+use NicolasKion\Esi\Requests\GetCalendarEventRequest;
+use NicolasKion\Esi\Requests\GetCalendarRequest;
 use NicolasKion\Esi\Requests\GetCharacterAttributesRequest;
 use NicolasKion\Esi\Requests\GetCharacterBlueprintsRequest;
 use NicolasKion\Esi\Requests\GetCharacterClonesRequest;
@@ -190,6 +202,7 @@ use NicolasKion\Esi\Requests\GetCorporationContainerLogsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContractBidsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContractsRequest;
+use NicolasKion\Esi\Requests\GetCorporationCustomsOfficesRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationFacilitiesRequest;
 use NicolasKion\Esi\Requests\GetCorporationFactionWarfareStatsRequest;
@@ -234,6 +247,7 @@ use NicolasKion\Esi\Requests\GetFactionWarfareLeaderboardsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareSystemsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareWarsRequest;
+use NicolasKion\Esi\Requests\GetFittingsRequest;
 use NicolasKion\Esi\Requests\GetFleetMembersRequest;
 use NicolasKion\Esi\Requests\GetFleetRequest;
 use NicolasKion\Esi\Requests\GetFleetWingsRequest;
@@ -259,7 +273,9 @@ use NicolasKion\Esi\Requests\GetMoonRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
 use NicolasKion\Esi\Requests\GetNpcCorporationsRequest;
 use NicolasKion\Esi\Requests\GetOnlineRequest;
+use NicolasKion\Esi\Requests\GetPlanetLayoutRequest;
 use NicolasKion\Esi\Requests\GetPlanetRequest;
+use NicolasKion\Esi\Requests\GetPlanetsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractBidsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractItemsRequest;
 use NicolasKion\Esi\Requests\GetPublicContractsRequest;
@@ -299,8 +315,12 @@ use NicolasKion\Esi\Requests\InviteFleetMemberRequest;
 use NicolasKion\Esi\Requests\KickFleetMemberRequest;
 use NicolasKion\Esi\Requests\MoveFleetMemberRequest;
 use NicolasKion\Esi\Requests\OpenContractRequest;
+use NicolasKion\Esi\Requests\OpenInformationWindowRequest;
+use NicolasKion\Esi\Requests\OpenMarketDetailsWindowRequest;
+use NicolasKion\Esi\Requests\OpenNewMailWindowRequest;
 use NicolasKion\Esi\Requests\RenameFleetSquadRequest;
 use NicolasKion\Esi\Requests\RenameFleetWingRequest;
+use NicolasKion\Esi\Requests\RespondToCalendarEventRequest;
 use NicolasKion\Esi\Requests\SendMailRequest;
 use NicolasKion\Esi\Requests\UpdateEveMailRequest;
 use NicolasKion\Esi\Requests\UpdateFleetRequest;
@@ -2720,6 +2740,180 @@ class Esi
         $request = new GetCorporationMiningObserverRequest($corporation_id, $observer_id);
 
         return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves a character's upcoming calendar events.
+     *
+     * @return EsiResult<array<int, CalendarEventSummary>>
+     */
+    public function getCalendar(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCalendarEvents);
+        $request = new GetCalendarRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the full details of a calendar event.
+     *
+     * @return EsiResult<CalendarEvent>
+     */
+    public function getCalendarEvent(Character $character, int $event_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCalendarEvents);
+        $request = new GetCalendarEventRequest($character->getId(), $event_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the attendees of a calendar event.
+     *
+     * @return EsiResult<array<int, CalendarEventAttendee>>
+     */
+    public function getCalendarEventAttendees(Character $character, int $event_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCalendarEvents);
+        $request = new GetCalendarEventAttendeesRequest($character->getId(), $event_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Responds to a calendar event invitation (accepted, declined, or tentative).
+     *
+     * @return EsiResult<null>
+     */
+    public function respondToCalendarEvent(Character $character, int $event_id, string $response): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::RespondCalendarEvents);
+        $request = new RespondToCalendarEventRequest($character->getId(), $event_id, $response);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a character's ship fittings.
+     *
+     * @return EsiResult<array<int, Fitting>>
+     */
+    public function getFittings(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadFittings);
+        $request = new GetFittingsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Creates a new ship fitting for a character.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     * @return EsiResult<int> Returns an instance of EsiResult that contains the new fitting's ID.
+     */
+    public function createFitting(Character $character, string $name, string $description, int $ship_type_id, array $items): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFittings);
+        $request = new CreateFittingRequest($character->getId(), $name, $description, $ship_type_id, $items);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Deletes a ship fitting for a character.
+     *
+     * @return EsiResult<null>
+     */
+    public function deleteFitting(Character $character, int $fitting_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::WriteFittings);
+        $request = new DeleteFittingRequest($character->getId(), $fitting_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the planetary colonies owned by a character.
+     *
+     * @return EsiResult<array<int, PlanetColony>>
+     */
+    public function getPlanets(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ManagePlanets);
+        $request = new GetPlanetsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the layout (pins, links, and routes) of one of a character's planetary colonies.
+     *
+     * Named getPlanetLayout rather than getPlanet to avoid clashing with the
+     * existing public getPlanet(int $planet_id) universe endpoint.
+     *
+     * @return EsiResult<PlanetLayout>
+     */
+    public function getPlanetLayout(Character $character, int $planet_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ManagePlanets);
+        $request = new GetPlanetLayoutRequest($character->getId(), $planet_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the customs offices owned by a corporation.
+     *
+     * @return EsiResult<array<int, CustomsOffice>>
+     */
+    public function getCorporationCustomsOffices(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCustomsOffices);
+        $request = new GetCorporationCustomsOfficesRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Opens the information window for a character, corporation, alliance, or item in the EVE Online client.
+     *
+     * @return EsiResult<null>
+     */
+    public function openInformationWindow(Character $character, int $target_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::OpenWindow);
+        $request = new OpenInformationWindowRequest($target_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Opens the market details window for a type in the EVE Online client.
+     *
+     * @return EsiResult<null>
+     */
+    public function openMarketDetailsWindow(Character $character, int $type_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::OpenWindow);
+        $request = new OpenMarketDetailsWindowRequest($type_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Opens the new mail window, pre-filled with the given recipients, subject, and body, in the EVE Online client.
+     *
+     * @param  array<int, int>  $recipients
+     * @return EsiResult<null>
+     */
+    public function openNewMailWindow(Character $character, array $recipients, string $subject, string $body, ?int $to_corp_or_alliance_id = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::OpenWindow);
+        $request = new OpenNewMailWindowRequest($recipients, $subject, $body, $to_corp_or_alliance_id);
+
+        return $connector->send($request);
     }
 
     private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector
