@@ -70,3 +70,24 @@ jobs:
             echo "Test matrix result: ${{ needs.test.result }}"
             exit 1
           fi
+
+  coverage:
+    name: coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl
+          coverage: pcov
+
+      - name: Install composer dependencies
+        uses: ramsey/composer-install@v4
+
+      - name: Run tests with 100% coverage requirement
+        run: vendor/bin/pest --coverage --min=100 --ci
