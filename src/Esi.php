@@ -24,7 +24,10 @@ use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\Location;
+use NicolasKion\Esi\DTO\MarketGroup;
 use NicolasKion\Esi\DTO\MarketHistory;
+use NicolasKion\Esi\DTO\MarketOrder;
+use NicolasKion\Esi\DTO\MarketPrice;
 use NicolasKion\Esi\DTO\Name;
 use NicolasKion\Esi\DTO\Online;
 use NicolasKion\Esi\DTO\PublicContract;
@@ -39,6 +42,7 @@ use NicolasKion\Esi\DTO\UniverseIds;
 use NicolasKion\Esi\DTO\WalletJournalEntry;
 use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\EsiScope;
+use NicolasKion\Esi\Enums\MarketOrderType;
 use NicolasKion\Esi\Interfaces\Character;
 use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
 use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
@@ -74,7 +78,12 @@ use NicolasKion\Esi\Requests\GetEveMailsRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
+use NicolasKion\Esi\Requests\GetMarketGroupRequest;
+use NicolasKion\Esi\Requests\GetMarketGroupsRequest;
 use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
+use NicolasKion\Esi\Requests\GetMarketOrdersRequest;
+use NicolasKion\Esi\Requests\GetMarketPricesRequest;
+use NicolasKion\Esi\Requests\GetMarketTypesRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
 use NicolasKion\Esi\Requests\GetOnlineRequest;
 use NicolasKion\Esi\Requests\GetPublicContractBidsRequest;
@@ -84,6 +93,7 @@ use NicolasKion\Esi\Requests\GetPublicStructuresRequest;
 use NicolasKion\Esi\Requests\GetRaidableSkyhooksRequest;
 use NicolasKion\Esi\Requests\GetShipRequest;
 use NicolasKion\Esi\Requests\GetSovereigntyRequest;
+use NicolasKion\Esi\Requests\GetStructureMarketOrdersRequest;
 use NicolasKion\Esi\Requests\GetStructureRequest;
 use NicolasKion\Esi\Requests\GetWalletJournalRequest;
 use NicolasKion\Esi\Requests\GetWarRequest;
@@ -229,6 +239,84 @@ class Esi
         $request = new GetMarketHistoryRequest($region_id, $type_id);
 
         return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of market group IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getMarketGroups(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMarketGroupsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a market group.
+     *
+     * @return EsiResult<MarketGroup>
+     */
+    public function getMarketGroup(int $market_group_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMarketGroupRequest($market_group_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the adjusted and average prices for all types.
+     *
+     * @return EsiResult<array<int, MarketPrice>>
+     */
+    public function getMarketPrices(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMarketPricesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves market orders in a region, optionally filtered by type.
+     *
+     * @return EsiResult<array<int, MarketOrder>>
+     */
+    public function getMarketOrders(int $region_id, MarketOrderType $order_type = MarketOrderType::All, ?int $type_id = null): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMarketOrdersRequest($region_id, $order_type, $type_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the type IDs with active market orders in a region.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getMarketTypes(int $region_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMarketTypesRequest($region_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves market orders in a player-owned structure.
+     *
+     * @return EsiResult<array<int, MarketOrder>>
+     */
+    public function getStructureMarketOrders(Character $character, int $structure_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadMarketStructures);
+        $request = new GetStructureMarketOrdersRequest($structure_id);
+
+        return $connector->sendPaginated($request);
     }
 
     /**

@@ -1,0 +1,16 @@
+[
+    {
+        "duration": 90000001,
+        "is_buy_order": true,
+        "issued": "2026-06-09T12:00:00Z",
+        "location_id": 90000001,
+        "min_volume": 90000001,
+        "order_id": 90000001,
+        "price": 1.5,
+        "range": "station",
+        "system_id": 90000001,
+        "type_id": 90000001,
+        "volume_remain": 90000001,
+        "volume_total": 90000001
+    }
+]
