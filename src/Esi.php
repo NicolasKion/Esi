@@ -37,6 +37,7 @@ use NicolasKion\Esi\DTO\CorporationMedal;
 use NicolasKion\Esi\DTO\CorporationRoles;
 use NicolasKion\Esi\DTO\CorporationStructure;
 use NicolasKion\Esi\DTO\CorporationTitle;
+use NicolasKion\Esi\DTO\CorporationWallet;
 use NicolasKion\Esi\DTO\DogmaAttribute;
 use NicolasKion\Esi\DTO\DogmaEffect;
 use NicolasKion\Esi\DTO\DogmaItem;
@@ -93,6 +94,7 @@ use NicolasKion\Esi\DTO\UniverseGroup;
 use NicolasKion\Esi\DTO\UniverseIds;
 use NicolasKion\Esi\DTO\UniverseType;
 use NicolasKion\Esi\DTO\WalletJournalEntry;
+use NicolasKion\Esi\DTO\WalletTransaction;
 use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\EsiScope;
 use NicolasKion\Esi\Enums\MarketOrderType;
@@ -156,6 +158,9 @@ use NicolasKion\Esi\Requests\GetCorporationStarbaseRequest;
 use NicolasKion\Esi\Requests\GetCorporationStarbasesRequest;
 use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
 use NicolasKion\Esi\Requests\GetCorporationTitlesRequest;
+use NicolasKion\Esi\Requests\GetCorporationWalletJournalRequest;
+use NicolasKion\Esi\Requests\GetCorporationWalletsRequest;
+use NicolasKion\Esi\Requests\GetCorporationWalletTransactionsRequest;
 use NicolasKion\Esi\Requests\GetCspaChargeRequest;
 use NicolasKion\Esi\Requests\GetDogmaAttributeRequest;
 use NicolasKion\Esi\Requests\GetDogmaAttributesRequest;
@@ -214,7 +219,9 @@ use NicolasKion\Esi\Requests\GetUniverseRegionsRequest;
 use NicolasKion\Esi\Requests\GetUniverseSystemsRequest;
 use NicolasKion\Esi\Requests\GetUniverseTypeRequest;
 use NicolasKion\Esi\Requests\GetUniverseTypesRequest;
+use NicolasKion\Esi\Requests\GetWalletBalanceRequest;
 use NicolasKion\Esi\Requests\GetWalletJournalRequest;
+use NicolasKion\Esi\Requests\GetWalletTransactionsRequest;
 use NicolasKion\Esi\Requests\GetWarRequest;
 use NicolasKion\Esi\Requests\OpenContractRequest;
 use NicolasKion\Esi\Requests\SendMailRequest;
@@ -506,6 +513,73 @@ class Esi
         $request = new GetWalletJournalRequest($character->getId());
 
         return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the wallet balance for a given character.
+     *
+     * @return EsiResult<float> Returns an instance of EsiResult that contains the retrieved wallet balance.
+     */
+    public function getWalletBalance(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadWallet);
+        $request = new GetWalletBalanceRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the wallet transactions for a given character.
+     *
+     * @param  int|null  $from_id  Only fetch transactions happened before this transaction ID.
+     * @return EsiResult<array<int, WalletTransaction>> Returns an instance of EsiResult that contains the retrieved wallet transactions.
+     */
+    public function getWalletTransactions(Character $character, ?int $from_id = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadWallet);
+        $request = new GetWalletTransactionsRequest($character->getId(), $from_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the wallets of a corporation.
+     *
+     * @return EsiResult<array<int, CorporationWallet>> Returns an instance of EsiResult that contains the retrieved corporation wallets.
+     */
+    public function getCorporationWallets(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationWallets);
+        $request = new GetCorporationWalletsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the wallet journal of a corporation division.
+     *
+     * @return EsiResult<array<int, WalletJournalEntry>> Returns an instance of EsiResult that contains the retrieved corporation wallet journal.
+     */
+    public function getCorporationWalletJournal(Character $character, int $corporation_id, int $division): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationWallets);
+        $request = new GetCorporationWalletJournalRequest($corporation_id, $division);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the wallet transactions of a corporation division.
+     *
+     * @param  int|null  $from_id  Only fetch transactions happened before this transaction ID.
+     * @return EsiResult<array<int, WalletTransaction>> Returns an instance of EsiResult that contains the retrieved corporation wallet transactions.
+     */
+    public function getCorporationWalletTransactions(Character $character, int $corporation_id, int $division, ?int $from_id = null): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationWallets);
+        $request = new GetCorporationWalletTransactionsRequest($corporation_id, $division, $from_id);
+
+        return $connector->send($request);
     }
 
     /**

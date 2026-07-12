@@ -1,0 +1,14 @@
+[
+    {
+        "client_id": 90000001,
+        "date": "2026-06-09T12:00:00Z",
+        "is_buy": true,
+        "is_personal": true,
+        "journal_ref_id": 90000001,
+        "location_id": 90000001,
+        "quantity": 90000001,
+        "transaction_id": 90000001,
+        "type_id": 90000001,
+        "unit_price": 1.5
+    }
+]
