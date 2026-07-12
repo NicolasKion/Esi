@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi;
 
+use NicolasKion\Esi\DTO\AccessList;
 use NicolasKion\Esi\DTO\AgentResearch;
 use NicolasKion\Esi\DTO\Alliance;
 use NicolasKion\Esi\DTO\AllianceHistory;
@@ -66,6 +67,9 @@ use NicolasKion\Esi\DTO\Fleet;
 use NicolasKion\Esi\DTO\FleetInfo;
 use NicolasKion\Esi\DTO\FleetMember;
 use NicolasKion\Esi\DTO\FleetWing;
+use NicolasKion\Esi\DTO\FreelanceJob;
+use NicolasKion\Esi\DTO\FreelanceJobParticipant;
+use NicolasKion\Esi\DTO\FreelanceJobParticipation;
 use NicolasKion\Esi\DTO\Graphic;
 use NicolasKion\Esi\DTO\Incursion;
 use NicolasKion\Esi\DTO\IndustryFacility;
@@ -88,6 +92,10 @@ use NicolasKion\Esi\DTO\MarketPrice;
 use NicolasKion\Esi\DTO\MemberTitles;
 use NicolasKion\Esi\DTO\MemberTracking;
 use NicolasKion\Esi\DTO\MercenaryDen;
+use NicolasKion\Esi\DTO\MercenaryTacticalOperation;
+use NicolasKion\Esi\DTO\MetaChangelog;
+use NicolasKion\Esi\DTO\MetaCompatibilityDates;
+use NicolasKion\Esi\DTO\MetaStatus;
 use NicolasKion\Esi\DTO\MiningExtraction;
 use NicolasKion\Esi\DTO\MiningLedgerEntry;
 use NicolasKion\Esi\DTO\MiningObserver;
@@ -111,11 +119,13 @@ use NicolasKion\Esi\DTO\RaidableSkyhook;
 use NicolasKion\Esi\DTO\Region;
 use NicolasKion\Esi\DTO\RoleHistory;
 use NicolasKion\Esi\DTO\Schematic;
+use NicolasKion\Esi\DTO\SearchResult;
 use NicolasKion\Esi\DTO\Shareholder;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\SkillQueueEntry;
 use NicolasKion\Esi\DTO\Skyhook;
 use NicolasKion\Esi\DTO\Sovereignty;
+use NicolasKion\Esi\DTO\SovereigntyCampaign;
 use NicolasKion\Esi\DTO\SovereigntyHub;
 use NicolasKion\Esi\DTO\Standing;
 use NicolasKion\Esi\DTO\Star;
@@ -151,6 +161,8 @@ use NicolasKion\Esi\Requests\DeleteFleetWingRequest;
 use NicolasKion\Esi\Requests\DeleteMailLabelRequest;
 use NicolasKion\Esi\Requests\DeleteMailRequest;
 use NicolasKion\Esi\Requests\EditCharacterContactsRequest;
+use NicolasKion\Esi\Requests\GetAccessListRequest;
+use NicolasKion\Esi\Requests\GetAccessListsRequest;
 use NicolasKion\Esi\Requests\GetAffiliationsRequest;
 use NicolasKion\Esi\Requests\GetAgentsResearchRequest;
 use NicolasKion\Esi\Requests\GetAllianceContactLabelsRequest;
@@ -181,6 +193,8 @@ use NicolasKion\Esi\Requests\GetCharacterCorporationHistoryRequest;
 use NicolasKion\Esi\Requests\GetCharacterFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCharacterFatigueRequest;
 use NicolasKion\Esi\Requests\GetCharacterFleetRequest;
+use NicolasKion\Esi\Requests\GetCharacterFreelanceJobParticipationRequest;
+use NicolasKion\Esi\Requests\GetCharacterFreelanceJobsRequest;
 use NicolasKion\Esi\Requests\GetCharacterImplantsRequest;
 use NicolasKion\Esi\Requests\GetCharacterIndustryJobsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
@@ -212,6 +226,8 @@ use NicolasKion\Esi\Requests\GetCorporationCustomsOfficesRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationFacilitiesRequest;
 use NicolasKion\Esi\Requests\GetCorporationFactionWarfareStatsRequest;
+use NicolasKion\Esi\Requests\GetCorporationFreelanceJobParticipantsRequest;
+use NicolasKion\Esi\Requests\GetCorporationFreelanceJobsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIconsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIndustryJobsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIssuedMedalsRequest;
@@ -265,6 +281,8 @@ use NicolasKion\Esi\Requests\GetFittingsRequest;
 use NicolasKion\Esi\Requests\GetFleetMembersRequest;
 use NicolasKion\Esi\Requests\GetFleetRequest;
 use NicolasKion\Esi\Requests\GetFleetWingsRequest;
+use NicolasKion\Esi\Requests\GetFreelanceJobRequest;
+use NicolasKion\Esi\Requests\GetFreelanceJobsRequest;
 use NicolasKion\Esi\Requests\GetGraphicRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetIncursionsRequest;
@@ -285,6 +303,11 @@ use NicolasKion\Esi\Requests\GetMarketPricesRequest;
 use NicolasKion\Esi\Requests\GetMarketTypesRequest;
 use NicolasKion\Esi\Requests\GetMercenaryDenRequest;
 use NicolasKion\Esi\Requests\GetMercenaryDensRequest;
+use NicolasKion\Esi\Requests\GetMercenaryTacticalOperationRequest;
+use NicolasKion\Esi\Requests\GetMercenaryTacticalOperationsRequest;
+use NicolasKion\Esi\Requests\GetMetaChangelogRequest;
+use NicolasKion\Esi\Requests\GetMetaCompatibilityDatesRequest;
+use NicolasKion\Esi\Requests\GetMetaStatusRequest;
 use NicolasKion\Esi\Requests\GetMoonRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
 use NicolasKion\Esi\Requests\GetNpcCorporationsRequest;
@@ -302,6 +325,7 @@ use NicolasKion\Esi\Requests\GetRegionRequest;
 use NicolasKion\Esi\Requests\GetRouteRequest;
 use NicolasKion\Esi\Requests\GetSchematicRequest;
 use NicolasKion\Esi\Requests\GetShipRequest;
+use NicolasKion\Esi\Requests\GetSovereigntyCampaignsRequest;
 use NicolasKion\Esi\Requests\GetSovereigntyRequest;
 use NicolasKion\Esi\Requests\GetStargateRequest;
 use NicolasKion\Esi\Requests\GetStarRequest;
@@ -337,6 +361,7 @@ use NicolasKion\Esi\Requests\OpenNewMailWindowRequest;
 use NicolasKion\Esi\Requests\RenameFleetSquadRequest;
 use NicolasKion\Esi\Requests\RenameFleetWingRequest;
 use NicolasKion\Esi\Requests\RespondToCalendarEventRequest;
+use NicolasKion\Esi\Requests\SearchRequest;
 use NicolasKion\Esi\Requests\SendMailRequest;
 use NicolasKion\Esi\Requests\UpdateEveMailRequest;
 use NicolasKion\Esi\Requests\UpdateFleetRequest;
@@ -3058,6 +3083,204 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
         $request = new GetCorporationProjectContributorsRequest($corporation_id, $project_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the ESI changelog, grouped by date.
+     *
+     * @return EsiResult<MetaChangelog>
+     */
+    public function getMetaChangelog(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMetaChangelogRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of compatibility dates supported by ESI.
+     *
+     * @return EsiResult<MetaCompatibilityDates>
+     */
+    public function getMetaCompatibilityDates(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMetaCompatibilityDatesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the health status of every ESI route.
+     *
+     * @return EsiResult<MetaStatus>
+     */
+    public function getMetaStatus(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMetaStatusRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the currently active sovereignty campaigns.
+     *
+     * @return EsiResult<array<int, SovereigntyCampaign>>
+     */
+    public function getSovereigntyCampaigns(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetSovereigntyCampaignsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Searches for entities matching a string, grouped by category.
+     *
+     * @param  array<int, string>  $categories  The categories to search in (agent, alliance, character, constellation, corporation, faction, inventory_type, region, solar_system, station, structure).
+     * @param  string  $search  The string to search on.
+     * @param  bool  $strict  Whether the search should be a strict match.
+     * @return EsiResult<SearchResult>
+     */
+    public function search(Character $character, array $categories, string $search, bool $strict = false): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::SearchStructures);
+        $request = new SearchRequest($character->getId(), $categories, $search, $strict);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the access lists owned by a character.
+     *
+     * @return EsiResult<array<int, AccessList>>
+     */
+    public function getAccessLists(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAccessLists);
+        $request = new GetAccessListsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the details of an access list owned by a character.
+     *
+     * @return EsiResult<AccessList>
+     */
+    public function getAccessList(Character $character, int $access_list_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadAccessLists);
+        $request = new GetAccessListRequest($character->getId(), $access_list_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the mercenary tactical operations available to a character.
+     *
+     * @return EsiResult<array<int, MercenaryTacticalOperation>>
+     */
+    public function getMercenaryTacticalOperations(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterActivities);
+        $request = new GetMercenaryTacticalOperationsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the details of a mercenary tactical operation.
+     *
+     * @return EsiResult<MercenaryTacticalOperation>
+     */
+    public function getMercenaryTacticalOperation(Character $character, string $operation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterActivities);
+        $request = new GetMercenaryTacticalOperationRequest($character->getId(), $operation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the publicly listed freelance jobs.
+     *
+     * @return EsiResult<array<int, FreelanceJob>>
+     */
+    public function getFreelanceJobs(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFreelanceJobsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the details of a freelance job.
+     *
+     * @return EsiResult<FreelanceJob>
+     */
+    public function getFreelanceJob(string $job_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetFreelanceJobRequest($job_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the freelance jobs created by a character.
+     *
+     * @return EsiResult<array<int, FreelanceJob>>
+     */
+    public function getCharacterFreelanceJobs(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterFreelanceJobs);
+        $request = new GetCharacterFreelanceJobsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a character's participation in a freelance job.
+     *
+     * @return EsiResult<FreelanceJobParticipation>
+     */
+    public function getCharacterFreelanceJobParticipation(Character $character, string $job_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterFreelanceJobs);
+        $request = new GetCharacterFreelanceJobParticipationRequest($character->getId(), $job_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the freelance jobs created by a corporation.
+     *
+     * @return EsiResult<array<int, FreelanceJob>>
+     */
+    public function getCorporationFreelanceJobs(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFreelanceJobs);
+        $request = new GetCorporationFreelanceJobsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the participants in a corporation's freelance job.
+     *
+     * @return EsiResult<array<int, FreelanceJobParticipant>>
+     */
+    public function getCorporationFreelanceJobParticipants(Character $character, int $corporation_id, string $job_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFreelanceJobs);
+        $request = new GetCorporationFreelanceJobParticipantsRequest($corporation_id, $job_id);
 
         return $connector->send($request);
     }
