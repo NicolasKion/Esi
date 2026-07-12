@@ -31,6 +31,7 @@ use NicolasKion\Esi\DTO\Contact;
 use NicolasKion\Esi\DTO\ContactLabel;
 use NicolasKion\Esi\DTO\ContactNotification;
 use NicolasKion\Esi\DTO\ContainerLog;
+use NicolasKion\Esi\DTO\ContractBid;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\CorporationDivisions;
 use NicolasKion\Esi\DTO\CorporationFactionWarfareStats;
@@ -64,6 +65,7 @@ use NicolasKion\Esi\DTO\InsurancePrice;
 use NicolasKion\Esi\DTO\IssuedMedal;
 use NicolasKion\Esi\DTO\JumpFatigue;
 use NicolasKion\Esi\DTO\Killmail;
+use NicolasKion\Esi\DTO\KillmailRef;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\LoyaltyOffer;
 use NicolasKion\Esi\DTO\MailingList;
@@ -142,6 +144,7 @@ use NicolasKion\Esi\Requests\GetCharacterClonesRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactNotificationsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContactsRequest;
+use NicolasKion\Esi\Requests\GetCharacterContractBidsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterCorporationHistoryRequest;
@@ -152,6 +155,7 @@ use NicolasKion\Esi\Requests\GetCharacterImplantsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
 use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
 use NicolasKion\Esi\Requests\GetCharacterPortraitRequest;
+use NicolasKion\Esi\Requests\GetCharacterRecentKillmailsRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
 use NicolasKion\Esi\Requests\GetCharacterRolesRequest;
 use NicolasKion\Esi\Requests\GetCharacterSkillQueueRequest;
@@ -166,6 +170,9 @@ use NicolasKion\Esi\Requests\GetCorporationBlueprintsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContactsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContainerLogsRequest;
+use NicolasKion\Esi\Requests\GetCorporationContractBidsRequest;
+use NicolasKion\Esi\Requests\GetCorporationContractItemsRequest;
+use NicolasKion\Esi\Requests\GetCorporationContractsRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationFacilitiesRequest;
 use NicolasKion\Esi\Requests\GetCorporationFactionWarfareStatsRequest;
@@ -176,6 +183,7 @@ use NicolasKion\Esi\Requests\GetCorporationMemberLimitRequest;
 use NicolasKion\Esi\Requests\GetCorporationMembersRequest;
 use NicolasKion\Esi\Requests\GetCorporationMemberTitlesRequest;
 use NicolasKion\Esi\Requests\GetCorporationMemberTrackingRequest;
+use NicolasKion\Esi\Requests\GetCorporationRecentKillmailsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetCorporationRolesHistoryRequest;
 use NicolasKion\Esi\Requests\GetCorporationRolesRequest;
@@ -258,7 +266,9 @@ use NicolasKion\Esi\Requests\GetUniverseTypesRequest;
 use NicolasKion\Esi\Requests\GetWalletBalanceRequest;
 use NicolasKion\Esi\Requests\GetWalletJournalRequest;
 use NicolasKion\Esi\Requests\GetWalletTransactionsRequest;
+use NicolasKion\Esi\Requests\GetWarKillmailsRequest;
 use NicolasKion\Esi\Requests\GetWarRequest;
+use NicolasKion\Esi\Requests\GetWarsRequest;
 use NicolasKion\Esi\Requests\InviteFleetMemberRequest;
 use NicolasKion\Esi\Requests\KickFleetMemberRequest;
 use NicolasKion\Esi\Requests\MoveFleetMemberRequest;
@@ -824,6 +834,54 @@ class Esi
     }
 
     /**
+     * Retrieves the bids for a given character and auction contract.
+     *
+     * @return EsiResult<array<int, ContractBid>>
+     */
+    public function getCharacterContractBids(Character $character, int $contract_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadContracts);
+
+        return $connector->send(new GetCharacterContractBidsRequest($character->getId(), $contract_id));
+    }
+
+    /**
+     * Retrieves the contracts for a given corporation.
+     *
+     * @return EsiResult<array<int, CharacterContract>>
+     */
+    public function getCorporationContracts(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationContracts);
+
+        return $connector->sendPaginated(new GetCorporationContractsRequest($corporation_id));
+    }
+
+    /**
+     * Retrieves the contract items for a given corporation and contract.
+     *
+     * @return EsiResult<array<int, PublicContractItem>>
+     */
+    public function getCorporationContractItems(Character $character, int $corporation_id, int $contract_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationContracts);
+
+        return $connector->send(new GetCorporationContractItemsRequest($corporation_id, $contract_id));
+    }
+
+    /**
+     * Retrieves the bids for a given corporation and auction contract.
+     *
+     * @return EsiResult<array<int, ContractBid>>
+     */
+    public function getCorporationContractBids(Character $character, int $corporation_id, int $contract_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationContracts);
+
+        return $connector->sendPaginated(new GetCorporationContractBidsRequest($corporation_id, $contract_id));
+    }
+
+    /**
      * Retrieves corporation details
      *
      * @return EsiResult<Corporation>
@@ -1124,6 +1182,32 @@ class Esi
     }
 
     /**
+     * Retrieve a list of wars, optionally only those with an ID smaller than max_war_id.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getWars(?int $max_war_id = null): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetWarsRequest($max_war_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieve the killmails related to a war.
+     *
+     * @return EsiResult<array<int, KillmailRef>>
+     */
+    public function getWarKillmails(int $war_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetWarKillmailsRequest($war_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
      * Get character location
      *
      * @return EsiResult<Location>
@@ -1186,6 +1270,30 @@ class Esi
         $request = new GetKillmailRequest($killmail_id, $killmail_hash);
 
         return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a character's recent kills and losses (last 90 days).
+     *
+     * @return EsiResult<array<int, KillmailRef>>
+     */
+    public function getCharacterRecentKillmails(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadKillmails);
+
+        return $connector->sendPaginated(new GetCharacterRecentKillmailsRequest($character->getId()));
+    }
+
+    /**
+     * Retrieves a corporation's recent kills and losses (last 90 days).
+     *
+     * @return EsiResult<array<int, KillmailRef>>
+     */
+    public function getCorporationRecentKillmails(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationKillmails);
+
+        return $connector->sendPaginated(new GetCorporationRecentKillmailsRequest($corporation_id));
     }
 
     /**
