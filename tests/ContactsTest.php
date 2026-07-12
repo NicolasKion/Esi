@@ -56,14 +56,6 @@ function fakeContactCharacter(): Character
     };
 }
 
-beforeEach(function (): void {
-    config()->set('esi.base_url', 'https://esi.evetech.net');
-    config()->set('esi.compatibility_date', '2026-05-19');
-    config()->set('esi.user_agent', 'esi-test');
-    config()->set('esi.retry_policy.tries', 1);
-    config()->set('esi.retry_policy.delay', 0);
-});
-
 it('fetches and maps character contacts', function (): void {
     Http::fake([
         'esi.evetech.net/characters/123/contacts/*' => Http::response([
