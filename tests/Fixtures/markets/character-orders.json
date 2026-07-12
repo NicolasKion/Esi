@@ -1,0 +1,18 @@
+[
+    {
+        "duration": 90,
+        "escrow": 1.5,
+        "is_buy_order": true,
+        "is_corporation": true,
+        "issued": "2026-06-09T12:00:00Z",
+        "location_id": 90000001,
+        "min_volume": 1,
+        "order_id": 90000001,
+        "price": 1.5,
+        "range": "station",
+        "region_id": 10000002,
+        "type_id": 34,
+        "volume_remain": 5,
+        "volume_total": 10
+    }
+]
