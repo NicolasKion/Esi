@@ -7,6 +7,7 @@ namespace NicolasKion\Esi\Enums;
 enum EsiScope: string
 {
     case ReadAssets = 'esi-assets.read_assets.v1';
+    case ReadMarketStructures = 'esi-markets.structure_markets.v1';
     case PublicData = 'publicData';
     case OpenWindow = 'esi-ui.open_window.v1';
     case ReadContracts = 'esi-contracts.read_character_contracts.v1';

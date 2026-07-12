@@ -1,0 +1,9 @@
+{
+    "description": "string",
+    "market_group_id": 90000001,
+    "name": "string",
+    "parent_group_id": 90000001,
+    "types": [
+        90000001
+    ]
+}
