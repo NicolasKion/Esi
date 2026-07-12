@@ -22,6 +22,8 @@ use function config;
 
 class Connector
 {
+    public const COMPATIBILITY_DATE = '2026-06-09';
+
     public const ERROR_LIMIT_REMAIN_HEADER = 'X-Esi-Error-Limit-Remain';
 
     public const ERROR_LIMIT_RESET_HEADER = 'X-Esi-Error-Limit-Reset';
@@ -56,7 +58,7 @@ class Connector
 
         $pending_request = Http::withHeaders([
             'User-Agent' => config()->string('esi.user_agent'),
-            'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
+            'X-Compatibility-Date' => self::COMPATIBILITY_DATE,
         ])
             ->baseUrl(config()->string('esi.base_url'))
             ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
@@ -114,7 +116,7 @@ class Connector
 
             $pending_request = Http::withHeaders([
                 'User-Agent' => config()->string('esi.user_agent'),
-                'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
+                'X-Compatibility-Date' => self::COMPATIBILITY_DATE,
             ])
                 ->baseUrl(config()->string('esi.base_url'))
                 ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
