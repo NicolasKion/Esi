@@ -54,6 +54,7 @@ use NicolasKion\Esi\DTO\DogmaEffect;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
+use NicolasKion\Esi\DTO\EveMailRecipient;
 use NicolasKion\Esi\DTO\Facility;
 use NicolasKion\Esi\DTO\Faction;
 use NicolasKion\Esi\DTO\FactionWarfareCharacterLeaderboard;
@@ -63,6 +64,7 @@ use NicolasKion\Esi\DTO\FactionWarfareLeaderboard;
 use NicolasKion\Esi\DTO\FactionWarfareSystem;
 use NicolasKion\Esi\DTO\FactionWarfareWar;
 use NicolasKion\Esi\DTO\Fitting;
+use NicolasKion\Esi\DTO\FittingItem;
 use NicolasKion\Esi\DTO\Fleet;
 use NicolasKion\Esi\DTO\FleetInfo;
 use NicolasKion\Esi\DTO\FleetMember;
@@ -966,7 +968,7 @@ class Esi
     /**
      * Sends a mail to a character.
      *
-     * @param  array<int, array<string, mixed>>  $recipients
+     * @param  array<int, EveMailRecipient>  $recipients
      * @return EsiResult<int>
      */
     public function sendMail(Character $character, array $recipients, string $subject, string $body): EsiResult
@@ -2851,7 +2853,7 @@ class Esi
     /**
      * Creates a new ship fitting for a character.
      *
-     * @param  array<int, array<string, mixed>>  $items
+     * @param  array<int, FittingItem>  $items
      * @return EsiResult<int> Returns an instance of EsiResult that contains the new fitting's ID.
      */
     public function createFitting(Character $character, string $name, string $description, int $ship_type_id, array $items): EsiResult

@@ -10,6 +10,7 @@ use NicolasKion\Esi\DTO\CalendarEventAttendee;
 use NicolasKion\Esi\DTO\CalendarEventSummary;
 use NicolasKion\Esi\DTO\CustomsOffice;
 use NicolasKion\Esi\DTO\Fitting;
+use NicolasKion\Esi\DTO\FittingItem;
 use NicolasKion\Esi\DTO\PlanetColony;
 use NicolasKion\Esi\DTO\PlanetLayout;
 use NicolasKion\Esi\Esi;
@@ -188,7 +189,7 @@ it('creates a fitting and returns the new fitting id', function (): void {
     ]);
 
     $items = [
-        ['flag' => 'HiSlot0', 'quantity' => 1, 'type_id' => 2],
+        new FittingItem('HiSlot0', 1, 2),
     ];
 
     $result = (new Esi)->createFitting(fakeCharacter(), 'Ratting Fit', 'A cheap ratting fit', 3, $items);
@@ -200,7 +201,9 @@ it('creates a fitting and returns the new fitting id', function (): void {
         && str_contains($request->url(), '/characters/123/fittings/')
         && $request->data() === [
             'description' => 'A cheap ratting fit',
-            'items' => $items,
+            'items' => [
+                ['flag' => 'HiSlot0', 'quantity' => 1, 'type_id' => 2],
+            ],
             'name' => 'Ratting Fit',
             'ship_type_id' => 3,
         ]);

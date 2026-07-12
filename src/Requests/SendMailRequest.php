@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\Requests;
 
 use Illuminate\Http\Client\Response;
+use NicolasKion\Esi\DTO\EveMailRecipient;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
@@ -15,7 +16,7 @@ use NicolasKion\Esi\Request;
 class SendMailRequest extends Request implements WithBody
 {
     /**
-     * @param  array<int, array<string, mixed>>  $recipients
+     * @param  array<int, EveMailRecipient>  $recipients
      */
     public function __construct(public int $sender_id, public array $recipients, public string $subject, public string $body) {}
 
@@ -27,7 +28,7 @@ class SendMailRequest extends Request implements WithBody
         return [
             'approved_cost' => 0,
             'body' => $this->body,
-            'recipients' => $this->recipients,
+            'recipients' => array_map(static fn (EveMailRecipient $recipient): array => $recipient->__serialize(), $this->recipients),
             'subject' => $this->subject,
         ];
     }
