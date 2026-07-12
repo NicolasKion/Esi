@@ -12,10 +12,17 @@ interface EsiToken
 
     public function getAccessToken(): string;
 
-    public function delete(): void;
+    /**
+     * The return value is ignored by the library; implementers may return
+     * whatever their storage layer does (e.g. Eloquent's bool).
+     */
+    public function delete(): mixed;
 
     /**
+     * The return value is ignored by the library; implementers may return
+     * whatever their storage layer does (e.g. Eloquent's bool).
+     *
      * @param  array<string, mixed>  $data
      */
-    public function update(array $data): void;
+    public function update(array $data): mixed;
 }
