@@ -2,6 +2,40 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.7 - 2026-07-12
+
+### What's Changed
+* Test coverage for all endpoints + PHPStan level 9 type safety by @NicolasKion in https://github.com/NicolasKion/Esi/pull/19
+* chore: bump ESI compatibility date to 2026-06-09 by @NicolasKion in https://github.com/NicolasKion/Esi/pull/20
+* refactor: pin ESI compatibility date to a version constant by @NicolasKion in https://github.com/NicolasKion/Esi/pull/21
+* feat: add dogma attribute and effect endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/22
+* ci: enforce 100% code coverage by @NicolasKion in https://github.com/NicolasKion/Esi/pull/23
+* feat: add alliance corporations and icons endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/24
+* feat: add market group, price, order and type endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/25
+* feat: add universe reference endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/26
+* feat: add remaining corporation endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/27
+* feat: add remaining character endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/28
+* feat: add faction warfare endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/29
+* feat: add wallet balance, transactions and corporation wallet endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/30
+* feat: add incursions, insurance, route and loyalty endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/31
+* feat: add skills and clones endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/32
+* feat: add fleet endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/33
+* feat: add mail labels, mailing lists and delete endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/34
+* feat: add corporation contracts, recent killmails and war lists by @NicolasKion in https://github.com/NicolasKion/Esi/pull/35
+* feat: add industry endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/36
+* feat: add personal market orders, loyalty points and asset locations by @NicolasKion in https://github.com/NicolasKion/Esi/pull/37
+* feat: add calendar, fittings, planetary interaction and UI window endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/38
+* feat: add structure and corporation project endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/39
+* feat: add meta, search, access-list, mercenary-ops and freelance-job endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/40
+* feat: automatically walk ESI cursor-paginated endpoints by @NicolasKion in https://github.com/NicolasKion/Esi/pull/41
+* chore: remove unused package skeleton files by @NicolasKion in https://github.com/NicolasKion/Esi/pull/42
+* docs: refresh README for full ESI coverage by @NicolasKion in https://github.com/NicolasKion/Esi/pull/43
+
+### New Contributors
+* @NicolasKion made their first contribution in https://github.com/NicolasKion/Esi/pull/19
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.6...v0.7
+
 ## v0.6 - 2026-07-10
 
 ### What's Changed
