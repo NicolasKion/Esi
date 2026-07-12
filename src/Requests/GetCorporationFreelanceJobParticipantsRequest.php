@@ -6,13 +6,16 @@ namespace NicolasKion\Esi\Requests;
 
 use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\FreelanceJobParticipant;
+use NicolasKion\Esi\Interfaces\WithCursorPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Support\Data;
 
 /**
  * @extends Request<array<int, FreelanceJobParticipant>>
+ *
+ * @implements WithCursorPagination<array<int, FreelanceJobParticipant>>
  */
-class GetCorporationFreelanceJobParticipantsRequest extends Request
+class GetCorporationFreelanceJobParticipantsRequest extends Request implements WithCursorPagination
 {
     public function __construct(
         public int $corporation_id,

@@ -6,78 +6,10 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use NicolasKion\Esi\Connector;
-use NicolasKion\Esi\Enums\EsiScope;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Esi;
-use NicolasKion\Esi\Interfaces\Character;
-use NicolasKion\Esi\Interfaces\EsiToken;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
-
-/**
- * A token whose expiry, updates and deletion are observable from the test.
- */
-function trackedToken(bool $expired = false): EsiToken
-{
-    return new class($expired) implements EsiToken
-    {
-        /** @var array<string, mixed> */
-        public array $updated = [];
-
-        public bool $deleted = false;
-
-        public function __construct(private bool $expired) {}
-
-        public function isExpired(): bool
-        {
-            return $this->expired;
-        }
-
-        public function getRefreshToken(): string
-        {
-            return 'refresh-token';
-        }
-
-        public function getAccessToken(): string
-        {
-            return 'access-token';
-        }
-
-        public function delete(): void
-        {
-            $this->deleted = true;
-        }
-
-        public function update(array $data): void
-        {
-            $this->updated = $data;
-            $this->expired = false;
-        }
-    };
-}
-
-function characterFor(EsiToken $token): Character
-{
-    return new class($token) implements Character
-    {
-        public function __construct(private EsiToken $token) {}
-
-        public function getEsiTokenWithScope(EsiScope $scope): ?EsiToken
-        {
-            return $this->token;
-        }
-
-        public function getId(): int
-        {
-            return 123;
-        }
-
-        public function getCorporationId(): int
-        {
-            return 456;
-        }
-    };
-}
 
 beforeEach(function (): void {
     config()->set('esi.client_id', 'client-id');

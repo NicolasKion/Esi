@@ -102,3 +102,71 @@ function fakeCharacter(int $id = 123, int $corporationId = 456): Character
         }
     };
 }
+
+/**
+ * A token whose expiry, updates and deletion are observable from the test.
+ */
+function trackedToken(bool $expired = false): EsiToken
+{
+    return new class($expired) implements EsiToken
+    {
+        /** @var array<string, mixed> */
+        public array $updated = [];
+
+        public bool $deleted = false;
+
+        public function __construct(private bool $expired) {}
+
+        public function isExpired(): bool
+        {
+            return $this->expired;
+        }
+
+        public function getRefreshToken(): string
+        {
+            return 'refresh-token';
+        }
+
+        public function getAccessToken(): string
+        {
+            return 'access-token';
+        }
+
+        public function delete(): void
+        {
+            $this->deleted = true;
+        }
+
+        public function update(array $data): void
+        {
+            $this->updated = $data;
+            $this->expired = false;
+        }
+    };
+}
+
+/**
+ * Wrap a token in a Character that hands it back for any requested scope.
+ */
+function characterFor(EsiToken $token): Character
+{
+    return new class($token) implements Character
+    {
+        public function __construct(private EsiToken $token) {}
+
+        public function getEsiTokenWithScope(EsiScope $scope): ?EsiToken
+        {
+            return $this->token;
+        }
+
+        public function getId(): int
+        {
+            return 123;
+        }
+
+        public function getCorporationId(): int
+        {
+            return 456;
+        }
+    };
+}

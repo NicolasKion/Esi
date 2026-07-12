@@ -3045,7 +3045,7 @@ class Esi
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
         $request = new GetCorporationProjectsRequest($corporation_id);
 
-        return $connector->send($request);
+        return $connector->sendCursorPaginated($request);
     }
 
     /**
@@ -3084,7 +3084,7 @@ class Esi
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
         $request = new GetCorporationProjectContributorsRequest($corporation_id, $project_id);
 
-        return $connector->send($request);
+        return $connector->sendCursorPaginated($request);
     }
 
     /**
@@ -3217,7 +3217,7 @@ class Esi
         $connector = new Connector;
         $request = new GetFreelanceJobsRequest;
 
-        return $connector->send($request);
+        return $connector->sendCursorPaginated($request);
     }
 
     /**
@@ -3269,7 +3269,7 @@ class Esi
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFreelanceJobs);
         $request = new GetCorporationFreelanceJobsRequest($corporation_id);
 
-        return $connector->send($request);
+        return $connector->sendCursorPaginated($request);
     }
 
     /**
@@ -3282,7 +3282,7 @@ class Esi
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFreelanceJobs);
         $request = new GetCorporationFreelanceJobParticipantsRequest($corporation_id, $job_id);
 
-        return $connector->send($request);
+        return $connector->sendCursorPaginated($request);
     }
 
     private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector

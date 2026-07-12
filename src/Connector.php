@@ -15,7 +15,9 @@ use NicolasKion\Esi\DTO\EsiStats;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\EsiToken;
 use NicolasKion\Esi\Interfaces\WithBody;
+use NicolasKion\Esi\Interfaces\WithCursorPagination;
 use NicolasKion\Esi\Interfaces\WithPagination;
+use NicolasKion\Esi\Support\Data;
 use Throwable;
 
 use function config;
@@ -143,6 +145,78 @@ class Connector
 
             $results = array_merge($results, $request->createDto($response, $this->normalizeJson($response)));
         } while ($request->hasMorePages($page, $response));
+
+        return new EsiResult(
+            stats: $this->getStatsFromResponse($response),
+            data: $results,
+        );
+    }
+
+    /**
+     * @template T
+     *
+     * @param  WithCursorPagination<array<int, T>>  $request
+     * @return EsiResult<array<int, T>>
+     */
+    public function sendCursorPaginated(WithCursorPagination $request): EsiResult
+    {
+        if ($this->error) {
+            return EsiResult::fromError($this->error);
+        }
+
+        $results = [];
+
+        $token = $this->token;
+
+        $after = null;
+
+        // Cursors we have already requested. Guards against a non-advancing
+        // cursor (e.g. an API that keeps handing back the same `after`) turning
+        // the walk into an infinite loop.
+        $requested_cursors = [];
+
+        do {
+            // Stop if the API points us back at a cursor we have already
+            // fetched — otherwise we would loop forever on the same page.
+            if (in_array($after, $requested_cursors, true)) {
+                break;
+            }
+
+            $requested_cursors[] = $after;
+
+            $pending_request = Http::withHeaders([
+                'User-Agent' => config()->string('esi.user_agent'),
+                'X-Compatibility-Date' => self::COMPATIBILITY_DATE,
+            ])
+                ->baseUrl(config()->string('esi.base_url'))
+                ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
+                ->when($after !== null, fn (PendingRequest $r) => $r->withQueryParameters(['after' => (string) $after]))
+                ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
+                ->when($token !== null, fn (PendingRequest $r) => $r->withToken((string) $token?->getAccessToken()))
+                ->retry(
+                    times: config()->integer('esi.retry_policy.tries'),
+                    sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
+                    when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
+                    throw: false
+                );
+
+            try {
+                // Cursor-paginated endpoints are always GET.
+                $response = $pending_request->get($request->resolveEndpoint());
+            } catch (ConnectionException $e) {
+                return EsiResult::fromError(new EsiError(code: 500, body: $e->getMessage()));
+            }
+
+            if ($response->failed()) {
+                return $this->handleFailedResponse($response);
+            }
+
+            $data = $this->normalizeJson($response);
+            $results = array_merge($results, $request->createDto($response, $data));
+
+            // Walk forward until the API stops handing back an `after` cursor.
+            $after = Data::of($data)->object('cursor')->string('after');
+        } while ($after !== null && $after !== '');
 
         return new EsiResult(
             stats: $this->getStatsFromResponse($response),
