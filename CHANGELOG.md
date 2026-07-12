@@ -2,6 +2,16 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.8 - 2026-07-12
+
+### What's Changed
+* fix: relax EsiToken::delete()/update() return types to mixed by @NicolasKion in https://github.com/NicolasKion/Esi/pull/46
+* ci: open a changelog PR from the release workflow instead of pushing to main by @NicolasKion in https://github.com/NicolasKion/Esi/pull/45
+* docs: add v0.7 changelog entry by @NicolasKion in https://github.com/NicolasKion/Esi/pull/44
+
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.7...v0.8
+
 ## v0.7 - 2026-07-12
 
 ### What's Changed
