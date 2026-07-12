@@ -16,6 +16,8 @@ use NicolasKion\Esi\DTO\ContactLabel;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\CorporationDivisions;
 use NicolasKion\Esi\DTO\CorporationStructure;
+use NicolasKion\Esi\DTO\DogmaAttribute;
+use NicolasKion\Esi\DTO\DogmaEffect;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
@@ -59,6 +61,10 @@ use NicolasKion\Esi\Requests\GetCorporationContactsRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
+use NicolasKion\Esi\Requests\GetDogmaAttributeRequest;
+use NicolasKion\Esi\Requests\GetDogmaAttributesRequest;
+use NicolasKion\Esi\Requests\GetDogmaEffectRequest;
+use NicolasKion\Esi\Requests\GetDogmaEffectsRequest;
 use NicolasKion\Esi\Requests\GetDogmaItemAttributesRequest;
 use NicolasKion\Esi\Requests\GetEveMailRequest;
 use NicolasKion\Esi\Requests\GetEveMailsRequest;
@@ -151,6 +157,58 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetDogmaItemAttributesRequest($type_id, $item_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of dogma attribute IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getDogmaAttributes(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetDogmaAttributesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a dogma attribute.
+     *
+     * @return EsiResult<DogmaAttribute>
+     */
+    public function getDogmaAttribute(int $attribute_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetDogmaAttributeRequest($attribute_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the list of dogma effect IDs.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getDogmaEffects(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetDogmaEffectsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves information about a dogma effect.
+     *
+     * @return EsiResult<DogmaEffect>
+     */
+    public function getDogmaEffect(int $effect_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetDogmaEffectRequest($effect_id);
 
         return $connector->send($request);
     }
