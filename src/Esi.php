@@ -52,10 +52,13 @@ use NicolasKion\Esi\DTO\FactionWarfareLeaderboard;
 use NicolasKion\Esi\DTO\FactionWarfareSystem;
 use NicolasKion\Esi\DTO\FactionWarfareWar;
 use NicolasKion\Esi\DTO\Graphic;
+use NicolasKion\Esi\DTO\Incursion;
+use NicolasKion\Esi\DTO\InsurancePrice;
 use NicolasKion\Esi\DTO\IssuedMedal;
 use NicolasKion\Esi\DTO\JumpFatigue;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\Location;
+use NicolasKion\Esi\DTO\LoyaltyOffer;
 use NicolasKion\Esi\DTO\MarketGroup;
 use NicolasKion\Esi\DTO\MarketHistory;
 use NicolasKion\Esi\DTO\MarketOrder;
@@ -98,6 +101,7 @@ use NicolasKion\Esi\DTO\WalletTransaction;
 use NicolasKion\Esi\DTO\War;
 use NicolasKion\Esi\Enums\EsiScope;
 use NicolasKion\Esi\Enums\MarketOrderType;
+use NicolasKion\Esi\Enums\RoutePreference;
 use NicolasKion\Esi\Interfaces\Character;
 use NicolasKion\Esi\Requests\AddCharacterContactsRequest;
 use NicolasKion\Esi\Requests\DeleteCharacterContactsRequest;
@@ -178,8 +182,11 @@ use NicolasKion\Esi\Requests\GetFactionWarfareSystemsRequest;
 use NicolasKion\Esi\Requests\GetFactionWarfareWarsRequest;
 use NicolasKion\Esi\Requests\GetGraphicRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
+use NicolasKion\Esi\Requests\GetIncursionsRequest;
+use NicolasKion\Esi\Requests\GetInsurancePricesRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
+use NicolasKion\Esi\Requests\GetLoyaltyOffersRequest;
 use NicolasKion\Esi\Requests\GetMarketGroupRequest;
 use NicolasKion\Esi\Requests\GetMarketGroupsRequest;
 use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
@@ -198,6 +205,7 @@ use NicolasKion\Esi\Requests\GetPublicStructuresRequest;
 use NicolasKion\Esi\Requests\GetRacesRequest;
 use NicolasKion\Esi\Requests\GetRaidableSkyhooksRequest;
 use NicolasKion\Esi\Requests\GetRegionRequest;
+use NicolasKion\Esi\Requests\GetRouteRequest;
 use NicolasKion\Esi\Requests\GetSchematicRequest;
 use NicolasKion\Esi\Requests\GetShipRequest;
 use NicolasKion\Esi\Requests\GetSovereigntyRequest;
@@ -1980,6 +1988,59 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFwStats);
         $request = new GetCorporationFactionWarfareStatsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the current incursions.
+     *
+     * @return EsiResult<array<int, Incursion>>
+     */
+    public function getIncursions(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetIncursionsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves insurance prices for all ship types.
+     *
+     * @return EsiResult<array<int, InsurancePrice>>
+     */
+    public function getInsurancePrices(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetInsurancePricesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the loyalty store offers of a corporation.
+     *
+     * @return EsiResult<array<int, LoyaltyOffer>>
+     */
+    public function getLoyaltyOffers(int $corporation_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetLoyaltyOffersRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the shortest, safest, or least secure route between two solar systems.
+     *
+     * @param  array<int, int>  $avoid_systems  Solar systems to avoid.
+     * @return EsiResult<array<int, int>>
+     */
+    public function getRoute(int $origin_system_id, int $destination_system_id, RoutePreference $preference = RoutePreference::Shorter, array $avoid_systems = [], int $security_penalty = 50): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetRouteRequest($origin_system_id, $destination_system_id, $preference, $avoid_systems, $security_penalty);
 
         return $connector->send($request);
     }

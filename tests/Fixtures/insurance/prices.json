@@ -1,0 +1,12 @@
+[
+    {
+        "levels": [
+            {
+                "cost": 1.5,
+                "name": "string",
+                "payout": 1.5
+            }
+        ],
+        "type_id": 90000001
+    }
+]
