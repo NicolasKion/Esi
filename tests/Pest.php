@@ -73,9 +73,15 @@ function fakeCharacter(int $id = 123, int $corporationId = 456): Character
             return 'access';
         }
 
-        public function delete(): void {}
+        public function delete(): mixed
+        {
+            return null;
+        }
 
-        public function update(array $data): void {}
+        public function update(array $data): mixed
+        {
+            return null;
+        }
     };
 
     return new class($token, $id, $corporationId) implements Character
@@ -132,15 +138,19 @@ function trackedToken(bool $expired = false): EsiToken
             return 'access-token';
         }
 
-        public function delete(): void
+        public function delete(): mixed
         {
             $this->deleted = true;
+
+            return null;
         }
 
-        public function update(array $data): void
+        public function update(array $data): mixed
         {
             $this->updated = $data;
             $this->expired = false;
+
+            return null;
         }
     };
 }
