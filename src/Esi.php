@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace NicolasKion\Esi;
 
 use NicolasKion\Esi\DTO\Alliance;
+use NicolasKion\Esi\DTO\AllianceIcons;
 use NicolasKion\Esi\DTO\Asset;
 use NicolasKion\Esi\DTO\AssetName;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
@@ -45,6 +46,8 @@ use NicolasKion\Esi\Requests\EditCharacterContactsRequest;
 use NicolasKion\Esi\Requests\GetAffiliationsRequest;
 use NicolasKion\Esi\Requests\GetAllianceContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetAllianceContactsRequest;
+use NicolasKion\Esi\Requests\GetAllianceCorporationsRequest;
+use NicolasKion\Esi\Requests\GetAllianceIconsRequest;
 use NicolasKion\Esi\Requests\GetAllianceRequest;
 use NicolasKion\Esi\Requests\GetAlliancesRequest;
 use NicolasKion\Esi\Requests\GetAssetNamesRequest;
@@ -560,6 +563,32 @@ class Esi
         $request = new GetAlliancesRequest;
 
         return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the corporation IDs of the members of an alliance.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getAllianceCorporations(int $alliance_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetAllianceCorporationsRequest($alliance_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the icon URLs for an alliance.
+     *
+     * @return EsiResult<AllianceIcons>
+     */
+    public function getAllianceIcons(int $alliance_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetAllianceIconsRequest($alliance_id);
+
+        return $connector->send($request);
     }
 
     /**
