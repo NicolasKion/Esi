@@ -1,0 +1,26 @@
+{
+    "id": 1,
+    "name": "Corp Leadership",
+    "description": "Access for corp leadership",
+    "membership": {
+        "allow_everyone": false,
+        "alliances": [
+            {
+                "alliance_id": 99000001,
+                "access": "Allowed"
+            }
+        ],
+        "corporations": [
+            {
+                "corporation_id": 98000001,
+                "access": "Manager"
+            }
+        ],
+        "characters": [
+            {
+                "character_id": 95465499,
+                "access": "Admin"
+            }
+        ]
+    }
+}

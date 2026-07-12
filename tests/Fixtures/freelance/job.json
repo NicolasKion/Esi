@@ -1,0 +1,62 @@
+{
+    "id": "3868eaed-8278-4cb7-9709-7d7de9c20dc7",
+    "name": "Freelance Job Name",
+    "state": "Active",
+    "last_modified": "2025-11-01T00:00:00Z",
+    "progress": {
+        "current": 50,
+        "desired": 100
+    },
+    "reward": {
+        "initial": 12345.5,
+        "remaining": 5432.1
+    },
+    "access_and_visibility": {
+        "acl_protected": false,
+        "broadcast_locations": [
+            {
+                "id": 30000142,
+                "name": "Jita"
+            }
+        ],
+        "restrictions": {
+            "maximum_age": 100,
+            "minimum_age": 10
+        }
+    },
+    "configuration": {
+        "method": "BoostShield",
+        "version": 1,
+        "parameters": {
+            "target": {
+                "matcher": {
+                    "type_id": 34
+                }
+            }
+        }
+    },
+    "contribution": {
+        "contribution_per_participant_limit": 1000,
+        "max_committed_participants": 10000,
+        "reward_per_contribution": 123.5,
+        "submission_limit": 100,
+        "submission_multiplier": 1.5
+    },
+    "details": {
+        "career": "Explorer",
+        "created": "2025-11-01T00:00:00Z",
+        "creator": {
+            "character": {
+                "id": 90000001,
+                "name": "Creator Name"
+            },
+            "corporation": {
+                "id": 98777771,
+                "name": "Creator Corporation"
+            }
+        },
+        "description": "Freelance Job Description",
+        "expires": "2025-11-01T00:01:00Z",
+        "finished": "2025-11-01T00:00:00Z"
+    }
+}

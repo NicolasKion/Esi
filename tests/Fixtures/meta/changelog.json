@@ -1,0 +1,13 @@
+{
+    "changelog": {
+        "2025-08-26": [
+            {
+                "method": "GET",
+                "path": "/characters/{character_id}/search",
+                "compatibility_date": "2025-08-26",
+                "type": "changed",
+                "description": "Updated response schema."
+            }
+        ]
+    }
+}

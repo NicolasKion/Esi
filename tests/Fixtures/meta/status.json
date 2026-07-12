@@ -1,0 +1,14 @@
+{
+    "routes": [
+        {
+            "method": "GET",
+            "path": "/status",
+            "status": "OK"
+        },
+        {
+            "method": "POST",
+            "path": "/universe/ids/",
+            "status": "Degraded"
+        }
+    ]
+}

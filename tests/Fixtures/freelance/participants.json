@@ -1,0 +1,14 @@
+{
+    "cursor": {
+        "after": "abc",
+        "before": "def"
+    },
+    "participants": [
+        {
+            "contributed": 100,
+            "id": 90000001,
+            "name": "Participant Name",
+            "state": "Committed"
+        }
+    ]
+}

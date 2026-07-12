@@ -1,0 +1,31 @@
+[
+    {
+        "campaign_id": 12345,
+        "structure_id": 999999,
+        "solar_system_id": 30000142,
+        "constellation_id": 20000020,
+        "event_type": "station_freeport",
+        "start_time": "2026-06-09T12:00:00Z",
+        "participants": [
+            {
+                "alliance_id": 99000001,
+                "score": 0.75
+            },
+            {
+                "alliance_id": 99000002,
+                "score": 0.25
+            }
+        ]
+    },
+    {
+        "campaign_id": 12346,
+        "structure_id": 999998,
+        "solar_system_id": 30000144,
+        "constellation_id": 20000021,
+        "event_type": "tcu_defense",
+        "start_time": "2026-06-10T12:00:00Z",
+        "defender_id": 99000003,
+        "defender_score": 0.6,
+        "attackers_score": 0.4
+    }
+]
