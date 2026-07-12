@@ -3,17 +3,18 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/nicolaskion/eve.svg?style=flat-square)](https://packagist.org/packages/nicolaskion/eve)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/nicolaskion/esi/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/nicolaskion/esi/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/nicolaskion/esi/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/nicolaskion/esi/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/nicolaskion/esi.svg?style=flat-square)](https://packagist.org/packages/nicolaskion/esi)
+[![Total Downloads](https://img.shields.io/packagist/dt/nicolaskion/eve.svg?style=flat-square)](https://packagist.org/packages/nicolaskion/eve)
 
-A Laravel package that integrates [EVE Online's ESI API](https://developers.eveonline.com/) into your application. It wraps ESI endpoints in typed request classes and returns fully typed, readonly DTOs — no juggling raw JSON arrays.
+A Laravel package that integrates [EVE Online's ESI API](https://developers.eveonline.com/) into your application. Every ESI endpoint is wrapped in a typed request class and returns fully typed, readonly DTOs — no juggling raw JSON arrays.
 
 ## Features
 
-- **Typed DTOs** for every response (characters, corporations, alliances, assets, contracts, killmails, market history, and more)
+- **Complete ESI coverage** — every endpoint in ESI's OpenAPI specification is implemented, pinned to a specific compatibility date per release
+- **Typed DTOs** for every response — characters, corporations, alliances, assets, contracts, killmails, market data, industry, fleets, and more
 - **Automatic OAuth token refresh** for authenticated endpoints via your own `Character` / `EsiToken` implementations
-- **Automatic pagination** for paginated endpoints
+- **Automatic pagination** — multi-page endpoints are walked and merged into a single result set for you
+- **No exceptions on HTTP errors** — every call returns a typed `EsiResult` you inspect
 - **Configurable retry policy** with sensible defaults
-- **ESI compatibility date** support, pinned per release
 
 ## Requirements
 
@@ -99,31 +100,28 @@ if ($result->failed()) {
 }
 ```
 
-## Supported endpoints
+## Coverage & compatibility
 
-| Area | Methods |
-| --- | --- |
-| Alliances | `getAlliance`, `getAlliances`, `getAllianceContacts`, `getAllianceContactLabels` |
-| Assets | `getAssets`, `getAssetNames`, `getCorporationAssets`, `getCorporationAssetNames` |
-| Characters | `getCharacter`, `getAffiliations`, `getLocation`, `getOnline`, `getShip` |
-| Contacts | `getCharacterContacts`, `getCharacterContactLabels`, `addCharacterContacts`, `editCharacterContacts`, `deleteCharacterContacts`, `getCorporationContacts`, `getCorporationContactLabels` |
-| Contracts | `getCharacterContracts`, `getCharacterContractItems`, `getPublicContracts`, `getPublicContractItems`, `getPublicContractBids`, `openContract` |
-| Corporations | `getCorporation`, `getCorporationDivisions`, `getCorporationStructures` |
-| Dogma | `getDogmaItem` |
-| Killmails | `getKillmail` |
-| Mail | `getEveMails`, `getEveMail`, `sendMail`, `updateEveMail` |
-| Market | `getMarketHistory` |
-| Sovereignty | `getSovereignty`, `getRaidableSkyhooks` |
-| Universe | `getNames`, `getIds`, `getStructure`, `getPublicStructures` |
-| UI | `setWaypoint` |
-| Wallet | `getWalletJournal` |
-| Wars | `getWar` |
-| Meta | `getStatus` |
+This package implements **every endpoint** in ESI's OpenAPI specification, so
+there is no per-endpoint table to keep in sync — if it exists in ESI, there is a
+method for it. Method names follow the ESI operation they call
+(`getCharacter`, `getCorporationWalletJournal`, `getMarketOrders`, `search`,
+`setWaypoint`, …), and every one returns an `EsiResult`.
+
+Each release is pinned to a specific ESI **compatibility date**, sent as the
+`X-Compatibility-Date` header, so responses stay stable as ESI evolves. The
+pinned date is configurable.
 
 ## Testing
 
 ```bash
 composer test
+```
+
+Run the suite with coverage:
+
+```bash
+composer test-coverage
 ```
 
 ## Changelog
