@@ -29,6 +29,41 @@ final class Unicode
     }
 
     /**
+     * Normalize a string to NFC form and decode any unicode escape sequences.
+     */
+    public static function normalize(string $value): string
+    {
+        $value = self::decodeEscapes($value);
+
+        if (Normalizer::isNormalized($value, Normalizer::FORM_C)) {
+            return $value;
+        }
+
+        $normalized = Normalizer::normalize($value, Normalizer::FORM_C);
+
+        return is_string($normalized) && $normalized !== '' ? $normalized : $value;
+    }
+
+    /**
+     * Recursively normalize all string values in an array.
+     *
+     * @param  array<array-key, mixed>  $data
+     * @return array<array-key, mixed>
+     */
+    public static function normalizeArray(array $data): array
+    {
+        foreach ($data as $key => $value) {
+            if (is_string($value)) {
+                $data[$key] = self::normalize($value);
+            } elseif (is_array($value)) {
+                $data[$key] = self::normalizeArray($value);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * Strip Python-style u'...' wrappers from unicode sequences.
      *
      * Example: u'\u038f' → \u038f
@@ -58,39 +93,8 @@ final class Unicode
      */
     private static function escapeSequenceToUtf8(string $sequence): string
     {
-        return json_decode('"'.str_replace('\\u', '\\u', $sequence).'"') ?? $sequence;
-    }
+        $decoded = json_decode('"'.str_replace('\\u', '\\u', $sequence).'"');
 
-    /**
-     * Normalize a string to NFC form and decode any unicode escape sequences.
-     */
-    public static function normalize(string $value): string
-    {
-        $value = self::decodeEscapes($value);
-
-        if (Normalizer::isNormalized($value, Normalizer::FORM_C)) {
-            return $value;
-        }
-
-        return Normalizer::normalize($value, Normalizer::FORM_C) ?: $value;
-    }
-
-    /**
-     * Recursively normalize all string values in an array.
-     *
-     * @param  array<array-key, mixed>  $data
-     * @return array<array-key, mixed>
-     */
-    public static function normalizeArray(array $data): array
-    {
-        foreach ($data as $key => $value) {
-            if (is_string($value)) {
-                $data[$key] = self::normalize($value);
-            } elseif (is_array($value)) {
-                $data[$key] = self::normalizeArray($value);
-            }
-        }
-
-        return $data;
+        return is_string($decoded) ? $decoded : $sequence;
     }
 }

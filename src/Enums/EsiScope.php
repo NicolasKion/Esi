@@ -27,6 +27,9 @@ enum EsiScope: string
     case ReadCorporationContacts = 'esi-corporations.read_contacts.v1';
     case ReadAllianceContacts = 'esi-alliances.read_contacts.v1';
 
+    /**
+     * @return array<int, string>
+     */
     public static function fromRequest(string $scopes): array
     {
         $scopes = explode(',', $scopes);
@@ -34,8 +37,11 @@ enum EsiScope: string
         return array_map(fn ($scope) => self::from($scope)->value, $scopes);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public static function all(): array
     {
-        return collect(self::cases())->map(fn ($scope) => $scope->value)->toArray();
+        return array_map(fn (self $scope): string => $scope->value, self::cases());
     }
 }

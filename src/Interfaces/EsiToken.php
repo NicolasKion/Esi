@@ -12,7 +12,10 @@ interface EsiToken
 
     public function getAccessToken(): string;
 
-    public function delete();
+    public function delete(): void;
 
-    public function update(array $data);
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function update(array $data): void;
 }
