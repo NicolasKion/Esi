@@ -61,6 +61,9 @@ use NicolasKion\Esi\DTO\FleetMember;
 use NicolasKion\Esi\DTO\FleetWing;
 use NicolasKion\Esi\DTO\Graphic;
 use NicolasKion\Esi\DTO\Incursion;
+use NicolasKion\Esi\DTO\IndustryFacility;
+use NicolasKion\Esi\DTO\IndustryJob;
+use NicolasKion\Esi\DTO\IndustrySystem;
 use NicolasKion\Esi\DTO\InsurancePrice;
 use NicolasKion\Esi\DTO\IssuedMedal;
 use NicolasKion\Esi\DTO\JumpFatigue;
@@ -76,6 +79,10 @@ use NicolasKion\Esi\DTO\MarketOrder;
 use NicolasKion\Esi\DTO\MarketPrice;
 use NicolasKion\Esi\DTO\MemberTitles;
 use NicolasKion\Esi\DTO\MemberTracking;
+use NicolasKion\Esi\DTO\MiningExtraction;
+use NicolasKion\Esi\DTO\MiningLedgerEntry;
+use NicolasKion\Esi\DTO\MiningObserver;
+use NicolasKion\Esi\DTO\MiningObserverEntry;
 use NicolasKion\Esi\DTO\Moon;
 use NicolasKion\Esi\DTO\Name;
 use NicolasKion\Esi\DTO\Notification;
@@ -152,7 +159,9 @@ use NicolasKion\Esi\Requests\GetCharacterFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCharacterFatigueRequest;
 use NicolasKion\Esi\Requests\GetCharacterFleetRequest;
 use NicolasKion\Esi\Requests\GetCharacterImplantsRequest;
+use NicolasKion\Esi\Requests\GetCharacterIndustryJobsRequest;
 use NicolasKion\Esi\Requests\GetCharacterMedalsRequest;
+use NicolasKion\Esi\Requests\GetCharacterMiningRequest;
 use NicolasKion\Esi\Requests\GetCharacterNotificationsRequest;
 use NicolasKion\Esi\Requests\GetCharacterPortraitRequest;
 use NicolasKion\Esi\Requests\GetCharacterRecentKillmailsRequest;
@@ -177,12 +186,16 @@ use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
 use NicolasKion\Esi\Requests\GetCorporationFacilitiesRequest;
 use NicolasKion\Esi\Requests\GetCorporationFactionWarfareStatsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIconsRequest;
+use NicolasKion\Esi\Requests\GetCorporationIndustryJobsRequest;
 use NicolasKion\Esi\Requests\GetCorporationIssuedMedalsRequest;
 use NicolasKion\Esi\Requests\GetCorporationMedalsRequest;
 use NicolasKion\Esi\Requests\GetCorporationMemberLimitRequest;
 use NicolasKion\Esi\Requests\GetCorporationMembersRequest;
 use NicolasKion\Esi\Requests\GetCorporationMemberTitlesRequest;
 use NicolasKion\Esi\Requests\GetCorporationMemberTrackingRequest;
+use NicolasKion\Esi\Requests\GetCorporationMiningExtractionsRequest;
+use NicolasKion\Esi\Requests\GetCorporationMiningObserverRequest;
+use NicolasKion\Esi\Requests\GetCorporationMiningObserversRequest;
 use NicolasKion\Esi\Requests\GetCorporationRecentKillmailsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetCorporationRolesHistoryRequest;
@@ -217,6 +230,8 @@ use NicolasKion\Esi\Requests\GetFleetWingsRequest;
 use NicolasKion\Esi\Requests\GetGraphicRequest;
 use NicolasKion\Esi\Requests\GetIdsRequest;
 use NicolasKion\Esi\Requests\GetIncursionsRequest;
+use NicolasKion\Esi\Requests\GetIndustryFacilitiesRequest;
+use NicolasKion\Esi\Requests\GetIndustrySystemsRequest;
 use NicolasKion\Esi\Requests\GetInsurancePricesRequest;
 use NicolasKion\Esi\Requests\GetKillmailRequest;
 use NicolasKion\Esi\Requests\GetLocationRequest;
@@ -2497,6 +2512,110 @@ class Esi
         $request = new RenameFleetSquadRequest($fleet_id, $squad_id, $name);
 
         return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a list of industry facilities.
+     *
+     * @return EsiResult<array<int, IndustryFacility>> Returns an instance of EsiResult that contains the retrieved industry facilities.
+     */
+    public function getIndustryFacilities(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetIndustryFacilitiesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the cost indices for solar systems used in industry.
+     *
+     * @return EsiResult<array<int, IndustrySystem>> Returns an instance of EsiResult that contains the retrieved industry systems.
+     */
+    public function getIndustrySystems(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetIndustrySystemsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the industry jobs for a given character.
+     *
+     * @return EsiResult<array<int, IndustryJob>> Returns an instance of EsiResult that contains the retrieved industry jobs.
+     */
+    public function getCharacterIndustryJobs(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterIndustryJobs);
+        $request = new GetCharacterIndustryJobsRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the industry jobs for a corporation.
+     *
+     * @return EsiResult<array<int, IndustryJob>> Returns an instance of EsiResult that contains the retrieved industry jobs.
+     */
+    public function getCorporationIndustryJobs(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationIndustryJobs);
+        $request = new GetCorporationIndustryJobsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the mining ledger for a given character.
+     *
+     * @return EsiResult<array<int, MiningLedgerEntry>> Returns an instance of EsiResult that contains the retrieved mining ledger.
+     */
+    public function getCharacterMining(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterMining);
+        $request = new GetCharacterMiningRequest($character->getId());
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the moon mining extractions for a corporation.
+     *
+     * @return EsiResult<array<int, MiningExtraction>> Returns an instance of EsiResult that contains the retrieved moon mining extractions.
+     */
+    public function getCorporationMiningExtractions(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMining);
+        $request = new GetCorporationMiningExtractionsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the mining observers for a corporation.
+     *
+     * @return EsiResult<array<int, MiningObserver>> Returns an instance of EsiResult that contains the retrieved mining observers.
+     */
+    public function getCorporationMiningObservers(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMining);
+        $request = new GetCorporationMiningObserversRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the mining ledger observed by a specific mining observer.
+     *
+     * @return EsiResult<array<int, MiningObserverEntry>> Returns an instance of EsiResult that contains the retrieved mining observer entries.
+     */
+    public function getCorporationMiningObserver(Character $character, int $corporation_id, int $observer_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMining);
+        $request = new GetCorporationMiningObserverRequest($corporation_id, $observer_id);
+
+        return $connector->sendPaginated($request);
     }
 
     private function getAuthenticatedConnector(Character $character, EsiScope $scope): Connector

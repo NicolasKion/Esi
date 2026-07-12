@@ -56,6 +56,10 @@ enum EsiScope: string
     case ReadImplants = 'esi-clones.read_implants.v1';
     case ReadFleet = 'esi-fleets.read_fleet.v1';
     case WriteFleet = 'esi-fleets.write_fleet.v1';
+    case ReadCharacterIndustryJobs = 'esi-industry.read_character_jobs.v1';
+    case ReadCharacterMining = 'esi-industry.read_character_mining.v1';
+    case ReadCorporationMining = 'esi-industry.read_corporation_mining.v1';
+    case ReadCorporationIndustryJobs = 'esi-industry.read_corporation_jobs.v1';
 
     /**
      * @return array<int, string>
