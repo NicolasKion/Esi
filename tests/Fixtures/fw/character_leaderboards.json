@@ -1,0 +1,42 @@
+{
+    "kills": {
+        "active_total": [
+            {
+                "amount": 90000001,
+                "character_id": 90000001
+            }
+        ],
+        "last_week": [
+            {
+                "amount": 90000001,
+                "character_id": 90000001
+            }
+        ],
+        "yesterday": [
+            {
+                "amount": 90000001,
+                "character_id": 90000001
+            }
+        ]
+    },
+    "victory_points": {
+        "active_total": [
+            {
+                "amount": 90000001,
+                "character_id": 90000001
+            }
+        ],
+        "last_week": [
+            {
+                "amount": 90000001,
+                "character_id": 90000001
+            }
+        ],
+        "yesterday": [
+            {
+                "amount": 90000001,
+                "character_id": 90000001
+            }
+        ]
+    }
+}

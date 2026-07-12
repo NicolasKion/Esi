@@ -1,0 +1,10 @@
+[
+    {
+        "contested": "captured",
+        "occupier_faction_id": 90000001,
+        "owner_faction_id": 90000001,
+        "solar_system_id": 90000001,
+        "victory_points": 90000001,
+        "victory_points_threshold": 90000001
+    }
+]
