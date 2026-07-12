@@ -1,0 +1,11 @@
+{
+    "name": "string",
+    "planet_id": 90000001,
+    "position": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 1.5
+    },
+    "system_id": 90000001,
+    "type_id": 90000001
+}

@@ -1,0 +1,28 @@
+{
+    "capacity": 1.5,
+    "description": "string",
+    "dogma_attributes": [
+        {
+            "attribute_id": 90000001,
+            "value": 1.5
+        }
+    ],
+    "dogma_effects": [
+        {
+            "effect_id": 90000001,
+            "is_default": true
+        }
+    ],
+    "graphic_id": 90000001,
+    "group_id": 90000001,
+    "icon_id": 90000001,
+    "market_group_id": 90000001,
+    "mass": 1.5,
+    "name": "string",
+    "packaged_volume": 1.5,
+    "portion_size": 90000001,
+    "published": true,
+    "radius": 1.5,
+    "type_id": 90000001,
+    "volume": 1.5
+}

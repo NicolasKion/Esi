@@ -1,0 +1,15 @@
+{
+    "destination": {
+        "stargate_id": 90000001,
+        "system_id": 90000001
+    },
+    "name": "string",
+    "position": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 1.5
+    },
+    "stargate_id": 90000001,
+    "system_id": 90000001,
+    "type_id": 90000001
+}
