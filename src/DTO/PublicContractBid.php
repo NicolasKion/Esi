@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class PublicContractBid implements FromArray
+readonly class PublicContractBid extends Dto
 {
     public function __construct(
         public float $amount,
         public int $bid_id,
         public string $date_bid,
-    ) {
-        //
-    }
+    ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
-        return new PublicContractBid(
-            amount: (float) $data['amount'],
-            bid_id: (int) $data['bid_id'],
-            date_bid: $data['date_bid'],
+        return new self(
+            amount: $data->float('amount', 0.0),
+            bid_id: $data->integer('bid_id', 0),
+            date_bid: $data->string('date_bid', ''),
         );
     }
 }

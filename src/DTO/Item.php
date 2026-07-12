@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-class Item
+use NicolasKion\Esi\Support\Data;
+
+readonly class Item extends Dto
 {
     public function __construct(
         public int $flag,
@@ -14,14 +16,14 @@ class Item
         public ?int $singleton = null,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            flag: $data['flag'],
-            item_type_id: $data['item_type_id'],
-            quantity_destroyed: $data['quantity_destroyed'] ?? null,
-            quantity_dropped: $data['quantity_dropped'] ?? null,
-            singleton: $data['singleton'] ?? null,
+            flag: $data->integer('flag', 0),
+            item_type_id: $data->integer('item_type_id', 0),
+            quantity_destroyed: $data->integer('quantity_destroyed'),
+            quantity_dropped: $data->integer('quantity_dropped'),
+            singleton: $data->integer('singleton'),
         );
     }
 }

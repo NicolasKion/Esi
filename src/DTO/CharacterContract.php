@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\DTO;
 
 use NicolasKion\Esi\Enums\ContractType;
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class CharacterContract implements FromArray
+readonly class CharacterContract extends Dto
 {
     public function __construct(
         public int $acceptor_id,
@@ -32,35 +32,33 @@ readonly class CharacterContract implements FromArray
         public ?string $title,
         public ContractType $type,
         public ?float $volume,
-    ) {
-        //
-    }
+    ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            acceptor_id: (int) $data['acceptor_id'],
-            assignee_id: (int) $data['assignee_id'],
-            availability: $data['availability'],
-            buyout: $data['buyout'] ?? null,
-            collateral: $data['collateral'] ?? null,
-            contract_id: (int) $data['contract_id'],
-            date_accepted: $data['date_accepted'] ?? null,
-            date_completed: $data['date_completed'] ?? null,
-            date_expired: $data['date_expired'],
-            date_issued: $data['date_issued'],
-            days_to_complete: $data['days_to_complete'] ?? null,
-            end_location_id: $data['end_location_id'] ?? null,
-            for_corporation: (bool) $data['for_corporation'],
-            issuer_corporation_id: (int) $data['issuer_corporation_id'],
-            issuer_id: (int) $data['issuer_id'],
-            price: $data['price'] ?? null,
-            reward: $data['reward'] ?? null,
-            start_location_id: $data['start_location_id'] ?? null,
-            status: $data['status'],
-            title: $data['title'] ?? null,
-            type: ContractType::from($data['type']),
-            volume: $data['volume'] ?? null,
+            acceptor_id: $data->integer('acceptor_id', 0),
+            assignee_id: $data->integer('assignee_id', 0),
+            availability: $data->string('availability', ''),
+            buyout: $data->float('buyout'),
+            collateral: $data->float('collateral'),
+            contract_id: $data->integer('contract_id', 0),
+            date_accepted: $data->string('date_accepted'),
+            date_completed: $data->string('date_completed'),
+            date_expired: $data->string('date_expired', ''),
+            date_issued: $data->string('date_issued', ''),
+            days_to_complete: $data->integer('days_to_complete'),
+            end_location_id: $data->integer('end_location_id'),
+            for_corporation: $data->boolean('for_corporation', false),
+            issuer_corporation_id: $data->integer('issuer_corporation_id', 0),
+            issuer_id: $data->integer('issuer_id', 0),
+            price: $data->float('price'),
+            reward: $data->float('reward'),
+            start_location_id: $data->integer('start_location_id'),
+            status: $data->string('status', ''),
+            title: $data->string('title'),
+            type: ContractType::from($data->string('type', '')),
+            volume: $data->float('volume'),
         );
     }
 }

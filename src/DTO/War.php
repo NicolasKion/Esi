@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class War implements FromArray
+readonly class War extends Dto
 {
+    /**
+     * @param  array<int, Ally>  $allies
+     */
     public function __construct(
         public Aggressor $aggressor,
         public array $allies,
@@ -21,19 +24,19 @@ readonly class War implements FromArray
         public ?string $started
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            aggressor: Aggressor::fromArray($data['aggressor']),
-            allies: array_map(fn (array $ally) => Ally::fromArray($ally), $data['allies'] ?? []),
-            declared: $data['declared'],
-            defender: Defender::fromArray($data['defender']),
-            finished: $data['finished'] ?? null,
-            id: $data['id'],
-            mutual: $data['mutual'],
-            open_for_allies: $data['open_for_allies'],
-            retracted: $data['retracted'] ?? null,
-            started: $data['started'] ?? null,
+            aggressor: Aggressor::fromData($data->object('aggressor')),
+            allies: $data->list('allies', Ally::fromData(...)),
+            declared: $data->string('declared', ''),
+            defender: Defender::fromData($data->object('defender')),
+            finished: $data->string('finished'),
+            id: $data->integer('id', 0),
+            mutual: $data->boolean('mutual', false),
+            open_for_allies: $data->boolean('open_for_allies', false),
+            retracted: $data->string('retracted'),
+            started: $data->string('started'),
         );
     }
 }

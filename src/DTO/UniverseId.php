@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class UniverseId implements FromArray
+readonly class UniverseId extends Dto
 {
     public function __construct(
         public int $id,
@@ -15,11 +15,11 @@ readonly class UniverseId implements FromArray
         //
     }
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            id: $data['id'],
-            name: $data['name'],
+            id: $data->integer('id', 0),
+            name: $data->string('name', ''),
         );
     }
 }

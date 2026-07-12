@@ -7,7 +7,7 @@ namespace NicolasKion\Esi\DTO;
 /**
  * Represents the result of an ESI operation.
  *
- * @template T
+ * @template-covariant T
  *
  * @property-read T $data The data.
  */
@@ -25,6 +25,20 @@ readonly class EsiResult
         public ?EsiError $error = null,
     ) {
         //
+    }
+
+    /**
+     * Build a failed result. The data type is `never` so it composes with an
+     * expected EsiResult<T> for any T (a failed result carries no data).
+     *
+     * @return EsiResult<never>
+     */
+    public static function fromError(EsiError $error, ?EsiStats $stats = null): self
+    {
+        /** @var EsiResult<never> $result */
+        $result = new self(stats: $stats, error: $error);
+
+        return $result;
     }
 
     public function wasSuccessful(): bool

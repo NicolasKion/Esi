@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class UniverseIds implements FromArray
+readonly class UniverseIds extends Dto
 {
     /**
-     * @param  UniverseId[]  $agents
-     * @param  UniverseId[]  $alliances
-     * @param  UniverseId[]  $characters
-     * @param  UniverseId[]  $constellations
-     * @param  UniverseId[]  $corporations
-     * @param  UniverseId[]  $factions
-     * @param  UniverseId[]  $inventory_types
-     * @param  UniverseId[]  $regions
-     * @param  UniverseId[]  $stations
-     * @param  UniverseId[]  $systems
+     * @param  array<int, UniverseId>  $agents
+     * @param  array<int, UniverseId>  $alliances
+     * @param  array<int, UniverseId>  $characters
+     * @param  array<int, UniverseId>  $constellations
+     * @param  array<int, UniverseId>  $corporations
+     * @param  array<int, UniverseId>  $factions
+     * @param  array<int, UniverseId>  $inventory_types
+     * @param  array<int, UniverseId>  $regions
+     * @param  array<int, UniverseId>  $stations
+     * @param  array<int, UniverseId>  $systems
      */
     public function __construct(
         public array $agents,
@@ -35,19 +35,19 @@ readonly class UniverseIds implements FromArray
         //
     }
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            agents: array_map(UniverseId::fromArray(...), $data['agents'] ?? []),
-            alliances: array_map(UniverseId::fromArray(...), $data['alliances'] ?? []),
-            characters: array_map(UniverseId::fromArray(...), $data['characters'] ?? []),
-            constellations: array_map(UniverseId::fromArray(...), $data['constellations'] ?? []),
-            corporations: array_map(UniverseId::fromArray(...), $data['corporations'] ?? []),
-            factions: array_map(UniverseId::fromArray(...), $data['factions'] ?? []),
-            inventory_types: array_map(UniverseId::fromArray(...), $data['inventory_types'] ?? []),
-            regions: array_map(UniverseId::fromArray(...), $data['regions'] ?? []),
-            stations: array_map(UniverseId::fromArray(...), $data['stations'] ?? []),
-            systems: array_map(UniverseId::fromArray(...), $data['systems'] ?? []),
+            agents: $data->list('agents', UniverseId::fromData(...)),
+            alliances: $data->list('alliances', UniverseId::fromData(...)),
+            characters: $data->list('characters', UniverseId::fromData(...)),
+            constellations: $data->list('constellations', UniverseId::fromData(...)),
+            corporations: $data->list('corporations', UniverseId::fromData(...)),
+            factions: $data->list('factions', UniverseId::fromData(...)),
+            inventory_types: $data->list('inventory_types', UniverseId::fromData(...)),
+            regions: $data->list('regions', UniverseId::fromData(...)),
+            stations: $data->list('stations', UniverseId::fromData(...)),
+            systems: $data->list('systems', UniverseId::fromData(...)),
         );
     }
 }

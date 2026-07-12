@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class PublicContractItem implements FromArray
+readonly class PublicContractItem extends Dto
 {
     public function __construct(
         public int $type_id,
@@ -18,22 +18,24 @@ readonly class PublicContractItem implements FromArray
         public ?int $material_efficiency,
         public ?int $time_efficiency,
         public ?int $runs,
-    ) {
-        //
-    }
+        public ?bool $is_singleton = null,
+        public ?int $raw_quantity = null,
+    ) {}
 
-    public static function fromArray(array $data): FromArray
+    public static function fromData(Data $data): self
     {
         return new self(
-            type_id: (int) $data['type_id'],
-            record_id: (int) $data['record_id'],
-            quantity: (int) $data['quantity'],
-            is_included: (bool) $data['is_included'],
-            item_id: $data['item_id'] ?? null,
-            is_blueprint_copy: $data['is_blueprint_copy'] ?? null,
-            material_efficiency: $data['material_efficiency'] ?? null,
-            time_efficiency: $data['time_efficiency'] ?? null,
-            runs: $data['runs'] ?? null,
+            type_id: $data->integer('type_id', 0),
+            record_id: $data->integer('record_id', 0),
+            quantity: $data->integer('quantity', 0),
+            is_included: $data->boolean('is_included', false),
+            item_id: $data->integer('item_id'),
+            is_blueprint_copy: $data->boolean('is_blueprint_copy'),
+            material_efficiency: $data->integer('material_efficiency'),
+            time_efficiency: $data->integer('time_efficiency'),
+            runs: $data->integer('runs'),
+            is_singleton: $data->boolean('is_singleton'),
+            raw_quantity: $data->integer('raw_quantity'),
         );
     }
 }

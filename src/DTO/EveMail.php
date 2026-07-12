@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-use NicolasKion\Esi\Enums\RecipientType;
-use NicolasKion\Esi\Interfaces\FromArray;
+use NicolasKion\Esi\Support\Data;
 
-readonly class EveMail implements FromArray
+readonly class EveMail extends Dto
 {
+    /**
+     * @param  array<int, int>  $labels  Label ids applied to the mail.
+     * @param  array<int, EveMailRecipient>  $recipients
+     */
     public function __construct(
         public ?int $mail_id,
         public int $from,
@@ -20,22 +23,17 @@ readonly class EveMail implements FromArray
         public ?string $body = null,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
-        $recipients = collect($data['recipients'])->map(fn ($recipient) => new EveMailRecipient(
-            recipient_id: $recipient['recipient_id'],
-            recipient_type: RecipientType::from($recipient['recipient_type'])
-        ));
-
         return new self(
-            mail_id: $data['mail_id'] ?? null,
-            from: $data['from'],
-            is_read: $data['is_read'] ?? $data['read'] ?? false,
-            labels: $data['labels'],
-            recipients: $recipients->toArray(),
-            subject: $data['subject'],
-            timestamp: $data['timestamp'],
-            body: $data['body'] ?? null,
+            mail_id: $data->integer('mail_id'),
+            from: $data->integer('from', 0),
+            is_read: $data->boolean('is_read', $data->boolean('read', false)),
+            labels: $data->integers('labels'),
+            recipients: $data->list('recipients', EveMailRecipient::fromData(...)),
+            subject: $data->string('subject', ''),
+            timestamp: $data->string('timestamp', ''),
+            body: $data->string('body'),
         );
     }
 }

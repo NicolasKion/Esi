@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace NicolasKion\Esi\DTO;
 
-readonly class Character
+use NicolasKion\Esi\Support\Data;
+
+readonly class Character extends Dto
 {
-    /**
-     * Create a new class instance.
-     */
     public function __construct(
         public ?int $alliance_id,
         public string $birthday,
@@ -22,19 +21,20 @@ readonly class Character
         public ?string $title,
     ) {}
 
-    public static function fromArray(array $data): self
+    public static function fromData(Data $data): self
     {
         return new self(
-            alliance_id: $data['alliance_id'] ?? null,
-            birthday: $data['birthday'],
-            bloodline_id: $data['bloodline_id'],
-            corporation_id: $data['corporation_id'],
-            description: $data['description'] ?? null,
-            gender: $data['gender'],
-            name: $data['name'],
-            race_id: $data['race_id'],
-            security_status: $data['security_status'] ?? null,
-            title: $data['title'] ?? null,
+            alliance_id: $data->integer('alliance_id'),
+            birthday: $data->string('birthday', ''),
+            bloodline_id: $data->integer('bloodline_id', 0),
+            corporation_id: $data->integer('corporation_id', 0),
+            description: $data->string('description'),
+            gender: $data->string('gender', ''),
+            name: $data->string('name', ''),
+            race_id: $data->integer('race_id', 0),
+            security_status: $data->float('security_status'),
+            // ESI renamed this field from `title` to `corporation_title`.
+            title: $data->string('corporation_title', $data->string('title')),
         );
     }
 }
