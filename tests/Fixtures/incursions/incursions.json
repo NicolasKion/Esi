@@ -1,0 +1,14 @@
+[
+    {
+        "constellation_id": 90000001,
+        "faction_id": 90000001,
+        "has_boss": true,
+        "infested_solar_systems": [
+            90000001
+        ],
+        "influence": 1.5,
+        "staging_solar_system_id": 90000001,
+        "state": "withdrawing",
+        "type": "string"
+    }
+]

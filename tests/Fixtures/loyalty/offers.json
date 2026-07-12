@@ -1,0 +1,16 @@
+[
+    {
+        "ak_cost": 90000001,
+        "isk_cost": 90000001,
+        "lp_cost": 90000001,
+        "offer_id": 90000001,
+        "quantity": 90000001,
+        "required_items": [
+            {
+                "quantity": 90000001,
+                "type_id": 90000001
+            }
+        ],
+        "type_id": 90000001
+    }
+]
