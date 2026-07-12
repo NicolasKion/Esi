@@ -20,7 +20,6 @@ uses(TestCase::class)->in(__DIR__);
 */
 uses()->beforeEach(function (): void {
     config()->set('esi.base_url', 'https://esi.evetech.net');
-    config()->set('esi.compatibility_date', '2026-06-09');
     config()->set('esi.user_agent', 'esi-test');
     config()->set('esi.retry_policy.tries', 1);
     config()->set('esi.retry_policy.delay', 0);

@@ -14,5 +14,4 @@ return [
         'delay' => 5000,
     ],
     'base_url' => 'https://esi.evetech.net',
-    'compatibility_date' => '2026-06-09',
 ];
