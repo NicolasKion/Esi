@@ -69,6 +69,9 @@ enum EsiScope: string
     case WriteFittings = 'esi-fittings.write_fittings.v1';
     case ManagePlanets = 'esi-planets.manage_planets.v1';
     case ReadCustomsOffices = 'esi-planets.read_customs_offices.v1';
+    case ReadCharacterStructures = 'esi-structures.read_character.v1';
+    case ReadCorporationStructureList = 'esi-structures.read_corporation.v1';
+    case ReadCorporationProjects = 'esi-corporations.read_projects.v1';
 
     /**
      * @return array<int, string>

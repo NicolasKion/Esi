@@ -42,6 +42,7 @@ use NicolasKion\Esi\DTO\CorporationFactionWarfareStats;
 use NicolasKion\Esi\DTO\CorporationHistory;
 use NicolasKion\Esi\DTO\CorporationIcons;
 use NicolasKion\Esi\DTO\CorporationMedal;
+use NicolasKion\Esi\DTO\CorporationProject;
 use NicolasKion\Esi\DTO\CorporationRoles;
 use NicolasKion\Esi\DTO\CorporationStructure;
 use NicolasKion\Esi\DTO\CorporationTitle;
@@ -86,6 +87,7 @@ use NicolasKion\Esi\DTO\MarketOrder;
 use NicolasKion\Esi\DTO\MarketPrice;
 use NicolasKion\Esi\DTO\MemberTitles;
 use NicolasKion\Esi\DTO\MemberTracking;
+use NicolasKion\Esi\DTO\MercenaryDen;
 use NicolasKion\Esi\DTO\MiningExtraction;
 use NicolasKion\Esi\DTO\MiningLedgerEntry;
 use NicolasKion\Esi\DTO\MiningObserver;
@@ -99,6 +101,8 @@ use NicolasKion\Esi\DTO\PersonalMarketOrderHistory;
 use NicolasKion\Esi\DTO\Planet;
 use NicolasKion\Esi\DTO\PlanetColony;
 use NicolasKion\Esi\DTO\PlanetLayout;
+use NicolasKion\Esi\DTO\ProjectContribution;
+use NicolasKion\Esi\DTO\ProjectContributor;
 use NicolasKion\Esi\DTO\PublicContract;
 use NicolasKion\Esi\DTO\PublicContractBid;
 use NicolasKion\Esi\DTO\PublicContractItem;
@@ -110,7 +114,9 @@ use NicolasKion\Esi\DTO\Schematic;
 use NicolasKion\Esi\DTO\Shareholder;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\SkillQueueEntry;
+use NicolasKion\Esi\DTO\Skyhook;
 use NicolasKion\Esi\DTO\Sovereignty;
+use NicolasKion\Esi\DTO\SovereigntyHub;
 use NicolasKion\Esi\DTO\Standing;
 use NicolasKion\Esi\DTO\Star;
 use NicolasKion\Esi\DTO\Starbase;
@@ -219,11 +225,19 @@ use NicolasKion\Esi\Requests\GetCorporationMiningObserverRequest;
 use NicolasKion\Esi\Requests\GetCorporationMiningObserversRequest;
 use NicolasKion\Esi\Requests\GetCorporationOrderHistoryRequest;
 use NicolasKion\Esi\Requests\GetCorporationOrdersRequest;
+use NicolasKion\Esi\Requests\GetCorporationProjectContributionRequest;
+use NicolasKion\Esi\Requests\GetCorporationProjectContributorsRequest;
+use NicolasKion\Esi\Requests\GetCorporationProjectRequest;
+use NicolasKion\Esi\Requests\GetCorporationProjectsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRecentKillmailsRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
 use NicolasKion\Esi\Requests\GetCorporationRolesHistoryRequest;
 use NicolasKion\Esi\Requests\GetCorporationRolesRequest;
 use NicolasKion\Esi\Requests\GetCorporationShareholdersRequest;
+use NicolasKion\Esi\Requests\GetCorporationSkyhookRequest;
+use NicolasKion\Esi\Requests\GetCorporationSkyhooksRequest;
+use NicolasKion\Esi\Requests\GetCorporationSovereigntyHubRequest;
+use NicolasKion\Esi\Requests\GetCorporationSovereigntyHubsRequest;
 use NicolasKion\Esi\Requests\GetCorporationStandingsRequest;
 use NicolasKion\Esi\Requests\GetCorporationStarbaseRequest;
 use NicolasKion\Esi\Requests\GetCorporationStarbasesRequest;
@@ -269,6 +283,8 @@ use NicolasKion\Esi\Requests\GetMarketHistoryRequest;
 use NicolasKion\Esi\Requests\GetMarketOrdersRequest;
 use NicolasKion\Esi\Requests\GetMarketPricesRequest;
 use NicolasKion\Esi\Requests\GetMarketTypesRequest;
+use NicolasKion\Esi\Requests\GetMercenaryDenRequest;
+use NicolasKion\Esi\Requests\GetMercenaryDensRequest;
 use NicolasKion\Esi\Requests\GetMoonRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
 use NicolasKion\Esi\Requests\GetNpcCorporationsRequest;
@@ -2912,6 +2928,136 @@ class Esi
     {
         $connector = $this->getAuthenticatedConnector($character, EsiScope::OpenWindow);
         $request = new OpenNewMailWindowRequest($recipients, $subject, $body, $to_corp_or_alliance_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a character's Mercenary Dens.
+     *
+     * @return EsiResult<array<int, MercenaryDen>>
+     */
+    public function getMercenaryDens(Character $character): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterStructures);
+        $request = new GetMercenaryDensRequest($character->getId());
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves detailed information about one of a character's Mercenary Dens.
+     *
+     * @return EsiResult<MercenaryDen>
+     */
+    public function getMercenaryDen(Character $character, int $mercenary_den_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCharacterStructures);
+        $request = new GetMercenaryDenRequest($character->getId(), $mercenary_den_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a corporation's Skyhooks.
+     *
+     * @return EsiResult<array<int, Skyhook>>
+     */
+    public function getCorporationSkyhooks(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStructureList);
+        $request = new GetCorporationSkyhooksRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves detailed information about one of a corporation's Skyhooks.
+     *
+     * @return EsiResult<Skyhook>
+     */
+    public function getCorporationSkyhook(Character $character, int $corporation_id, int $skyhook_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStructureList);
+        $request = new GetCorporationSkyhookRequest($corporation_id, $skyhook_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a corporation's Sovereignty Hubs.
+     *
+     * @return EsiResult<array<int, SovereigntyHub>>
+     */
+    public function getCorporationSovereigntyHubs(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStructureList);
+        $request = new GetCorporationSovereigntyHubsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves detailed information about one of a corporation's Sovereignty Hubs.
+     *
+     * @return EsiResult<SovereigntyHub>
+     */
+    public function getCorporationSovereigntyHub(Character $character, int $corporation_id, int $sovereignty_hub_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStructureList);
+        $request = new GetCorporationSovereigntyHubRequest($corporation_id, $sovereignty_hub_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a corporation's projects.
+     *
+     * @return EsiResult<array<int, CorporationProject>>
+     */
+    public function getCorporationProjects(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
+        $request = new GetCorporationProjectsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves detailed information about one of a corporation's projects.
+     *
+     * @return EsiResult<CorporationProject>
+     */
+    public function getCorporationProject(Character $character, int $corporation_id, string $project_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
+        $request = new GetCorporationProjectRequest($corporation_id, $project_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves a character's contribution to a corporation project.
+     *
+     * @return EsiResult<ProjectContribution>
+     */
+    public function getCorporationProjectContribution(Character $character, int $corporation_id, string $project_id, int $character_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
+        $request = new GetCorporationProjectContributionRequest($corporation_id, $project_id, $character_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the contributors to a corporation project.
+     *
+     * @return EsiResult<array<int, ProjectContributor>>
+     */
+    public function getCorporationProjectContributors(Character $character, int $corporation_id, string $project_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationProjects);
+        $request = new GetCorporationProjectContributorsRequest($corporation_id, $project_id);
 
         return $connector->send($request);
     }
