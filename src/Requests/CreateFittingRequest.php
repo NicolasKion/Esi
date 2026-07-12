@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\Requests;
 
 use Illuminate\Http\Client\Response;
+use NicolasKion\Esi\DTO\FittingItem;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
@@ -16,7 +17,7 @@ use NicolasKion\Esi\Support\Data;
 class CreateFittingRequest extends Request implements WithBody
 {
     /**
-     * @param  array<int, array<string, mixed>>  $items
+     * @param  array<int, FittingItem>  $items
      */
     public function __construct(
         public int $character_id,
@@ -33,7 +34,7 @@ class CreateFittingRequest extends Request implements WithBody
     {
         return [
             'description' => $this->description,
-            'items' => $this->items,
+            'items' => array_map(static fn (FittingItem $item): array => $item->__serialize(), $this->items),
             'name' => $this->name,
             'ship_type_id' => $this->ship_type_id,
         ];

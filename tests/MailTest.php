@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Http;
 use NicolasKion\Esi\DTO\EveMail;
+use NicolasKion\Esi\DTO\EveMailRecipient;
 use NicolasKion\Esi\Enums\RecipientType;
 use NicolasKion\Esi\Esi;
 
@@ -55,7 +56,7 @@ it('sends a mail and returns the new mail id', function (): void {
     ]);
 
     $recipients = [
-        ['recipient_id' => 90000001, 'recipient_type' => 'character'],
+        new EveMailRecipient(90000001, RecipientType::Character),
     ];
 
     $result = (new Esi)->sendMail(fakeCharacter(), $recipients, 'Test subject', 'Test body');
@@ -68,7 +69,9 @@ it('sends a mail and returns the new mail id', function (): void {
         && $request->data() === [
             'approved_cost' => 0,
             'body' => 'Test body',
-            'recipients' => $recipients,
+            'recipients' => [
+                ['recipient_id' => 90000001, 'recipient_type' => 'character'],
+            ],
             'subject' => 'Test subject',
         ]);
 });

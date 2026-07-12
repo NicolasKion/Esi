@@ -14,6 +14,18 @@ readonly class FittingItem extends Dto
         public int $type_id,
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        return [
+            'flag' => $this->flag,
+            'quantity' => $this->quantity,
+            'type_id' => $this->type_id,
+        ];
+    }
+
     public static function fromData(Data $data): self
     {
         return new self(
