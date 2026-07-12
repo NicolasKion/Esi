@@ -1,0 +1,21 @@
+{
+    "allow_alliance_members": true,
+    "allow_corporation_members": true,
+    "anchor": "alliance_member",
+    "attack_if_at_war": true,
+    "attack_if_other_security_status_dropping": true,
+    "attack_security_status_threshold": 1.5,
+    "attack_standing_threshold": 1.5,
+    "fuel_bay_take": "alliance_member",
+    "fuel_bay_view": "alliance_member",
+    "fuels": [
+        {
+            "quantity": 90000001,
+            "type_id": 90000001
+        }
+    ],
+    "offline": "alliance_member",
+    "online": "alliance_member",
+    "unanchor": "alliance_member",
+    "use_alliance_standings": true
+}

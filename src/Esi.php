@@ -7,33 +7,44 @@ declare(strict_types=1);
 namespace NicolasKion\Esi;
 
 use NicolasKion\Esi\DTO\Alliance;
+use NicolasKion\Esi\DTO\AllianceHistory;
 use NicolasKion\Esi\DTO\AllianceIcons;
 use NicolasKion\Esi\DTO\Ancestry;
 use NicolasKion\Esi\DTO\Asset;
 use NicolasKion\Esi\DTO\AssetName;
 use NicolasKion\Esi\DTO\AsteroidBelt;
 use NicolasKion\Esi\DTO\Bloodline;
+use NicolasKion\Esi\DTO\Blueprint;
 use NicolasKion\Esi\DTO\CharacterAffiliation;
 use NicolasKion\Esi\DTO\CharacterContract;
 use NicolasKion\Esi\DTO\Constellation;
 use NicolasKion\Esi\DTO\Contact;
 use NicolasKion\Esi\DTO\ContactLabel;
+use NicolasKion\Esi\DTO\ContainerLog;
 use NicolasKion\Esi\DTO\Corporation;
 use NicolasKion\Esi\DTO\CorporationDivisions;
+use NicolasKion\Esi\DTO\CorporationIcons;
+use NicolasKion\Esi\DTO\CorporationMedal;
+use NicolasKion\Esi\DTO\CorporationRoles;
 use NicolasKion\Esi\DTO\CorporationStructure;
+use NicolasKion\Esi\DTO\CorporationTitle;
 use NicolasKion\Esi\DTO\DogmaAttribute;
 use NicolasKion\Esi\DTO\DogmaEffect;
 use NicolasKion\Esi\DTO\DogmaItem;
 use NicolasKion\Esi\DTO\EsiResult;
 use NicolasKion\Esi\DTO\EveMail;
+use NicolasKion\Esi\DTO\Facility;
 use NicolasKion\Esi\DTO\Faction;
 use NicolasKion\Esi\DTO\Graphic;
+use NicolasKion\Esi\DTO\IssuedMedal;
 use NicolasKion\Esi\DTO\Killmail;
 use NicolasKion\Esi\DTO\Location;
 use NicolasKion\Esi\DTO\MarketGroup;
 use NicolasKion\Esi\DTO\MarketHistory;
 use NicolasKion\Esi\DTO\MarketOrder;
 use NicolasKion\Esi\DTO\MarketPrice;
+use NicolasKion\Esi\DTO\MemberTitles;
+use NicolasKion\Esi\DTO\MemberTracking;
 use NicolasKion\Esi\DTO\Moon;
 use NicolasKion\Esi\DTO\Name;
 use NicolasKion\Esi\DTO\Online;
@@ -44,10 +55,15 @@ use NicolasKion\Esi\DTO\PublicContractItem;
 use NicolasKion\Esi\DTO\Race;
 use NicolasKion\Esi\DTO\RaidableSkyhook;
 use NicolasKion\Esi\DTO\Region;
+use NicolasKion\Esi\DTO\RoleHistory;
 use NicolasKion\Esi\DTO\Schematic;
+use NicolasKion\Esi\DTO\Shareholder;
 use NicolasKion\Esi\DTO\Ship;
 use NicolasKion\Esi\DTO\Sovereignty;
+use NicolasKion\Esi\DTO\Standing;
 use NicolasKion\Esi\DTO\Star;
+use NicolasKion\Esi\DTO\Starbase;
+use NicolasKion\Esi\DTO\StarbaseDetail;
 use NicolasKion\Esi\DTO\Stargate;
 use NicolasKion\Esi\DTO\Station;
 use NicolasKion\Esi\DTO\Status;
@@ -85,13 +101,31 @@ use NicolasKion\Esi\Requests\GetCharacterContractItemsRequest;
 use NicolasKion\Esi\Requests\GetCharacterContractsRequest;
 use NicolasKion\Esi\Requests\GetCharacterRequest;
 use NicolasKion\Esi\Requests\GetConstellationRequest;
+use NicolasKion\Esi\Requests\GetCorporationAllianceHistoryRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetNamesRequest;
 use NicolasKion\Esi\Requests\GetCorporationAssetsRequest;
+use NicolasKion\Esi\Requests\GetCorporationBlueprintsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContactLabelsRequest;
 use NicolasKion\Esi\Requests\GetCorporationContactsRequest;
+use NicolasKion\Esi\Requests\GetCorporationContainerLogsRequest;
 use NicolasKion\Esi\Requests\GetCorporationDivisionsRequest;
+use NicolasKion\Esi\Requests\GetCorporationFacilitiesRequest;
+use NicolasKion\Esi\Requests\GetCorporationIconsRequest;
+use NicolasKion\Esi\Requests\GetCorporationIssuedMedalsRequest;
+use NicolasKion\Esi\Requests\GetCorporationMedalsRequest;
+use NicolasKion\Esi\Requests\GetCorporationMemberLimitRequest;
+use NicolasKion\Esi\Requests\GetCorporationMembersRequest;
+use NicolasKion\Esi\Requests\GetCorporationMemberTitlesRequest;
+use NicolasKion\Esi\Requests\GetCorporationMemberTrackingRequest;
 use NicolasKion\Esi\Requests\GetCorporationRequest;
+use NicolasKion\Esi\Requests\GetCorporationRolesHistoryRequest;
+use NicolasKion\Esi\Requests\GetCorporationRolesRequest;
+use NicolasKion\Esi\Requests\GetCorporationShareholdersRequest;
+use NicolasKion\Esi\Requests\GetCorporationStandingsRequest;
+use NicolasKion\Esi\Requests\GetCorporationStarbaseRequest;
+use NicolasKion\Esi\Requests\GetCorporationStarbasesRequest;
 use NicolasKion\Esi\Requests\GetCorporationStructuresRequest;
+use NicolasKion\Esi\Requests\GetCorporationTitlesRequest;
 use NicolasKion\Esi\Requests\GetDogmaAttributeRequest;
 use NicolasKion\Esi\Requests\GetDogmaAttributesRequest;
 use NicolasKion\Esi\Requests\GetDogmaEffectRequest;
@@ -112,6 +146,7 @@ use NicolasKion\Esi\Requests\GetMarketPricesRequest;
 use NicolasKion\Esi\Requests\GetMarketTypesRequest;
 use NicolasKion\Esi\Requests\GetMoonRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
+use NicolasKion\Esi\Requests\GetNpcCorporationsRequest;
 use NicolasKion\Esi\Requests\GetOnlineRequest;
 use NicolasKion\Esi\Requests\GetPlanetRequest;
 use NicolasKion\Esi\Requests\GetPublicContractBidsRequest;
@@ -1326,6 +1361,253 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetSystemKillsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the IDs of NPC corporations.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getNpcCorporations(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetNpcCorporationsRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the alliance history of a corporation.
+     *
+     * @return EsiResult<array<int, AllianceHistory>>
+     */
+    public function getCorporationAllianceHistory(int $corporation_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetCorporationAllianceHistoryRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the icon URLs for a corporation.
+     *
+     * @return EsiResult<CorporationIcons>
+     */
+    public function getCorporationIcons(int $corporation_id): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetCorporationIconsRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the blueprints owned by a corporation.
+     *
+     * @return EsiResult<array<int, Blueprint>>
+     */
+    public function getCorporationBlueprints(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationBlueprints);
+        $request = new GetCorporationBlueprintsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the recent access logs of a corporation's audit log secure containers.
+     *
+     * @return EsiResult<array<int, ContainerLog>>
+     */
+    public function getCorporationContainerLogs(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationContainerLogs);
+        $request = new GetCorporationContainerLogsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves a corporation's facilities.
+     *
+     * @return EsiResult<array<int, Facility>>
+     */
+    public function getCorporationFacilities(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationFacilities);
+        $request = new GetCorporationFacilitiesRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the medals of a corporation.
+     *
+     * @return EsiResult<array<int, CorporationMedal>>
+     */
+    public function getCorporationMedals(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMedals);
+        $request = new GetCorporationMedalsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the medals issued by a corporation.
+     *
+     * @return EsiResult<array<int, IssuedMedal>>
+     */
+    public function getCorporationIssuedMedals(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMedals);
+        $request = new GetCorporationIssuedMedalsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the member character IDs of a corporation.
+     *
+     * @return EsiResult<array<int, int>>
+     */
+    public function getCorporationMembers(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMembership);
+        $request = new GetCorporationMembersRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the member limit of a corporation.
+     *
+     * @return EsiResult<int>
+     */
+    public function getCorporationMemberLimit(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::TrackCorporationMembers);
+        $request = new GetCorporationMemberLimitRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the titles held by each member of a corporation.
+     *
+     * @return EsiResult<array<int, MemberTitles>>
+     */
+    public function getCorporationMemberTitles(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationTitles);
+        $request = new GetCorporationMemberTitlesRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the membertracking information of a corporation.
+     *
+     * @return EsiResult<array<int, MemberTracking>>
+     */
+    public function getCorporationMemberTracking(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::TrackCorporationMembers);
+        $request = new GetCorporationMemberTrackingRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the roles of each member of a corporation.
+     *
+     * @return EsiResult<array<int, CorporationRoles>>
+     */
+    public function getCorporationRoles(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMembership);
+        $request = new GetCorporationRolesRequest($corporation_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the role change history of a corporation's members.
+     *
+     * @return EsiResult<array<int, RoleHistory>>
+     */
+    public function getCorporationRolesHistory(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationMembership);
+        $request = new GetCorporationRolesHistoryRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the shareholders of a corporation.
+     *
+     * @return EsiResult<array<int, Shareholder>>
+     */
+    public function getCorporationShareholders(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationWallets);
+        $request = new GetCorporationShareholdersRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the standings of a corporation.
+     *
+     * @return EsiResult<array<int, Standing>>
+     */
+    public function getCorporationStandings(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStandings);
+        $request = new GetCorporationStandingsRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves the starbases (POSes) of a corporation.
+     *
+     * @return EsiResult<array<int, Starbase>>
+     */
+    public function getCorporationStarbases(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStarbases);
+        $request = new GetCorporationStarbasesRequest($corporation_id);
+
+        return $connector->sendPaginated($request);
+    }
+
+    /**
+     * Retrieves detailed settings for a corporation starbase (POS).
+     *
+     * @return EsiResult<StarbaseDetail>
+     */
+    public function getCorporationStarbase(Character $character, int $corporation_id, int $starbase_id, int $system_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationStarbases);
+        $request = new GetCorporationStarbaseRequest($corporation_id, $starbase_id, $system_id);
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the member titles of a corporation.
+     *
+     * @return EsiResult<array<int, CorporationTitle>>
+     */
+    public function getCorporationTitles(Character $character, int $corporation_id): EsiResult
+    {
+        $connector = $this->getAuthenticatedConnector($character, EsiScope::ReadCorporationTitles);
+        $request = new GetCorporationTitlesRequest($corporation_id);
 
         return $connector->send($request);
     }
