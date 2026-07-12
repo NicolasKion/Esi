@@ -2,19 +2,30 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.9 - 2026-07-12
+
+### What's Changed
+
+* docs: add v0.8 changelog + grant release workflow pull-requests: write by @NicolasKion in https://github.com/NicolasKion/Esi/pull/47
+* fix: drop native return type from EsiToken::delete()/update() by @NicolasKion in https://github.com/NicolasKion/Esi/pull/48
+* ci: commit changelog straight to main via the deploy-key ruleset bypass by @NicolasKion in https://github.com/NicolasKion/Esi/pull/49
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.8...v0.9
+
 ## v0.8 - 2026-07-12
 
 ### What's Changed
+
 * fix: relax EsiToken::delete()/update() return types to mixed by @NicolasKion in https://github.com/NicolasKion/Esi/pull/46
 * ci: open a changelog PR from the release workflow instead of pushing to main by @NicolasKion in https://github.com/NicolasKion/Esi/pull/45
 * docs: add v0.7 changelog entry by @NicolasKion in https://github.com/NicolasKion/Esi/pull/44
-
 
 **Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.7...v0.8
 
 ## v0.7 - 2026-07-12
 
 ### What's Changed
+
 * Test coverage for all endpoints + PHPStan level 9 type safety by @NicolasKion in https://github.com/NicolasKion/Esi/pull/19
 * chore: bump ESI compatibility date to 2026-06-09 by @NicolasKion in https://github.com/NicolasKion/Esi/pull/20
 * refactor: pin ESI compatibility date to a version constant by @NicolasKion in https://github.com/NicolasKion/Esi/pull/21
@@ -42,6 +53,7 @@ All notable changes to `Esi` will be documented in this file.
 * docs: refresh README for full ESI coverage by @NicolasKion in https://github.com/NicolasKion/Esi/pull/43
 
 ### New Contributors
+
 * @NicolasKion made their first contribution in https://github.com/NicolasKion/Esi/pull/19
 
 **Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.6...v0.7
