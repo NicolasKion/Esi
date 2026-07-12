@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\EveMail;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<array<int, EveMail>>
+ */
 class GetEveMailsRequest extends Request
 {
     public function __construct(
@@ -21,8 +24,11 @@ class GetEveMailsRequest extends Request
         return sprintf('/characters/%d/mail/', $this->character_id);
     }
 
+    /**
+     * @return array<int, EveMail>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(EveMail::fromArray(...), $data ?? []);
+        return EveMail::hydrateList($data);
     }
 }

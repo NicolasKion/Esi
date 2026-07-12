@@ -10,6 +10,11 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Traits\BasicPagination;
 
+/**
+ * @extends Request<array<int, Asset>>
+ *
+ * @implements WithPagination<array<int, Asset>>
+ */
 class GetCorporationAssetsRequest extends Request implements WithPagination
 {
     use BasicPagination;
@@ -25,8 +30,11 @@ class GetCorporationAssetsRequest extends Request implements WithPagination
         return sprintf('/corporations/%d/assets/', $this->corporation_id);
     }
 
+    /**
+     * @return array<int, Asset>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(Asset::fromArray(...), $data);
+        return Asset::hydrateList($data);
     }
 }

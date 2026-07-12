@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<null>
+ */
 class OpenContractRequest extends Request
 {
     public function __construct(public int $contract_id) {}
@@ -17,6 +20,9 @@ class OpenContractRequest extends Request
         return '/ui/openwindow/contract/';
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getQuery(): array
     {
         return [

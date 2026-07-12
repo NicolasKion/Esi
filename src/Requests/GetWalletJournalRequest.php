@@ -10,6 +10,11 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Traits\BasicPagination;
 
+/**
+ * @extends Request<array<int, WalletJournalEntry>>
+ *
+ * @implements WithPagination<array<int, WalletJournalEntry>>
+ */
 class GetWalletJournalRequest extends Request implements WithPagination
 {
     use BasicPagination;
@@ -23,8 +28,11 @@ class GetWalletJournalRequest extends Request implements WithPagination
         return sprintf('/characters/%d/wallet/journal/', $this->character_id);
     }
 
+    /**
+     * @return array<int, WalletJournalEntry>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(WalletJournalEntry::fromArray(...), $data);
+        return WalletJournalEntry::hydrateList($data);
     }
 }

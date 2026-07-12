@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\MarketHistory;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<array<int, MarketHistory>>
+ */
 class GetMarketHistoryRequest extends Request
 {
     public function __construct(
@@ -22,8 +25,11 @@ class GetMarketHistoryRequest extends Request
         return sprintf('/markets/%d/history/?type_id=%d', $this->region_id, $this->type_id);
     }
 
+    /**
+     * @return array<int, MarketHistory>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(MarketHistory::fromArray(...), $data);
+        return MarketHistory::hydrateList($data);
     }
 }

@@ -5,19 +5,24 @@ declare(strict_types=1);
 namespace NicolasKion\Esi\Requests;
 
 use Illuminate\Http\Client\Response;
-use NicolasKion\Esi\DTO\EveMailRecipient;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<int>
+ */
 class SendMailRequest extends Request implements WithBody
 {
     /**
-     * @param  EveMailRecipient[]  $recipients
+     * @param  array<int, array<string, mixed>>  $recipients
      */
     public function __construct(public int $sender_id, public array $recipients, public string $subject, public string $body) {}
 
-    public function getBody(): mixed
+    /**
+     * @return array<string, mixed>
+     */
+    public function getBody(): array
     {
         return [
             'approved_cost' => 0,
@@ -39,7 +44,7 @@ class SendMailRequest extends Request implements WithBody
 
     public function createDto(Response $response, mixed $data): int
     {
-        return $data;
+        return is_numeric($data) ? (int) $data : 0;
     }
 
     public function shouldRetry(Response $response): bool

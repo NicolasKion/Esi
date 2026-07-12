@@ -22,11 +22,11 @@ use function config;
 
 class Connector
 {
-    const ERROR_LIMIT_REMAIN_HEADER = 'X-Esi-Error-Limit-Remain';
+    public const ERROR_LIMIT_REMAIN_HEADER = 'X-Esi-Error-Limit-Remain';
 
-    const ERROR_LIMIT_RESET_HEADER = 'X-Esi-Error-Limit-Reset';
+    public const ERROR_LIMIT_RESET_HEADER = 'X-Esi-Error-Limit-Reset';
 
-    const EXPIRES_HEADER = 'Expires';
+    public const EXPIRES_HEADER = 'Expires';
 
     public ?EsiError $error = null;
 
@@ -40,14 +40,122 @@ class Connector
         }
     }
 
+    /**
+     * @template T
+     *
+     * @param  Request<T>  $request
+     * @return EsiResult<T>
+     */
+    public function send(Request $request): EsiResult
+    {
+        if ($this->error) {
+            return EsiResult::fromError($this->error);
+        }
+
+        $token = $this->token;
+
+        $pending_request = Http::withHeaders([
+            'User-Agent' => config()->string('esi.user_agent'),
+            'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
+        ])
+            ->baseUrl(config()->string('esi.base_url'))
+            ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
+            ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
+            ->when($token !== null, fn (PendingRequest $r) => $r->withToken((string) $token?->getAccessToken()))
+            ->retry(
+                times: config()->integer('esi.retry_policy.tries'),
+                sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
+                when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
+                throw: false
+            );
+
+        $body = $request instanceof WithBody ? $this->normalizeBody($request->getBody()) : [];
+
+        try {
+
+            $response = match ($request->getMethod()) {
+                RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
+                RequestMethod::POST => $pending_request->post($request->resolveEndpoint(), $body),
+                RequestMethod::PUT => $pending_request->put($request->resolveEndpoint(), $body),
+                RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
+                RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
+            };
+
+        } catch (ConnectionException $e) {
+            return EsiResult::fromError(new EsiError(code: 500, body: $e->getMessage()));
+        }
+
+        if ($response->failed()) {
+            return $this->handleFailedResponse($response);
+        }
+
+        return new EsiResult(
+            stats: $this->getStatsFromResponse($response),
+            data: $request->createDto($response, $this->normalizeJson($response)),
+        );
+    }
+
+    /**
+     * @template T
+     *
+     * @param  WithPagination<array<int, T>>  $request
+     * @return EsiResult<array<int, T>>
+     */
+    public function sendPaginated(WithPagination $request): EsiResult
+    {
+        $page = 0;
+
+        $results = [];
+
+        $token = $this->token;
+
+        do {
+            $page++;
+
+            $pending_request = Http::withHeaders([
+                'User-Agent' => config()->string('esi.user_agent'),
+                'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
+            ])
+                ->baseUrl(config()->string('esi.base_url'))
+                ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
+                ->withQueryParameters(['page' => $page])
+                ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
+                ->when($token !== null, fn (PendingRequest $r) => $r->withToken((string) $token?->getAccessToken()))
+                ->retry(
+                    times: config()->integer('esi.retry_policy.tries'),
+                    sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
+                    when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
+                    throw: false
+                );
+
+            try {
+                // Paginated endpoints are always GET.
+                $response = $pending_request->get($request->resolveEndpoint());
+            } catch (ConnectionException $e) {
+                return EsiResult::fromError(new EsiError(code: 500, body: $e->getMessage()));
+            }
+
+            if ($response->failed()) {
+                return $this->handleFailedResponse($response);
+            }
+
+            $results = array_merge($results, $request->createDto($response, $this->normalizeJson($response)));
+        } while ($request->hasMorePages($page, $response));
+
+        return new EsiResult(
+            stats: $this->getStatsFromResponse($response),
+            data: $results,
+        );
+    }
+
     private function ensureTokenIsValid(): void
     {
-        if ($this->token->isExpired()) {
-            $this->refreshToken();
+        if ($this->token !== null && $this->token->isExpired()) {
+            $this->refreshToken($this->token);
         }
     }
 
-    private function refreshToken(): void
+    private function refreshToken(EsiToken $token): void
     {
         try {
             $response = Http::withHeaders([
@@ -59,7 +167,7 @@ class Connector
                 ->retry(5, 1000, fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $e->response->status() >= 500, throw: false)
                 ->post('https://login.eveonline.com/v2/oauth/token', [
                     'grant_type' => 'refresh_token',
-                    'refresh_token' => $this->token->getRefreshToken(),
+                    'refresh_token' => $token->getRefreshToken(),
                 ]);
 
         } catch (ConnectionException $e) {
@@ -72,7 +180,7 @@ class Connector
         }
 
         if ($response->failed()) {
-            $this->token->delete();
+            $token->delete();
             $this->error = new EsiError(
                 code: $response->status(),
                 body: $response->body(),
@@ -81,63 +189,13 @@ class Connector
             return;
         }
 
-        $this->token->update([
+        $expires_in = $response->json('expires_in');
+
+        $token->update([
             'access_token' => $response->json('access_token'),
-            'expires_at' => now()->addSeconds($response->json('expires_in')),
+            'expires_at' => now()->addSeconds(is_numeric($expires_in) ? (int) $expires_in : 0),
             'refresh_token' => $response->json('refresh_token'),
         ]);
-    }
-
-    public function send(Request $request): EsiResult
-    {
-        if ($this->error) {
-            return new EsiResult(
-                error: $this->error,
-            );
-        }
-
-        $pending_request = Http::withHeaders([
-            'User-Agent' => config()->string('esi.user_agent'),
-            'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
-        ])
-            ->baseUrl(config()->string('esi.base_url'))
-            ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
-            ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
-            ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken()))
-            ->retry(
-                times: config()->integer('esi.retry_policy.tries'),
-                sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
-                when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
-                throw: false
-            );
-
-        try {
-
-            $response = match ($request->getMethod()) {
-                RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
-                RequestMethod::POST => $pending_request->post($request->resolveEndpoint(), $request instanceof WithBody ? $request->getBody() : null),
-                RequestMethod::PUT => $pending_request->put($request->resolveEndpoint(), $request instanceof WithBody ? $request->getBody() : null),
-                RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
-                RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
-            };
-
-        } catch (ConnectionException $e) {
-            return new EsiResult(
-                error: new EsiError(
-                    code: 500,
-                    body: $e->getMessage(),
-                ),
-            );
-        }
-
-        if ($response->failed()) {
-            return $this->handleFailedResponse($response);
-        }
-
-        return new EsiResult(
-            stats: $this->getStatsFromResponse($response),
-            data: $request->createDto($response, $this->normalizeJson($response)),
-        );
     }
 
     private function getStatsFromResponse(Response $response): EsiStats
@@ -168,62 +226,6 @@ class Connector
         return (int) $reset;
     }
 
-    public function sendPaginated(WithPagination $request): EsiResult
-    {
-        $page = 0;
-
-        $results = [];
-
-        do {
-            $page++;
-
-            $pending_request = Http::withHeaders([
-                'User-Agent' => config('esi.user_agent'),
-                'X-Compatibility-Date' => config()->string('esi.compatibility_date'),
-            ])
-                ->baseUrl(config()->string('esi.base_url'))
-                ->when(count($request->getQuery()), fn (PendingRequest $r) => $r->withQueryParameters($request->getQuery()))
-                ->withQueryParameters(['page' => $page])
-                ->when(count($request->getHeaders()), fn (PendingRequest $r) => $r->withHeaders($request->getHeaders()))
-                ->when($request instanceof WithBody, fn (PendingRequest $r) => $request instanceof WithBody ? $r->withBody($request->getBody()) : null)
-                ->when($this->token, fn (PendingRequest $r) => $r->withToken($this->token->getAccessToken()))
-                ->retry(
-                    times: config()->integer('esi.retry_policy.tries'),
-                    sleepMilliseconds: config()->integer('esi.retry_policy.delay'),
-                    when: fn (Throwable $e, PendingRequest $pendingRequest) => $e instanceof RequestException && $request->shouldRetry($e->response),
-                    throw: false
-                );
-
-            try {
-                $response = match ($request->getMethod()) {
-                    RequestMethod::GET => $pending_request->get($request->resolveEndpoint()),
-                    RequestMethod::POST => $pending_request->post($request->resolveEndpoint()),
-                    RequestMethod::PUT => $pending_request->put($request->resolveEndpoint()),
-                    RequestMethod::DELETE => $pending_request->delete($request->resolveEndpoint()),
-                    RequestMethod::PATCH => $pending_request->patch($request->resolveEndpoint()),
-                };
-            } catch (ConnectionException $e) {
-                return new EsiResult(
-                    error: new EsiError(
-                        code: 500,
-                        body: $e->getMessage(),
-                    ),
-                );
-            }
-
-            if ($response->failed()) {
-                return $this->handleFailedResponse($response);
-            }
-
-            $results = array_merge($results, $request->createDto($response, $this->normalizeJson($response)));
-        } while ($request->hasMorePages($page, $response));
-
-        return new EsiResult(
-            stats: $this->getStatsFromResponse($response),
-            data: $results,
-        );
-    }
-
     private function normalizeJson(Response $response): mixed
     {
         $data = $response->json();
@@ -239,18 +241,39 @@ class Connector
         return $data;
     }
 
+    /**
+     * @return EsiResult<never>
+     */
     private function handleFailedResponse(Response $response): EsiResult
     {
-        if (($response->forbidden() || $response->unauthorized()) && $this->token) {
+        if (($response->forbidden() || $response->unauthorized()) && $this->token !== null) {
             $this->token->delete();
         }
 
-        return new EsiResult(
-            stats: $this->getStatsFromResponse($response),
-            error: new EsiError(
+        return EsiResult::fromError(
+            new EsiError(
                 code: $response->status(),
                 body: $response->body(),
             ),
+            $this->getStatsFromResponse($response),
         );
+    }
+
+    /**
+     * Coerce a request body to the array shape Laravel's HTTP client accepts.
+     *
+     * Request bodies in this library are always JSON objects or id lists, so
+     * their keys are strings or non-negative integers.
+     *
+     * @return array<int<0, max>|string, mixed>
+     */
+    private function normalizeBody(mixed $body): array
+    {
+        if (! is_array($body)) {
+            return [];
+        }
+
+        /** @var array<int<0, max>|string, mixed> $body */
+        return $body;
     }
 }

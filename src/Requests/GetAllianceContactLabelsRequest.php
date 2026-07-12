@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\ContactLabel;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<array<int, ContactLabel>>
+ */
 class GetAllianceContactLabelsRequest extends Request
 {
     public function __construct(public int $alliance_id) {}
@@ -17,8 +20,11 @@ class GetAllianceContactLabelsRequest extends Request
         return sprintf('/alliances/%d/contacts/labels/', $this->alliance_id);
     }
 
+    /**
+     * @return array<int, ContactLabel>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(ContactLabel::fromArray(...), $data);
+        return ContactLabel::hydrateList($data);
     }
 }

@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Status;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Status>
+ */
 class GetStatusRequest extends Request
 {
     public function resolveEndpoint(): string
@@ -17,6 +20,6 @@ class GetStatusRequest extends Request
 
     public function createDto(Response $response, mixed $data): Status
     {
-        return Status::fromArray($data);
+        return Status::hydrate($data);
     }
 }

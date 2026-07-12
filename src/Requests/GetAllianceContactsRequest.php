@@ -10,6 +10,11 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Traits\BasicPagination;
 
+/**
+ * @extends Request<array<int, Contact>>
+ *
+ * @implements WithPagination<array<int, Contact>>
+ */
 class GetAllianceContactsRequest extends Request implements WithPagination
 {
     use BasicPagination;
@@ -21,8 +26,11 @@ class GetAllianceContactsRequest extends Request implements WithPagination
         return sprintf('/alliances/%d/contacts/', $this->alliance_id);
     }
 
+    /**
+     * @return array<int, Contact>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(Contact::fromArray(...), $data);
+        return Contact::hydrateList($data);
     }
 }

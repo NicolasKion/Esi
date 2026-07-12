@@ -8,12 +8,16 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Interfaces\WithBody;
 use NicolasKion\Esi\Request;
+use NicolasKion\Esi\Support\Data;
 
+/**
+ * @extends Request<array<int, int>>
+ */
 class AddCharacterContactsRequest extends Request implements WithBody
 {
     /**
-     * @param  int[]  $contact_ids
-     * @param  int[]|null  $label_ids
+     * @param  array<int, int>  $contact_ids
+     * @param  array<int, int>|null  $label_ids
      */
     public function __construct(
         public int $character_id,
@@ -33,6 +37,9 @@ class AddCharacterContactsRequest extends Request implements WithBody
         return RequestMethod::POST;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getQuery(): array
     {
         $query = [
@@ -47,17 +54,20 @@ class AddCharacterContactsRequest extends Request implements WithBody
         return $query;
     }
 
+    /**
+     * @return array<int, int>
+     */
     public function getBody(): mixed
     {
         return $this->contact_ids;
     }
 
     /**
-     * @return int[]
+     * @return array<int, int>
      */
     public function createDto(Response $response, mixed $data): array
     {
-        return $data;
+        return Data::integerList($data);
     }
 
     public function shouldRetry(Response $response): bool

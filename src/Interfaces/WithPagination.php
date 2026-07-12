@@ -6,6 +6,11 @@ namespace NicolasKion\Esi\Interfaces;
 
 use Illuminate\Http\Client\Response;
 
+/**
+ * @template-covariant TData
+ *
+ * @extends Request<TData>
+ */
 interface WithPagination extends Request
 {
     public function hasMorePages(int $page, Response $response): bool;

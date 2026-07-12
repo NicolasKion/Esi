@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\EveMail;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<EveMail>
+ */
 class GetEveMailRequest extends Request
 {
     public function __construct(
@@ -24,6 +27,6 @@ class GetEveMailRequest extends Request
 
     public function createDto(Response $response, mixed $data): EveMail
     {
-        return EveMail::fromArray($data);
+        return EveMail::hydrate($data);
     }
 }

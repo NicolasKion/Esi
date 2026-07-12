@@ -8,6 +8,9 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\DTO\Structure;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<Structure>
+ */
 class GetStructureRequest extends Request
 {
     /**
@@ -26,6 +29,6 @@ class GetStructureRequest extends Request
 
     public function createDto(Response $response, mixed $data): Structure
     {
-        return Structure::fromArray($data);
+        return Structure::hydrate($data);
     }
 }

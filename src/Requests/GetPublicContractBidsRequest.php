@@ -10,6 +10,11 @@ use NicolasKion\Esi\Interfaces\WithPagination;
 use NicolasKion\Esi\Request;
 use NicolasKion\Esi\Traits\BasicPagination;
 
+/**
+ * @extends Request<array<int, PublicContractBid>>
+ *
+ * @implements WithPagination<array<int, PublicContractBid>>
+ */
 class GetPublicContractBidsRequest extends Request implements WithPagination
 {
     use BasicPagination;
@@ -25,8 +30,11 @@ class GetPublicContractBidsRequest extends Request implements WithPagination
         return sprintf('/contracts/public/bids/%d/', $this->contract_id);
     }
 
+    /**
+     * @return array<int, PublicContractBid>
+     */
     public function createDto(Response $response, mixed $data): array
     {
-        return array_map(PublicContractBid::fromArray(...), $data ?? []);
+        return PublicContractBid::hydrateList($data);
     }
 }

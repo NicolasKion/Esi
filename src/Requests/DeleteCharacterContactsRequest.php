@@ -8,10 +8,13 @@ use Illuminate\Http\Client\Response;
 use NicolasKion\Esi\Enums\RequestMethod;
 use NicolasKion\Esi\Request;
 
+/**
+ * @extends Request<null>
+ */
 class DeleteCharacterContactsRequest extends Request
 {
     /**
-     * @param  int[]  $contact_ids
+     * @param  array<int, int>  $contact_ids
      */
     public function __construct(
         public int $character_id,
@@ -28,6 +31,9 @@ class DeleteCharacterContactsRequest extends Request
         return RequestMethod::DELETE;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getQuery(): array
     {
         return [
