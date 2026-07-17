@@ -28,7 +28,10 @@ it('fetches and maps a public character', function (): void {
         ->and($result->data->race_id)->toBe(1)
         ->and($result->data->security_status)->toBe(5.0)
         // sourced from the `corporation_title` field (ESI renamed it from `title`)
-        ->and($result->data->title)->toBe('string');
+        ->and($result->data->title)->toBe('string')
+        ->and($result->data->achievement_score)->toBe(1234)
+        ->and($result->data->character_title_id)->toBe('3868eaed-8278-4cb7-9709-7d7de9c20dc7')
+        ->and($result->data->faction_id)->toBe(500002);
 });
 
 it('fetches character affiliations', function (): void {
