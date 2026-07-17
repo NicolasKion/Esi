@@ -19,6 +19,9 @@ readonly class Character extends Dto
         public int $race_id,
         public ?float $security_status,
         public ?string $title,
+        public int $achievement_score,
+        public ?string $character_title_id,
+        public ?int $faction_id,
     ) {}
 
     public static function fromData(Data $data): self
@@ -35,6 +38,9 @@ readonly class Character extends Dto
             security_status: $data->float('security_status'),
             // ESI renamed this field from `title` to `corporation_title`.
             title: $data->string('corporation_title', $data->string('title')),
+            achievement_score: $data->integer('achievement_score', 0),
+            character_title_id: $data->string('character_title_id'),
+            faction_id: $data->integer('faction_id'),
         );
     }
 }

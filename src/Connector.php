@@ -24,7 +24,7 @@ use function config;
 
 class Connector
 {
-    public const COMPATIBILITY_DATE = '2026-06-09';
+    public const COMPATIBILITY_DATE = '2026-07-17';
 
     public const ERROR_LIMIT_REMAIN_HEADER = 'X-Esi-Error-Limit-Remain';
 

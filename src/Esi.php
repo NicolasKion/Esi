@@ -97,6 +97,7 @@ use NicolasKion\Esi\DTO\MercenaryDen;
 use NicolasKion\Esi\DTO\MercenaryTacticalOperation;
 use NicolasKion\Esi\DTO\MetaChangelog;
 use NicolasKion\Esi\DTO\MetaCompatibilityDates;
+use NicolasKion\Esi\DTO\MetaName;
 use NicolasKion\Esi\DTO\MetaStatus;
 use NicolasKion\Esi\DTO\MiningExtraction;
 use NicolasKion\Esi\DTO\MiningLedgerEntry;
@@ -309,6 +310,7 @@ use NicolasKion\Esi\Requests\GetMercenaryTacticalOperationRequest;
 use NicolasKion\Esi\Requests\GetMercenaryTacticalOperationsRequest;
 use NicolasKion\Esi\Requests\GetMetaChangelogRequest;
 use NicolasKion\Esi\Requests\GetMetaCompatibilityDatesRequest;
+use NicolasKion\Esi\Requests\GetMetaNameRequest;
 use NicolasKion\Esi\Requests\GetMetaStatusRequest;
 use NicolasKion\Esi\Requests\GetMoonRequest;
 use NicolasKion\Esi\Requests\GetNamesRequest;
@@ -3111,6 +3113,19 @@ class Esi
     {
         $connector = new Connector;
         $request = new GetMetaCompatibilityDatesRequest;
+
+        return $connector->send($request);
+    }
+
+    /**
+     * Retrieves the name ESI is currently going by, plus every name it has ever had.
+     *
+     * @return EsiResult<MetaName>
+     */
+    public function getMetaName(): EsiResult
+    {
+        $connector = new Connector;
+        $request = new GetMetaNameRequest;
 
         return $connector->send($request);
     }

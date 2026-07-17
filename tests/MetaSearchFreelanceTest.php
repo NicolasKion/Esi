@@ -11,6 +11,8 @@ use NicolasKion\Esi\DTO\MercenaryTacticalOperation;
 use NicolasKion\Esi\DTO\MetaChangelog;
 use NicolasKion\Esi\DTO\MetaChangelogEntry;
 use NicolasKion\Esi\DTO\MetaCompatibilityDates;
+use NicolasKion\Esi\DTO\MetaName;
+use NicolasKion\Esi\DTO\MetaNameEntry;
 use NicolasKion\Esi\DTO\MetaStatus;
 use NicolasKion\Esi\DTO\SearchResult;
 use NicolasKion\Esi\DTO\SovereigntyCampaign;
@@ -71,6 +73,35 @@ it('defaults compatibility dates to an empty array when the field is missing', f
 
     expect($result->wasSuccessful())->toBeTrue()
         ->and($result->data->compatibility_dates)->toBe([]);
+});
+
+it('fetches and maps the meta name and its history', function (): void {
+    Http::fake([
+        'esi.evetech.net/meta/name*' => Http::response(esiFixture('meta/name.json')),
+    ]);
+
+    $result = (new Esi)->getMetaName();
+
+    expect($result->wasSuccessful())->toBeTrue()
+        ->and($result->data)->toBeInstanceOf(MetaName::class)
+        ->and($result->data->current)->toBe('EVE Swagger Incineration (ESI)')
+        ->and($result->data->history)->toHaveCount(2)
+        ->and($result->data->history[0])->toBeInstanceOf(MetaNameEntry::class)
+        ->and($result->data->history[0]->date)->toBe('2026-07-14')
+        ->and($result->data->history[0]->name)->toBe('EVE Swagger Incineration (ESI)')
+        ->and($result->data->history[1]->name)->toBe('EVE Spring Inebriation (ESI)');
+});
+
+it('defaults the meta name history to an empty array when the field is missing', function (): void {
+    Http::fake([
+        'esi.evetech.net/meta/name*' => Http::response([]),
+    ]);
+
+    $result = (new Esi)->getMetaName();
+
+    expect($result->wasSuccessful())->toBeTrue()
+        ->and($result->data->current)->toBe('')
+        ->and($result->data->history)->toBe([]);
 });
 
 it('fetches and maps the meta status routes', function (): void {
