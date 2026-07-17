@@ -2,6 +2,14 @@
 
 All notable changes to `Esi` will be documented in this file.
 
+## v0.11 - 2026-07-17
+
+### What's Changed
+
+* feat: add meta name endpoint and bump compatibility date to 2026-07-17 by @NicolasKion in https://github.com/NicolasKion/Esi/pull/51
+
+**Full Changelog**: https://github.com/NicolasKion/Esi/compare/v0.10...v0.11
+
 ## v0.10 - 2026-07-12
 
 ### What's Changed
